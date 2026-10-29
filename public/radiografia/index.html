@@ -79,7 +79,7 @@
   <button class="btn sec" id="atras" type="button">Atrás</button>
   <button class="btn prim" id="sig" type="button">Seguir</button>
 </div></div>
-<footer><a href="/privacidad">Privacidad</a> · <span class="tenue">Lo que contestas lo leemos solo nosotros; en el estudio nadie sale con su nombre.</span></footer>
+<footer><a href="/privacidad">Privacidad</a> · <span class="tenue">Lo que contestas lo leo solo yo, Jesús. Para comparar negocios se usa sin tu nombre ni el de tu negocio. Los audios se borran al cerrar el estudio.</span></footer>
 
 <script>
 (() => {
@@ -98,21 +98,21 @@
       ['2', 'Menos de 2 horas', 1.5], ['5', 'Entre 2 y 5', 3.5], ['10', 'Entre 5 y 10', 7.5], ['15', 'Más de 10', 12]] },
     { k: 'clientes', tipo: 'una', t: '¿Se te escapan clientes porque no llegas a contestar o a hacer seguimiento?', o: [
       ['nunca', 'Casi nunca'], ['a_veces', 'A veces'], ['a_menudo', 'A menudo']] },
-    { k: 'facturas', tipo: 'una', t: '¿Cuántas facturas emites al mes a empresas o autónomos?', a: 'Si solo vendes a particulares, marca la primera.', o: [
-      ['0', 'Ninguna, vendo a particulares', 0], ['10', 'Menos de 10', 5], ['30', 'Entre 10 y 30', 20], ['100', 'Entre 30 y 100', 60], ['mas', 'Más de 100', 120]] },
-    { k: 'tarde', tipo: 'una', t: 'De esas facturas, ¿cuántas te pagan tarde?', a: 'Tarde = después de lo pactado, o de 30 días si no pactasteis nada.', si: r => r.facturas && r.facturas !== '0', o: [
+    { k: 'facturas', tipo: 'una', t: '¿Cuántas facturas emites al mes a empresas o autónomos?', a: 'Las de particulares y comunidades de vecinos no cuentan. Si solo trabajas con ellos, marca la primera.', o: [
+      ['0', 'Ninguna: particulares o comunidades', 0], ['10', 'Menos de 10', 5], ['30', 'Entre 10 y 30', 20], ['100', 'Entre 30 y 100', 60], ['mas', 'Más de 100', 120]] },
+    { k: 'tarde', tipo: 'una', t: 'De esas facturas, ¿cuántas te pagan tarde?', a: 'Tarde = después de lo pactado (que nunca puede pasar de 60 días) o, si no pactasteis nada, más de 30 días desde que hiciste el trabajo.', si: r => r.facturas && r.facturas !== '0', o: [
       ['ninguna', 'Ninguna', 0], ['alguna', 'Alguna', 0.1], ['mitad', 'Más o menos la mitad', 0.5], ['casi_todas', 'Casi todas', 0.8]] },
     { k: 'sin_ti', tipo: 'una', t: 'Si te vas una semana sin móvil, ¿qué pasa con el negocio?', o: [
-      ['sigue', 'Sigue igual'], ['resiente', 'Se resiente'], ['para', 'Se para']] },
+      ['sigue', 'Sigue igual'], ['resiente', 'Se resiente'], ['para', 'Se para'], ['solo', 'Cierro: trabajo solo']] },
     { k: 'herramientas', tipo: 'varias', t: '¿Con qué te organizas hoy?', a: 'Marca todas las que uses.', o: [
-      ['papel', 'Papel y libreta'], ['excel', 'Excel u hojas de cálculo'], ['whatsapp', 'WhatsApp'], ['programa', 'Un programa de gestión'], ['nada', 'Con la cabeza']] },
+      ['papel', 'Papel y libreta'], ['excel', 'Excel u hojas de cálculo'], ['whatsapp', 'WhatsApp'], ['programa', 'Un programa de gestión'], ['varios', 'Varios programas o apps'], ['nada', 'Con la cabeza']] },
     { k: 'paga', tipo: 'una', t: '¿Pagas ya por algo que te quite parte de esto de encima?', a: 'Un programa, una gestoría, alguien que te ayuda…', o: [
-      ['no', 'No'], ['menos_50', 'Sí, menos de 50 € al mes'], ['mas_50', 'Sí, más de 50 € al mes']] },
-    { k: 'valor_hora', tipo: 'una', t: 'Una hora tuya, ¿cuánto vale para el negocio?', a: 'Lo usamos solo para calcular tu cifra. Si dudas, la de en medio.', o: [
-      ['15', '15 €', 15], ['25', '25 €', 25], ['40', '40 €', 40], ['60', '60 € o más', 60]] },
+      ['no', 'No'], ['persona', 'Sí, una gestoría o una persona'], ['programa', 'Sí, un programa o una app'], ['ambos', 'Sí, las dos cosas']] },
+    { k: 'valor_hora', tipo: 'una', t: 'Una hora tuya, ¿cuánto vale para el negocio?', a: 'Lo usamos solo para calcular tu cifra. Si dudas, marca 25 €.', o: [
+      ['10', '10 €', 10], ['15', '15 €', 15], ['25', '25 €', 25], ['40', '40 €', 40], ['60', '60 € o más', 60]] },
     { k: 'quitar', tipo: 'abierta', t: 'Si mañana pudieras quitarte UNA cosa del día, ¿cuál sería?', a: 'Cuéntalo como se lo contarías a un amigo. Puedes escribirlo o mandar un audio.' },
     { k: 'llamada', tipo: 'una', t: 'Cuando te llegue la radiografía, ¿te apetece que la veamos juntos 20 minutos?', a: 'Sin compromiso: te cuento qué haría yo en tu lugar.', o: [
-      ['si', 'Sí, me viene bien'], ['ya_vere', 'Ya veré cuando la lea']] }
+      ['si', 'Sí, me viene bien'], ['no', 'No hace falta, con el informe me vale']] }
   ];
 
   const $ = id => document.getElementById(id);
@@ -186,7 +186,7 @@
       <h1>Hola, ${esc(D.nombre)}. Esto es lo que ve un cliente antes de llegar a ti.</h1>
       ${bloquePublico()}
       <h2 style="margin-top:22px">Ahora, lo que no se ve desde fuera</h2>
-      <p class="suave">Son ${visibles().length} preguntas de tocar, unos 5 minutos. Al terminar verás al momento cuántas horas y cuánto dinero se te van al mes, y en 48 horas te llega tu radiografía completa con tres cosas que puedes cambiar mañana.</p>
+      <p class="suave">Son ${visibles().length} preguntas de tocar, unos 5 minutos. Al terminar verás al momento cuántas horas te llevan al mes las tareas que se repiten y lo que te cuestan, y en 48 horas te llega tu radiografía completa con tres cosas que puedes cambiar mañana.</p>
       <p class="tenue">Se guarda solo: si lo dejas a medias, vuelve por el mismo enlace y sigues donde estabas.</p>`;
     pie.hidden = false; atras.hidden = true; sig.disabled = false;
     sig.textContent = pendiente() > 0 ? 'Seguir donde lo dejé' : 'Empezar';
@@ -304,15 +304,15 @@
     const c = D.cifra || cifra(); pos = visibles().length; progreso(); pie.hidden = true;
     const tareas = (R.tiempo || '').split(',').filter(Boolean).map(x => (PREGUNTAS[0].o.find(o => o[0] === x) || [, x])[1].toLowerCase());
     app.innerHTML = `<div class="eti">Tu cifra · ${esc(D.negocio)}</div>
-      <h1>Gracias, ${esc(D.nombre)}. Esto es lo que se te va cada mes.</h1>
+      <h1>Gracias, ${esc(D.nombre)}. Esto es lo que te cuestan cada mes las tareas que se repiten.</h1>
       <div class="cifra">
         <div class="grande">${String(c.horas_semana).replace('.', ',')} h <small>a la semana</small></div>
         <p>en ${tareas.length ? esc(tareas.join(', ')) : 'tareas que se repiten'}.</p>
         <hr>
         <div class="grande">${euros(c.euros_mes)} € <small>al mes</small></div>
         <p>es lo que valen esas horas, con tu hora a ${c.valor_hora} €.</p>
-        ${c.recargos_mes > 0 ? `<hr><div class="grande">hasta ${euros(c.recargos_mes)} € <small>al mes</small></div>
-        <p>en recargos que la ley te reconoce por las facturas que te pagan tarde: 40 € por factura más intereses, sin tener que reclamarlos aparte (Ley 3/2004, art. 8).</p>` : ''}
+        ${c.recargos_mes > 0 ? `<hr><div class="grande">${euros(c.recargos_mes)} € <small>al mes</small></div>
+        <p>que la ley te permite cobrar por las facturas que te pagan tarde: 40 € por factura como costes de cobro (Ley 3/2004, art. 8), más los intereses de demora (art. 5), sin necesidad de avisar antes. Solo entre empresas y autónomos.</p>` : ''}
       </div>
       <h2>¿Y ahora?</h2>
       <p>En 48 horas te llega por ${D.canal === 'correo' ? 'correo' : 'WhatsApp'} tu radiografía completa: tus tres fugas principales, cómo estás frente a negocios como el tuyo y tres cosas que puedes cambiar mañana sin gastar nada.</p>
