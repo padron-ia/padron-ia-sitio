@@ -100,10 +100,12 @@
       ['2', 'Menos de 2 horas', 1.5], ['5', 'Entre 2 y 5', 3.5], ['10', 'Entre 5 y 10', 7.5], ['15', 'Más de 10', 12]] },
     { k: 'clientes', tipo: 'una', t: '¿Se te escapan clientes porque no llegas a contestar o a hacer seguimiento?', o: [
       ['nunca', 'Casi nunca'], ['a_veces', 'A veces'], ['a_menudo', 'A menudo']] },
-    { k: 'facturas', tipo: 'una', t: '¿Cuántas facturas emites al mes a empresas o autónomos?', a: 'Las de particulares y comunidades de vecinos no cuentan. Si solo trabajas con ellos, marca la primera.', o: [
-      ['0', 'Ninguna: particulares o comunidades', 0], ['10', 'Menos de 10', 5], ['30', 'Entre 10 y 30', 20], ['100', 'Entre 30 y 100', 60], ['mas', 'Más de 100', 120]] },
-    { k: 'tarde', tipo: 'una', t: 'De esas facturas, ¿cuántas te pagan tarde?', a: 'Tarde = después de lo pactado (que nunca puede pasar de 60 días) o, si no pactasteis nada, más de 30 días desde que hiciste el trabajo.', si: r => r.facturas && r.facturas !== '0', o: [
-      ['ninguna', 'Ninguna', 0], ['alguna', 'Alguna', 0.1], ['mitad', 'Más o menos la mitad', 0.5], ['casi_todas', 'Casi todas', 0.8]] },
+    // Invoicing as owners live it (Jesús, 29-oct): forgetting to raise and send invoices, and monthly customers.
+    { k: 'facturar', tipo: 'una', t: '¿Cómo llevas sacar las facturas y mandarlas?', o: [
+      ['al_dia', 'Al día: cada trabajo, su factura'], ['acumulan', 'Se me acumulan y las hago de golpe'],
+      ['olvido', 'Alguna vez se me ha quedado un trabajo sin facturar'], ['no_facturo', 'Cobro en el momento, casi no hago facturas']] },
+    { k: 'recurrentes', tipo: 'una', t: '¿Tienes clientes que te pagan todos los meses?', a: 'Cuotas, mantenimientos, igualas, suscripciones…', o: [
+      ['no', 'No'], ['pocos', 'Sí, unos pocos'], ['muchos', 'Sí, bastantes']] },
     { k: 'sin_ti', tipo: 'una', t: 'Si te vas una semana sin móvil, ¿qué pasa con el negocio?', o: [
       ['sigue', 'Sigue igual'], ['resiente', 'Se resiente'], ['para', 'Se para'], ['solo', 'Cierro: trabajo solo']] },
     { k: 'herramientas', tipo: 'varias', t: '¿Con qué te organizas hoy?', a: 'Marca todas las que uses.', o: [
@@ -138,8 +140,7 @@
     const horas = valor('horas');
     const hora = valor('valor_hora') || 25;
     const euros_mes = horas * hora * 4.33;
-    const recargos_mes = (R.facturas && R.facturas !== '0') ? valor('facturas') * valor('tarde') * 40 : 0;
-    return { horas_semana: horas, valor_hora: hora, euros_mes: Math.round(euros_mes), recargos_mes: Math.round(recargos_mes) };
+    return { horas_semana: horas, valor_hora: hora, euros_mes: Math.round(euros_mes) };
   }
 
   function progreso() {
@@ -320,8 +321,6 @@
         <hr>
         <div class="grande">${euros(c.euros_mes)} € <small>al mes</small></div>
         <p>es lo que valen esas horas, con tu hora a ${c.valor_hora} €.</p>
-        ${c.recargos_mes > 0 ? `<hr><div class="grande">${euros(c.recargos_mes)} € <small>al mes</small></div>
-        <p>que la ley te permite cobrar por las facturas que te pagan tarde: 40 € por factura como costes de cobro (Ley 3/2004, art. 8), más los intereses de demora (art. 5), sin necesidad de avisar antes. Solo entre empresas y autónomos.</p>` : ''}
       </div>
       <h2>¿Y ahora?</h2>
       <p>En 48 horas te llega por ${D.canal === 'correo' ? 'correo' : 'WhatsApp'} tu radiografía completa: tus problemas principales y lo que te cuestan, cómo estás frente a negocios como el tuyo y tres cosas que puedes cambiar mañana sin gastar nada.</p>
