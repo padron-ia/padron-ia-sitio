@@ -499,7 +499,7 @@
       <p class="que">al mes</p>
       <p class="cuenta"><span class="num">${coma(c.horas_semana)} h</span> a la semana × <span class="num">${c.valor_hora} €</span> tu hora × <span class="num">4,33</span> semanas</p>
       ${tareas.length ? `<ul class="lista">${tareas.map(([t, g], i) => `<li class="${i === 0 && conPrimero ? 'tiene-primero' : ''}"><span class="n">${i + 1}</span><span class="txt">${esc(t)}${g ? `<span class="gana"><b>Se puede resolver.</b> ${esc(g)}</span>` : ''}</span>${i === 0 && conPrimero ? '<span class="primero">Lo primero</span>' : ''}</li>`).join('')}</ul>` : ''}
-      <div class="despues"><p>En 48 horas tienes tu radiografía completa en este mismo enlace, con tres cosas que puedes cambiar mañana sin gastar nada. Te aviso por ${D.canal === 'correo' ? 'correo' : 'WhatsApp'}.</p>
+      <div class="despues"><p>En 48 horas tienes tu radiografía completa en este mismo enlace, con lo que haría yo primero en tu lugar. Te aviso por ${D.canal === 'correo' ? 'correo' : 'WhatsApp'}.</p>
       <p>La cifra sale de tus respuestas: es una estimación, no una auditoría. Puedes volver a este enlace cuando quieras.</p></div>`);
     if (recien) contar($('euros'), c.euros_mes);
   }
