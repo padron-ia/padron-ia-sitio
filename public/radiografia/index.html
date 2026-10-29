@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Tu radiografía · Padrón IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap">
+<style>
+  /* Radiografía de negocios cercanos (29-oct-2026). Página suelta, sin Astro: la sirve nginx tal cual
+     y habla con Supabase por las funciones estudio_* (el enlace ?t= es la llave). Colores del sitio. */
+  :root {
+    --ink: #1B1E3A; --ink-2: #252A52; --iris: #5A67E8; --lavender: #8F9BFF; --bone: #F2F3FB;
+    --pearl: #C9A86A; --texto: #1B1E3A; --suave: #4A5070; --tenue: #6E7496; --linea: #DCDFEE;
+    --ok: #1F8A5B; --mal: #B4432F;
+    --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "Space Mono", ui-monospace, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bone); color: var(--texto); font-family: var(--sans); font-size: 17px; line-height: 1.5; }
+  body { min-height: 100dvh; display: flex; flex-direction: column; }
+  header { background: var(--ink); color: var(--bone); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  header .marca { font-weight: 800; letter-spacing: -0.01em; }
+  header .marca span { color: var(--lavender); }
+  header .paso { font-family: var(--mono); font-size: 0.75rem; color: #AEB4D2; }
+  .barra { height: 4px; background: var(--ink-2); }
+  .barra i { display: block; height: 100%; width: 0; background: var(--lavender); transition: width .3s ease; }
+  main { flex: 1; width: 100%; max-width: 36rem; margin: 0 auto; padding: 24px 16px 120px; }
+  h1 { font-size: clamp(1.6rem, 1.2rem + 2vw, 2.1rem); line-height: 1.15; margin: 0 0 12px; letter-spacing: -0.02em; }
+  h2 { font-size: 1.3rem; line-height: 1.25; margin: 0 0 8px; letter-spacing: -0.01em; }
+  p { margin: 0 0 14px; }
+  .suave { color: var(--suave); }
+  .tenue { color: var(--tenue); font-size: 0.875rem; }
+  .eti { font-family: var(--mono); font-size: 0.75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--iris); margin-bottom: 6px; }
+  .tarjeta { background: #fff; border: 1px solid var(--linea); border-radius: 14px; padding: 16px; margin: 0 0 12px; }
+  .tarjeta h3 { margin: 0 0 6px; font-size: 1rem; }
+  .lista { list-style: none; padding: 0; margin: 8px 0 0; }
+  .lista li { display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; border-top: 1px solid var(--linea); font-size: 0.95rem; }
+  .lista li:first-child { border-top: 0; }
+  .tu { font-weight: 700; }
+  .marca-si { color: var(--ok); font-weight: 700; }
+  .marca-no { color: var(--mal); font-weight: 700; }
+  .opciones { display: grid; gap: 10px; margin: 18px 0 8px; }
+  .op { width: 100%; text-align: left; font: inherit; color: inherit; background: #fff; border: 1.5px solid var(--linea); border-radius: 12px; padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; min-height: 52px; }
+  .op:hover { border-color: var(--lavender); }
+  .op[aria-pressed="true"] { border-color: var(--iris); background: #EEF0FF; font-weight: 600; }
+  .op .caja { flex: none; width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--tenue); display: grid; place-items: center; font-size: 13px; color: #fff; }
+  .op[aria-pressed="true"] .caja { background: var(--iris); border-color: var(--iris); }
+  .op.unica .caja { border-radius: 50%; }
+  textarea { width: 100%; min-height: 120px; font: inherit; padding: 12px 14px; border: 1.5px solid var(--linea); border-radius: 12px; background: #fff; resize: vertical; }
+  textarea:focus, .op:focus-visible, .btn:focus-visible { outline: 3px solid var(--lavender); outline-offset: 2px; }
+  .pie { position: fixed; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, var(--bone) 70%, rgba(242,243,251,0)); padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); }
+  .pie .dentro { max-width: 36rem; margin: 0 auto; display: flex; gap: 10px; }
+  .btn { font: inherit; font-weight: 700; border: 0; border-radius: 12px; padding: 15px 18px; cursor: pointer; min-height: 52px; }
+  .btn.prim { flex: 1; background: var(--ink); color: var(--bone); }
+  .btn.prim:disabled { background: #9AA0C0; cursor: not-allowed; }
+  .btn.sec { background: transparent; color: var(--suave); border: 1.5px solid var(--linea); }
+  .audio { display: flex; align-items: center; gap: 10px; margin: 12px 0; flex-wrap: wrap; }
+  .audio .btn { padding: 11px 14px; min-height: 44px; font-weight: 600; background: #fff; border: 1.5px solid var(--linea); color: var(--texto); }
+  .audio .btn.grabando { background: var(--mal); color: #fff; border-color: var(--mal); }
+  .cifra { background: var(--ink); color: var(--bone); border-radius: 16px; padding: 20px; margin: 12px 0 16px; }
+  .cifra .grande { font-size: clamp(2.2rem, 1.6rem + 3vw, 3rem); font-weight: 800; line-height: 1; letter-spacing: -0.02em; color: #fff; }
+  .cifra .grande small { font-size: 1rem; font-weight: 600; color: #AEB4D2; }
+  .cifra p { color: #D7DBF0; margin: 8px 0 0; }
+  .cifra hr { border: 0; border-top: 1px solid var(--ink-2); margin: 16px 0; }
+  .aviso { background: #FFF6E5; border: 1px solid #F0D9A8; border-radius: 12px; padding: 12px 14px; font-size: 0.9rem; }
+  .error { color: var(--mal); font-size: 0.9rem; min-height: 1.2em; }
+  .guardado { font-family: var(--mono); font-size: 0.75rem; color: var(--tenue); text-align: right; min-height: 1.2em; }
+  footer { text-align: center; padding: 0 16px 24px; }
+  footer a { color: var(--tenue); }
+</style>
+</head>
+<body>
+<header><div class="marca">Padrón <span>IA</span></div><div class="paso" id="paso"></div></header>
+<div class="barra"><i id="barra"></i></div>
+<main id="app" aria-live="polite"><p class="suave">Cargando tu radiografía…</p></main>
+<div class="pie" id="pie" hidden><div class="dentro">
+  <button class="btn sec" id="atras" type="button">Atrás</button>
+  <button class="btn prim" id="sig" type="button">Seguir</button>
+</div></div>
+<footer><a href="/privacidad">Privacidad</a> · <span class="tenue">Lo que contestas lo leemos solo nosotros; en el estudio nadie sale con su nombre.</span></footer>
+
+<script>
+(() => {
+  // Supabase «Web Padrón IA». La clave publicable es pública por diseño: sin el enlace no se lee nada.
+  const URL_BASE = 'https://tfhmeoiryhuivdnpwpjs.supabase.co';
+  const CLAVE = 'sb_publishable_jFB8R2BnZflBhBdtjHJcVQ_9A6xRzLa';
+  const token = new URLSearchParams(location.search).get('t') || '';
+
+  // Preguntas. `v` = valor numérico que entra en la cifra. La clave es la columna `pregunta`.
+  const PREGUNTAS = [
+    { k: 'tiempo', tipo: 'varias', max: 3, t: '¿Qué te quita más tiempo en la semana?', a: 'Elige hasta tres.', o: [
+      ['papeleo', 'Papeleo y facturas'], ['mensajes', 'Contestar mensajes y llamadas'], ['agenda', 'Agenda, citas y reservas'],
+      ['cobros', 'Perseguir cobros'], ['presupuestos', 'Hacer presupuestos'], ['pedidos', 'Pedidos, proveedores y stock'],
+      ['equipo', 'Organizar al equipo y turnos'], ['redes', 'Redes sociales y publicidad']] },
+    { k: 'horas', tipo: 'una', t: 'Todo eso junto, ¿cuántas horas a la semana te lleva?', o: [
+      ['2', 'Menos de 2 horas', 1.5], ['5', 'Entre 2 y 5', 3.5], ['10', 'Entre 5 y 10', 7.5], ['15', 'Más de 10', 12]] },
+    { k: 'clientes', tipo: 'una', t: '¿Se te escapan clientes porque no llegas a contestar o a hacer seguimiento?', o: [
+      ['nunca', 'Casi nunca'], ['a_veces', 'A veces'], ['a_menudo', 'A menudo']] },
+    { k: 'facturas', tipo: 'una', t: '¿Cuántas facturas emites al mes a empresas o autónomos?', a: 'Si solo vendes a particulares, marca la primera.', o: [
+      ['0', 'Ninguna, vendo a particulares', 0], ['10', 'Menos de 10', 5], ['30', 'Entre 10 y 30', 20], ['100', 'Entre 30 y 100', 60], ['mas', 'Más de 100', 120]] },
+    { k: 'tarde', tipo: 'una', t: 'De esas facturas, ¿cuántas te pagan tarde?', a: 'Tarde = después de lo pactado, o de 30 días si no pactasteis nada.', si: r => r.facturas && r.facturas !== '0', o: [
+      ['ninguna', 'Ninguna', 0], ['alguna', 'Alguna', 0.1], ['mitad', 'Más o menos la mitad', 0.5], ['casi_todas', 'Casi todas', 0.8]] },
+    { k: 'sin_ti', tipo: 'una', t: 'Si te vas una semana sin móvil, ¿qué pasa con el negocio?', o: [
+      ['sigue', 'Sigue igual'], ['resiente', 'Se resiente'], ['para', 'Se para']] },
+    { k: 'herramientas', tipo: 'varias', t: '¿Con qué te organizas hoy?', a: 'Marca todas las que uses.', o: [
+      ['papel', 'Papel y libreta'], ['excel', 'Excel u hojas de cálculo'], ['whatsapp', 'WhatsApp'], ['programa', 'Un programa de gestión'], ['nada', 'Con la cabeza']] },
+    { k: 'paga', tipo: 'una', t: '¿Pagas ya por algo que te quite parte de esto de encima?', a: 'Un programa, una gestoría, alguien que te ayuda…', o: [
+      ['no', 'No'], ['menos_50', 'Sí, menos de 50 € al mes'], ['mas_50', 'Sí, más de 50 € al mes']] },
+    { k: 'valor_hora', tipo: 'una', t: 'Una hora tuya, ¿cuánto vale para el negocio?', a: 'Lo usamos solo para calcular tu cifra. Si dudas, la de en medio.', o: [
+      ['15', '15 €', 15], ['25', '25 €', 25], ['40', '40 €', 40], ['60', '60 € o más', 60]] },
+    { k: 'quitar', tipo: 'abierta', t: 'Si mañana pudieras quitarte UNA cosa del día, ¿cuál sería?', a: 'Cuéntalo como se lo contarías a un amigo. Puedes escribirlo o mandar un audio.' },
+    { k: 'llamada', tipo: 'una', t: 'Cuando te llegue la radiografía, ¿te apetece que la veamos juntos 20 minutos?', a: 'Sin compromiso: te cuento qué haría yo en tu lugar.', o: [
+      ['si', 'Sí, me viene bien'], ['ya_vere', 'Ya veré cuando la lea']] }
+  ];
+
+  const $ = id => document.getElementById(id);
+  const app = $('app'), pie = $('pie'), sig = $('sig'), atras = $('atras');
+  let D = null, R = {}, A = {}, pos = -1, grabadora = null, trozos = [];
+
+  const rpc = async (fn, args) => {
+    const r = await fetch(`${URL_BASE}/rest/v1/rpc/${fn}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', apikey: CLAVE, Authorization: `Bearer ${CLAVE}` },
+      body: JSON.stringify(args) });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+  };
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  // es-ES leaves 4-digit numbers ungrouped (2078); we want 2.078.
+  const euros = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  const visibles = () => PREGUNTAS.filter(p => !p.si || p.si(R));
+  const valor = (k) => { const p = PREGUNTAS.find(x => x.k === k); const o = p && p.o.find(x => x[0] === R[k]); return o ? (o[2] ?? 0) : 0; };
+
+  function cifra() {
+    const horas = valor('horas');
+    const hora = valor('valor_hora') || 25;
+    const euros_mes = horas * hora * 4.33;
+    const recargos_mes = (R.facturas && R.facturas !== '0') ? valor('facturas') * valor('tarde') * 40 : 0;
+    return { horas_semana: horas, valor_hora: hora, euros_mes: Math.round(euros_mes), recargos_mes: Math.round(recargos_mes) };
+  }
+
+  function progreso() {
+    const v = visibles(); const total = v.length + 1;
+    const i = pos < 0 ? 0 : pos >= v.length ? total : pos + 1;
+    $('barra').style.width = `${Math.round(i / total * 100)}%`;
+    $('paso').textContent = pos >= 0 && pos < v.length ? `${pos + 1} de ${v.length}` : '';
+  }
+
+  function fecha(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', timeZone: 'Europe/Madrid' }) + ' a las ' +
+           d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Madrid' });
+  }
+
+  function bloquePublico() {
+    const p = D.publico;
+    if (!p || (!p.maps && !p.ias)) {
+      return `<div class="tarjeta"><h3>Cómo te encuentra un cliente</h3><p class="suave">Estamos mirando cómo sale ${esc(D.negocio)} en Google y en las IAs. Te lo enseñamos en tu radiografía completa.</p></div>`;
+    }
+    let h = '';
+    if (p.maps) {
+      const m = p.maps;
+      const puesto = m.puesto ? `sales en el puesto <b>${m.puesto}</b>` : '<b>no apareces</b> entre los primeros';
+      const tuyo = m.nota ? ` · ${String(m.nota).replace('.', ',')}★ con ${m.resenas ?? 0} reseñas` : '';
+      h += `<div class="tarjeta"><div class="eti">Google Maps</div><h3>Buscando «${esc(m.busqueda)}», ${puesto}${tuyo}.</h3>`;
+      if (m.primeros && m.primeros.length) {
+        h += `<p class="tenue" style="margin:0">Los que salen primero:</p><ul class="lista">` +
+          m.primeros.slice(0, 3).map((x, i) => `<li><span>${i + 1}. ${esc(x.nombre)}</span><span>${x.nota ? String(x.nota).replace('.', ',') + '★ · ' : ''}${x.resenas ?? 0} reseñas</span></li>`).join('') + `</ul>`;
+      }
+      h += `</div>`;
+    }
+    if (p.ias && p.ias.length) {
+      h += `<div class="tarjeta"><div class="eti">Inteligencia artificial</div><h3>Cuando alguien le pregunta «${esc(p.ias[0].pregunta)}»</h3><ul class="lista">` +
+        p.ias.map(x => `<li><span>${esc(x.ia)}</span><span>${x.te_nombra ? '<span class="marca-si">Te nombra</span>' : `<span class="marca-no">No te nombra</span>`}</span></li>` +
+          (!x.te_nombra && x.nombra && x.nombra.length ? `<li><span class="tenue">Recomienda a</span><span class="tenue">${esc(x.nombra.slice(0, 3).join(', '))}</span></li>` : '')).join('') + `</ul></div>`;
+    }
+    h += `<p class="tenue">Consultado el ${fecha(D.publico_en)}. Google y las IAs cambian sus respuestas: es una foto de ese momento.</p>`;
+    return h;
+  }
+
+  function pintarInicio() {
+    pos = -1; progreso();
+    app.innerHTML = `<div class="eti">Tu radiografía · ${esc(D.negocio)}</div>
+      <h1>Hola, ${esc(D.nombre)}. Esto es lo que ve un cliente antes de llegar a ti.</h1>
+      ${bloquePublico()}
+      <h2 style="margin-top:22px">Ahora, lo que no se ve desde fuera</h2>
+      <p class="suave">Son ${visibles().length} preguntas de tocar, unos 5 minutos. Al terminar verás al momento cuántas horas y cuánto dinero se te van al mes, y en 48 horas te llega tu radiografía completa con tres cosas que puedes cambiar mañana.</p>
+      <p class="tenue">Se guarda solo: si lo dejas a medias, vuelve por el mismo enlace y sigues donde estabas.</p>`;
+    pie.hidden = false; atras.hidden = true; sig.disabled = false;
+    sig.textContent = pendiente() > 0 ? 'Seguir donde lo dejé' : 'Empezar';
+  }
+
+  // First unanswered question (open ones count as answered once visited), to resume where they left.
+  const pendiente = () => { const v = visibles(); const i = v.findIndex(p => p.tipo !== 'abierta' && !R[p.k]); return i < 0 ? v.length - 1 : i; };
+
+  function pintarPregunta() {
+    const v = visibles(); const p = v[pos]; progreso();
+    let h = `<div class="eti">Pregunta ${pos + 1} de ${v.length}</div><h1>${esc(p.t)}</h1>${p.a ? `<p class="suave">${esc(p.a)}</p>` : ''}`;
+    if (p.tipo === 'abierta') {
+      h += `<textarea id="texto" maxlength="5000" placeholder="Escribe aquí…">${esc(R[p.k] || '')}</textarea>
+        <div class="audio"><button class="btn" id="grabar" type="button">🎙️ Grabar un audio</button><span class="tenue" id="estado-audio">${A[p.k] ? 'Audio guardado ✓' : ''}</span>
+        ${A[p.k] ? '<button class="btn" id="quitar-audio" type="button">Quitar audio</button>' : ''}</div>`;
+    } else {
+      const sel = p.tipo === 'varias' ? (R[p.k] ? R[p.k].split(',') : []) : [R[p.k]];
+      h += `<div class="opciones" role="group">` + p.o.map(o =>
+        `<button type="button" class="op ${p.tipo === 'una' ? 'unica' : ''}" data-v="${o[0]}" aria-pressed="${sel.includes(o[0])}"><span class="caja">${sel.includes(o[0]) ? '✓' : ''}</span>${esc(o[1])}</button>`).join('') + `</div>`;
+    }
+    h += `<div class="error" id="error"></div><div class="guardado" id="guardado"></div>`;
+    app.innerHTML = h; window.scrollTo(0, 0);
+    pie.hidden = false; atras.hidden = false; sig.textContent = pos === v.length - 1 ? 'He terminado' : 'Seguir';
+    if (p.tipo === 'abierta') {
+      const ta = $('texto');
+      ta.addEventListener('blur', () => guardar(p.k, ta.value).catch(() => {}));
+      ta.addEventListener('input', revisar);
+      $('grabar').addEventListener('click', () => grabar(p.k));
+      const qa = $('quitar-audio'); if (qa) qa.addEventListener('click', async () => { await rpc('estudio_quitar_audio', { p_token: token, p_pregunta: p.k }); delete A[p.k]; pintarPregunta(); });
+    } else {
+      app.querySelectorAll('.op').forEach(b => b.addEventListener('click', () => elegir(p, b.dataset.v)));
+    }
+    revisar();
+  }
+
+  function revisar() {
+    const p = visibles()[pos]; if (!p) return;
+    if (p.tipo === 'abierta') sig.disabled = false; // la abierta no se exige: mejor algo que nada
+    else sig.disabled = !R[p.k];
+  }
+
+  async function elegir(p, v) {
+    if (p.tipo === 'una') R[p.k] = v;
+    else {
+      let s = R[p.k] ? R[p.k].split(',') : [];
+      if (s.includes(v)) s = s.filter(x => x !== v);
+      else { if (p.max && s.length >= p.max) { $('error').textContent = `Como mucho ${p.max}. Quita una para elegir otra.`; return; } s.push(v); }
+      R[p.k] = s.join(',');
+    }
+    app.querySelectorAll('.op').forEach(b => { const on = (R[p.k] || '').split(',').includes(b.dataset.v); b.setAttribute('aria-pressed', on); b.querySelector('.caja').textContent = on ? '✓' : ''; });
+    $('error').textContent = '';
+    revisar();
+    try { await guardar(p.k, R[p.k]); } catch { return; }
+    if (p.tipo === 'una') setTimeout(() => { if (visibles()[pos] === p) avanzar(); }, 250);
+  }
+
+  // Saves go one after another and each sends the value as it is at send time: three quick taps
+  // used to land out of order on the server and keep only the first one (seen in the 29-oct test).
+  let cola = Promise.resolve();
+  function guardar(k, v) {
+    R[k] = v;
+    const paso = cola.then(async () => {
+      const r = await rpc('estudio_guardar', { p_token: token, p_pregunta: k, p_respuesta: R[k] ?? '' });
+      if (!r.ok) throw new Error(r.error);
+      const g = $('guardado'); if (g) g.textContent = 'Guardado';
+    });
+    cola = paso.catch(() => {});
+    return paso.catch(e => { const er = $('error'); if (er) er.textContent = 'No se ha podido guardar. Revisa la conexión y vuelve a tocar.'; throw e; });
+  }
+
+  async function grabar(k) {
+    const b = $('grabar'), est = $('estado-audio');
+    if (grabadora && grabadora.state === 'recording') { grabadora.stop(); return; }
+    if (!navigator.mediaDevices || !window.MediaRecorder) { est.textContent = 'Tu móvil no deja grabar aquí: escríbelo, aunque sea corto.'; return; }
+    try {
+      const flujo = await navigator.mediaDevices.getUserMedia({ audio: true });
+      trozos = []; grabadora = new MediaRecorder(flujo);
+      grabadora.ondataavailable = e => e.data.size && trozos.push(e.data);
+      grabadora.onstop = async () => {
+        flujo.getTracks().forEach(t => t.stop());
+        b.classList.remove('grabando'); b.textContent = '🎙️ Grabar otra vez'; est.textContent = 'Subiendo…';
+        const blob = new Blob(trozos, { type: grabadora.mimeType || 'audio/webm' });
+        const b64 = await new Promise(ok => { const fr = new FileReader(); fr.onload = () => ok(String(fr.result).split(',')[1]); fr.readAsDataURL(blob); });
+        try {
+          const r = await rpc('estudio_audio', { p_token: token, p_pregunta: k, p_tipo: blob.type.split(';')[0], p_base64: b64 });
+          if (!r.ok) throw new Error(r.error);
+          A[k] = { tamano: r.tamano }; est.textContent = 'Audio guardado ✓';
+        } catch (e) { est.textContent = e.message && !e.message.startsWith('HTTP') ? e.message : 'No se ha podido subir el audio. Prueba otra vez o escríbelo.'; }
+      };
+      grabadora.start();
+      b.classList.add('grabando'); b.textContent = '⏹ Parar y guardar'; est.textContent = 'Grabando… (máximo unos 5 minutos)';
+      setTimeout(() => grabadora && grabadora.state === 'recording' && grabadora.stop(), 5 * 60 * 1000);
+    } catch (e) { est.textContent = 'Sin permiso para el micrófono. Puedes escribirlo.'; }
+  }
+
+  async function avanzar() {
+    const v = visibles();
+    if (pos >= 0 && v[pos] && v[pos].tipo === 'abierta') { try { await guardar(v[pos].k, $('texto').value); } catch { return; } }
+    if (pos === v.length - 1) return terminar();
+    pos++; pintarPregunta();
+  }
+
+  async function terminar() {
+    sig.disabled = true; sig.textContent = 'Calculando…';
+    const c = cifra();
+    try {
+      await cola; // every pending save lands before the notice goes out
+      const r = await rpc('estudio_terminar', { p_token: token, p_cifra: c });
+      if (!r.ok) throw new Error(r.error);
+      D.terminado_en = new Date().toISOString(); D.cifra = c; pintarFinal();
+    } catch (e) { $('error').textContent = 'No se ha podido enviar. Revisa la conexión y vuelve a pulsar.'; sig.disabled = false; sig.textContent = 'He terminado'; }
+  }
+
+  function pintarFinal() {
+    const c = D.cifra || cifra(); pos = visibles().length; progreso(); pie.hidden = true;
+    const tareas = (R.tiempo || '').split(',').filter(Boolean).map(x => (PREGUNTAS[0].o.find(o => o[0] === x) || [, x])[1].toLowerCase());
+    app.innerHTML = `<div class="eti">Tu cifra · ${esc(D.negocio)}</div>
+      <h1>Gracias, ${esc(D.nombre)}. Esto es lo que se te va cada mes.</h1>
+      <div class="cifra">
+        <div class="grande">${String(c.horas_semana).replace('.', ',')} h <small>a la semana</small></div>
+        <p>en ${tareas.length ? esc(tareas.join(', ')) : 'tareas que se repiten'}.</p>
+        <hr>
+        <div class="grande">${euros(c.euros_mes)} € <small>al mes</small></div>
+        <p>es lo que valen esas horas, con tu hora a ${c.valor_hora} €.</p>
+        ${c.recargos_mes > 0 ? `<hr><div class="grande">hasta ${euros(c.recargos_mes)} € <small>al mes</small></div>
+        <p>en recargos que la ley te reconoce por las facturas que te pagan tarde: 40 € por factura más intereses, sin tener que reclamarlos aparte (Ley 3/2004, art. 8).</p>` : ''}
+      </div>
+      <h2>¿Y ahora?</h2>
+      <p>En 48 horas te llega por ${D.canal === 'correo' ? 'correo' : 'WhatsApp'} tu radiografía completa: tus tres fugas principales, cómo estás frente a negocios como el tuyo y tres cosas que puedes cambiar mañana sin gastar nada.</p>
+      <p class="tenue">La cifra sale de tus respuestas: es una estimación, no una auditoría. Puedes volver a este enlace cuando quieras.</p>`;
+  }
+
+  sig.addEventListener('click', () => { if (pos < 0) { pos = pendiente(); pintarPregunta(); } else avanzar(); });
+  atras.addEventListener('click', () => { if (pos <= 0) pintarInicio(); else { pos--; pintarPregunta(); } });
+
+  (async () => {
+    if (token.length < 16) { app.innerHTML = `<h1>Este enlace no está completo</h1><p class="suave">Ábrelo tal cual te llegó por WhatsApp o por correo. Si sigue sin ir, contéstanos al mensaje y te mandamos otro.</p>`; return; }
+    try { D = await rpc('estudio_leer', { p_token: token }); } catch { app.innerHTML = `<h1>No hemos podido cargar tu radiografía</h1><p class="suave">Revisa la conexión y recarga la página.</p>`; return; }
+    if (!D) { app.innerHTML = `<h1>Este enlace no vale</h1><p class="suave">Puede que esté mal copiado. Contéstanos al mensaje y te mandamos otro.</p>`; return; }
+    if (D.cerrado) { app.innerHTML = `<h1>Esta radiografía ya está cerrada</h1><p class="suave">Si quieres verla o rehacerla, contéstanos al mensaje.</p>`; return; }
+    R = D.respuestas || {}; A = D.audios || {};
+    if (D.terminado_en) return pintarFinal();
+    pintarInicio();
+  })();
+})();
+</script>
+</body>
+</html>

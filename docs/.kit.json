@@ -1,0 +1,43 @@
+{
+  "proyecto": "padron-ia-sitio",
+  "os_path": "clients/_personal/padron-ia",
+  "instalado": "2026-10-29",
+  "talla": "pequena",
+  "no_aplica": [
+    "APP_FLOW",
+    "DESIGN_SYSTEM",
+    "TRD",
+    "DATABASE",
+    "SECURITY",
+    "DECISIONS"
+  ],
+  "roles": {
+    "PROGRESS": [
+      "docs/PROGRESS.md"
+    ],
+    "PRD": [
+      "docs/PRD.md"
+    ],
+    "PLAN": [
+      "docs/PLAN.md"
+    ],
+    "APP_FLOW": [],
+    "DESIGN_SYSTEM": [],
+    "TRD": [],
+    "DATABASE": [],
+    "SECURITY": [],
+    "DECISIONS": []
+  },
+  "creados_por_el_kit": [
+    "docs/PROGRESS.md",
+    "docs/PRD.md",
+    "docs/PLAN.md"
+  ],
+  "vigila": [
+    {
+      "codigo": "supabase/migrations/",
+      "doc": "DATABASE"
+    }
+  ],
+  "tope_lineas": 150
+}
