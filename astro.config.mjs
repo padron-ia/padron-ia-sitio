@@ -5,7 +5,7 @@ import sitemap from "@astrojs/sitemap";
 // El portal de cliente y /centro NO viven aquí: siguen en la app Vite.
 export default defineConfig({
     site: "https://padron-ia.es",
-    integrations: [sitemap()],
+    integrations: [sitemap({ filter: (page) => !page.includes("/prueba/") })],
     build: { inlineStylesheets: "auto" },
     server: { host: true, port: 4321 }
 });

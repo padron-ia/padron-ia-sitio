@@ -1,0 +1,404 @@
+---
+// Prototype C · «Baldosas vivas»: Metro tiles, giant lowercase type, from mess to order.
+import Prueba from "../../layouts/Prueba.astro";
+import "./_c.css";
+
+const wa =
+  "https://wa.me/34624664907?text=Hola%2C%20quiero%20la%20revisi%C3%B3n%20gratis%20de%20mi%20negocio";
+
+// Loader pieces: scattered offsets/rotations (CSS vars) that settle into a 3×3 grid.
+const piezas = [
+  ["-140%", "-90%", "-24deg"], ["30%", "-160%", "18deg"], ["150%", "-60%", "-12deg"],
+  ["-180%", "20%", "32deg"], ["0%", "0%", "-45deg"], ["170%", "40%", "14deg"],
+  ["-90%", "150%", "-8deg"], ["-20%", "180%", "26deg"], ["120%", "130%", "-30deg"],
+];
+
+// Live hero tiles. Each pool: [number, text]; first two are the HTML faces, the rest rotate in.
+const vivas = [
+  { ancha: true, tono: "t-indigo", pool: [["14", "whatsapps contestados esta noche"], ["22", "citas confirmadas sin llamar"], ["9", "dudas resueltas antes de abrir"]] },
+  { tono: "t-lavanda", pool: [["3", "clientes avisados"], ["4", "recordatorios enviados hoy"], ["1", "cliente que se enfría, avisado"]] },
+  { tono: "t-oscuro", pool: [["✓", "trimestre listo"], ["31", "facturas emitidas este mes"], ["0", "tickets en la caja"]] },
+  { tono: "t-indigo", pool: [["2", "vuelven esta semana"], ["6", "mensajes de vuelta enviados"], ["1", "reseña nueva"]] },
+  { ancha: true, tono: "t-lavanda", pool: [["5", "publicaciones programadas"], ["3", "semanas preparadas"], ["✓", "instagram al día"]] },
+  { tono: "t-oscuro", pool: [["0", "clientes sin respuesta"], ["12", "siguientes pasos al día"], ["1 min", "en contestar"]] },
+];
+
+// «¿Te suena?»: scattered/overlapping start (percent of the tile, so it scales on phones).
+const quejas = [
+  { t: "Las facturas las hago de noche.", x: "18%", y: "30%", r: "-7deg" },
+  { t: "Hay clientes que dejan de venir y ni me entero.", x: "-6%", y: "-22%", r: "5deg" },
+  { t: "Contesto WhatsApps hasta en la cena.", x: "-22%", y: "38%", r: "-11deg" },
+  { t: "El trimestre siempre me pilla.", x: "14%", y: "-34%", r: "9deg" },
+  { t: "Instagram lo tengo abandonado.", x: "-12%", y: "-12%", r: "-4deg" },
+];
+
+const procesos = [
+  { nombre: "Clientes que se van", antes: "¿Marta? hace mil que no viene", despues: "Te avisamos cuando un cliente deja de venir, antes de perderlo.", tono: "t-indigo" },
+  { nombre: "Recuperar clientes", antes: "habría que escribirles algún día", despues: "Le llega el mensaje en el momento justo, y vuelve.", tono: "t-lavanda" },
+  { nombre: "Seguimiento", antes: "¿a quién le debía una respuesta?", despues: "Cada cliente con su siguiente paso. Nadie se queda sin contestar.", tono: "t-indigo" },
+  { nombre: "Facturas y trimestre", antes: "caja de tickets para la gestoría", despues: "Las facturas salen solas y el trimestre llega preparado.", tono: "t-indigo" },
+  { nombre: "Redes sociales", antes: "subir algo esta semana (otra vez)", despues: "Publicaciones preparadas y programadas sin estar encima.", tono: "t-lavanda" },
+  { nombre: "WhatsApp", antes: "14 sin leer, 3 de ayer", despues: "Contesta al momento, a cualquier hora, y te pasa lo importante.", tono: "t-indigo" },
+  { nombre: "Cómo están tus clientes", antes: "lo tengo en la cabeza", despues: "Un panel: quién está bien, quién se enfría, quién debe.", tono: "t-indigo" },
+];
+
+const pasos = [
+  { n: "1", lado: "izq", t: "revisión del negocio", p: "30 minutos contigo y tres arreglos por escrito en 48 horas. Gratis." },
+  { n: "2", lado: "der", t: "puesta en orden", p: "Precio y plazo cerrados antes de empezar. Pagas por hitos, según lo ves funcionar." },
+  { n: "3", lado: "izq", t: "a tu lado", p: "Cuota mensual sin permanencia: lo vigilamos, lo arreglamos y lo mejoramos." },
+];
+---
+
+<Prueba
+  titulo="Padrón IA · tu negocio, en orden"
+  letra="c"
+  fuentes="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600&display=swap"
+>
+  <script is:inline>
+    // Animated mode only with motion allowed; falls back to the static page if the module never starts.
+    (function () {
+      var d = document.documentElement;
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      d.classList.add("c-anima");
+      setTimeout(function () { if (!d.classList.contains("c-listo")) d.classList.remove("c-anima"); }, 4000);
+    })();
+  </script>
+
+  <div class="c">
+    <div class="carga" data-carga aria-hidden="true">
+      <div class="carga-rejilla">
+        {piezas.map(([x, y, r]) => <span data-pieza style={`--x:${x};--y:${y};--r:${r}`}></span>)}
+      </div>
+    </div>
+
+    <header class="top"><a class="marca" href="/">padrón ia</a></header>
+
+    <main>
+      <!-- 1 · hero -->
+      <section class="hero" data-seccion="hero">
+        <div class="linea">
+          <h1 class="gigante" data-corre="hero"><span class="entra" data-hero="titular">tu negocio, <em>en orden</em></span></h1>
+        </div>
+        <div class="hero-cuerpo">
+          <div>
+            <p class="sub" data-hero="texto">
+              Clientes que no se pierden, seguimiento al día, facturas y trimestre listos, un WhatsApp que contesta.
+              Lo ponemos en marcha y nos quedamos.
+            </p>
+            <div data-hero="texto">
+              <a class="boton" href={wa} data-inclina>pide tu revisión gratis</a>
+              <span class="nota">30 min · 3 arreglos por escrito en 48 h</span>
+            </div>
+          </div>
+          <div class="mosaico-caja">
+            <span class="rotulo" data-hero="texto">ejemplo</span>
+            <ul class="mosaico" aria-label="Ejemplo de lo que ves un día cualquiera">
+              {vivas.map((v) => (
+                <li class={`baldosa flip ${v.tono} ${v.ancha ? "ancha" : ""}`} data-viva data-hero="baldosa" data-pool={JSON.stringify(v.pool)}>
+                  <div class="inclina" data-inclina>
+                    <div class="giro" data-giro>
+                      <div class="cara frente" data-cara><b class="dato">{v.pool[0][0]}</b><span>{v.pool[0][1]}</span></div>
+                      <div class="cara dorso" data-cara><b class="dato">{v.pool[1][0]}</b><span>{v.pool[1][1]}</span></div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 · ¿te suena? -->
+      <section class="seccion" data-suena aria-labelledby="t-suena">
+        <div class="linea"><h2 class="titulo" id="t-suena" data-desliza>¿te suena?</h2></div>
+        <p class="entradilla" data-desliza>Lo que nos cuentan los dueños en la primera conversación. Casi siempre, todo a la vez.</p>
+        <ul class="quejas">
+          {quejas.map((q, i) => (
+            <li class="queja" data-queja style={`--x:${q.x};--y:${q.y};--r:${q.r}`}>
+              <div class="inclina" data-inclina>
+                <span class="n" aria-hidden="true">0{i + 1}</span>
+                <blockquote><p>«{q.t}»</p></blockquote>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- 3 · los 7 procesos -->
+      <section class="seccion" aria-labelledby="t-procesos">
+        <div class="linea"><h2 class="titulo" id="t-procesos" data-desliza>del lío <em>al orden</em></h2></div>
+        <p class="entradilla" data-desliza>Siete cosas que hoy llevas de cabeza. Las ponemos en orden una a una, a tu medida.</p>
+        <div class="procesos" data-procesos>
+          <div class="procesos-dentro">
+            <div class="panel-caja" aria-hidden="true">
+              <div class="panel" data-panel>
+                <p class="cuenta">00 / 07</p>
+                <p class="p-nombre">Así suele estar</p>
+                <p class="p-despues">Cada baldosa es un lío de hoy. Sigue bajando y míralas ponerse en orden.</p>
+              </div>
+              {procesos.map((p, i) => (
+                <div class="panel" data-panel>
+                  <p class="cuenta">0{i + 1} / 07</p>
+                  <p class="p-nombre">{p.nombre}</p>
+                  <p class="p-despues">{p.despues}</p>
+                  <p class="p-antes">«{p.antes}»</p>
+                </div>
+              ))}
+            </div>
+            <ul class="rejilla">
+              {procesos.map((p) => (
+                <li class={`baldosa flip proceso ${p.tono}`} data-proceso>
+                  <div class="inclina" data-inclina>
+                    <div class="giro" data-giro>
+                      <div class="cara frente" data-cara>
+                        <span class="nombre">{p.nombre}</span>
+                        <span class="cita">«{p.antes}»</span>
+                      </div>
+                      <div class="cara dorso" data-cara>
+                        <span class="nombre">{p.nombre}</span>
+                        <span class="res">{p.despues}</span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <p class="capacidad" data-desliza>funciona igual con 10 clientes que con <em>1.000</em>.</p>
+      </section>
+
+      <!-- 4 · cómo trabajamos -->
+      <section class="seccion" aria-labelledby="t-como">
+        <div class="linea"><h2 class="titulo" id="t-como" data-desliza>cómo trabajamos</h2></div>
+        <p class="entradilla" data-desliza>Tres pasos. El primero es gratis y no te compromete a nada.</p>
+        <ol class="pasos" style="list-style:none;margin:0">
+          {pasos.map((p) => (
+            <li class="paso" data-paso={p.lado}>
+              <div class="paso-fondo" data-paso-fondo></div>
+              <span class="paso-num" data-paso-num aria-hidden="true">{p.n}</span>
+              <div class="paso-texto" data-paso-texto>
+                <h3><span class="sr">Paso {p.n}: </span>{p.t}</h3>
+                <p>{p.p}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <!-- 5 · quién -->
+      <section class="seccion" aria-labelledby="t-quien">
+        <div class="linea"><h2 class="titulo" id="t-quien" data-desliza="der">quién</h2></div>
+        <div class="quien" style="margin-top:40px">
+          <div class="foto" role="img" aria-label="Hueco para la foto de Jesús">foto de Jesús</div>
+          <div class="quien-texto" data-inclina>
+            <p class="grande">Jesús Martínez Padrón lleva tu negocio contigo. Con nombre, con WhatsApp y sin desaparecer.</p>
+            <p class="tuyos">tus datos, siempre tuyos.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 · cierre -->
+      <section class="cierre" data-seccion="cierre" aria-labelledby="t-cierre">
+        <div class="linea">
+          <h2 class="gigante" id="t-cierre" data-corre="cierre">¿lo ponemos <em>en orden?</em></h2>
+        </div>
+        <div class="cierre-acciones">
+          <a class="boton" href={wa} data-inclina>pide tu revisión gratis</a>
+          <a class="correo" href="mailto:hola@padron-ia.es">hola@padron-ia.es</a>
+        </div>
+        <footer class="pie">
+          <span>© 2026 Padrón IA</span>
+          <a href="/legal">Aviso legal</a>
+          <a href="/privacidad">Privacidad</a>
+          <a href="/cookies">Cookies</a>
+        </footer>
+      </section>
+    </main>
+  </div>
+</Prueba>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
+  const raiz = document.documentElement;
+  const todos = <T extends Element = HTMLElement>(sel: string, dentro: ParentNode = document) =>
+    Array.from(dentro.querySelectorAll<T & HTMLElement>(sel));
+
+  if (raiz.classList.contains("c-anima") && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    raiz.classList.add("c-listo");
+    gsap.defaults({ ease: "power3.out" });
+    carga();
+    inclinar();
+    correr();
+    suena();
+    procesos();
+    deslizar();
+    pasos();
+    document.fonts?.ready.then(() => ScrollTrigger.refresh());
+  }
+
+  // 1 · loader: scattered tiles settle into a 3×3 grid, then open like doors (≈1.1 s).
+  function carga() {
+    const capa = document.querySelector<HTMLElement>("[data-carga]");
+    if (!capa) return entradaHero();
+    const piezas = todos("[data-pieza]", capa);
+    gsap.timeline({ onComplete: () => { capa.remove(); } })
+      .to(piezas, { x: 0, y: 0, rotation: 0, duration: 0.55, stagger: { each: 0.02, from: "random" } })
+      .to(piezas, {
+        rotationY: -90, transformPerspective: 700, transformOrigin: "left center",
+        duration: 0.32, ease: "power3.inOut", stagger: 0.02,
+      }, "-=0.05")
+      .to(capa, { autoAlpha: 0, duration: 0.3 }, "<0.1")
+      .add(entradaHero, "<0.05");
+  }
+
+  function entradaHero() {
+    gsap.timeline()
+      .to("[data-hero='titular']", { x: 0, opacity: 1, duration: 1 })
+      .to("[data-hero='texto']", { y: 0, opacity: 1, duration: 0.8, stagger: 0.08 }, 0.15)
+      .to("[data-hero='baldosa']", { x: 0, opacity: 1, duration: 0.8, stagger: 0.06 }, 0.25)
+      .add(vivas);
+  }
+
+  // Hero tiles flip every 3-5 s; the face that just went out of view gets the next fact.
+  function vivas() {
+    const caja = document.querySelector(".mosaico");
+    let visible = true;
+    if (caja) new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(caja);
+    todos("[data-viva]").forEach((t) => {
+      const giro = t.querySelector("[data-giro]");
+      const caras = todos("[data-cara]", t);
+      const pool: string[][] = JSON.parse(t.dataset.pool || "[]");
+      if (!giro || caras.length < 2 || pool.length < 2) return;
+      let giros = 0;
+      let idx = 1;
+      const girar = () => {
+        if (!visible || document.hidden) { gsap.delayedCall(1, girar); return; }
+        giros++;
+        gsap.to(giro, {
+          rotationY: giros * 180, duration: 0.7, ease: "power3.inOut",
+          onComplete: () => {
+            const oculta = caras[giros % 2 === 0 ? 1 : 0];
+            idx = (idx + 1) % pool.length;
+            const b = oculta.querySelector("b");
+            const s = oculta.querySelector("span");
+            if (b) b.textContent = pool[idx][0];
+            if (s) s.textContent = pool[idx][1];
+            gsap.delayedCall(gsap.utils.random(3, 5), girar);
+          },
+        });
+      };
+      gsap.delayedCall(gsap.utils.random(1.2, 3.5), girar);
+    });
+  }
+
+  // Press a tile: it tilts towards the pointer (max 8°, perspective 700px).
+  function inclinar() {
+    todos("[data-inclina]").forEach((el) => {
+      gsap.set(el, { transformPerspective: 700 });
+      const rx = gsap.quickTo(el, "rotationX", { duration: 0.4, ease: "power3.out" });
+      const ry = gsap.quickTo(el, "rotationY", { duration: 0.4, ease: "power3.out" });
+      el.addEventListener("pointerdown", (e) => {
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        ry(gsap.utils.clamp(-8, 8, px * 16));
+        rx(gsap.utils.clamp(-8, 8, -py * 16));
+      });
+      const soltar = () => { rx(0); ry(0); };
+      ["pointerup", "pointerleave", "pointercancel"].forEach((ev) => el.addEventListener(ev, soltar));
+    });
+  }
+
+  // Giant headline cut by the right edge slides inside its own clipped line to reveal the end.
+  function correr() {
+    todos("[data-corre]").forEach((el) => {
+      const linea = el.parentElement as HTMLElement;
+      const sec = el.closest("section") as HTMLElement;
+      const fin = () => {
+        const cs = getComputedStyle(linea);
+        const util = linea.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+        return Math.min(0, util - el.offsetWidth);
+      };
+      const hero = el.dataset.corre === "hero";
+      gsap.fromTo(el, { x: 0 }, {
+        x: fin, ease: "none",
+        scrollTrigger: {
+          trigger: hero ? sec : linea,
+          start: hero ? "top top" : "top 85%",
+          end: hero ? () => "+=" + window.innerHeight * 0.6 : "bottom bottom",
+          endTrigger: hero ? undefined : sec,
+          scrub: true, invalidateOnRefresh: true,
+        },
+      });
+    });
+  }
+
+  // «¿Te suena?»: scattered, tilted, overlapping tiles straighten into the grid while scrolling.
+  function suena() {
+    const sec = document.querySelector("[data-suena]");
+    if (!sec) return;
+    gsap.to(todos("[data-queja]", sec), {
+      x: 0, y: 0, rotation: 0, stagger: 0.08, ease: "power3.out",
+      scrollTrigger: { trigger: ".quejas", start: "top 85%", end: "center 55%", scrub: 0.6 },
+    });
+  }
+
+  // Signature piece: 7 tiles flip from «mess» to «order» one by one.
+  function procesos() {
+    const sec = document.querySelector<HTMLElement>("[data-procesos]");
+    if (!sec) return;
+    const baldosas = todos("[data-proceso]", sec);
+    const paneles = todos("[data-panel]", sec);
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 900px)", () => {
+      const tl = gsap.timeline({
+        defaults: { ease: "power3.inOut" },
+        scrollTrigger: {
+          trigger: sec, pin: true, scrub: 0.6, start: "top top",
+          end: () => "+=" + window.innerHeight * 0.8 * baldosas.length, invalidateOnRefresh: true,
+        },
+      });
+      baldosas.forEach((b, i) => {
+        const giro = b.querySelector("[data-giro]");
+        tl.to(giro, { rotationY: 180, duration: 0.7 }, i)
+          .to(b, { scale: 1.08, zIndex: 2, duration: 0.5 }, i)
+          .to(paneles[i], { autoAlpha: 0, y: -30, duration: 0.35 }, i)
+          .fromTo(paneles[i + 1], { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.4, immediateRender: false }, i + 0.3);
+        if (i > 0) tl.to(baldosas[i - 1], { scale: 1, zIndex: 1, duration: 0.5 }, i);
+      });
+      tl.to(baldosas[baldosas.length - 1], { scale: 1, zIndex: 1, duration: 0.5 }, baldosas.length)
+        .to({}, { duration: 0.3 });
+    });
+
+    mm.add("(max-width: 899px)", () => {
+      baldosas.forEach((b) => {
+        gsap.to(b.querySelector("[data-giro]"), {
+          rotationY: 180, duration: 0.7, ease: "power3.inOut",
+          scrollTrigger: { trigger: b, start: "top 70%", toggleActions: "play none none reverse" },
+        });
+      });
+    });
+  }
+
+  // Section titles and lines slide in from the edge.
+  function deslizar() {
+    todos("[data-desliza]").forEach((el) => {
+      gsap.to(el, { x: 0, opacity: 1, duration: 1, scrollTrigger: { trigger: el, start: "top 88%", once: true } });
+    });
+  }
+
+  // «Cómo trabajamos»: the giant number arrives first, the tile follows, then the text.
+  function pasos() {
+    todos("[data-paso]").forEach((p) => {
+      gsap.timeline({ scrollTrigger: { trigger: p, start: "top 85%", once: true } })
+        .to(p.querySelector("[data-paso-num]"), { x: 0, duration: 0.8 })
+        .to(p.querySelector("[data-paso-fondo]"), { x: 0, duration: 0.9 }, 0.08)
+        .to(p.querySelector("[data-paso-texto]"), { opacity: 1, y: 0, duration: 0.6 }, 0.45);
+    });
+  }
+</script>

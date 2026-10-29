@@ -17,7 +17,7 @@
   reanudar, audio por la función, llave mala rechazada, cifras cuadradas a mano (7,5 h × 25 € × 4,33 = 812 €).
 
 ## En curso
-- 29-oct: fase 3, portada escaparate. Hecho: títulos sin «automatizo» (desplegado), `PRODUCT.md`, análisis de referencias. Siguiente: direcciones para que elija Jesús.
+- 29-oct: fase 3, portada escaparate. Hecho: títulos sin «automatizo» (desplegado), `PRODUCT.md`, análisis de referencias. Tres prototipos animados en `/prueba/a` (talonario), `/b` (panel de salidas) y `/c` (baldosas), noindex y fuera del sitemap; GSAP + ScrollTrigger + Lenis. Siguiente: Jesús elige uno.
 - 29-oct: la palabra «radiografía» ya no se le enseña al dueño (es nombre interno); la página dice «tu negocio» y «todo lo que he visto».
 - Radiografía completa como página interactiva en el mismo enlace (decisión de Jesús, 29-oct): boceto en el OS, falta que Jesús elija; después, el código aquí.
 - 29-oct: en la pantalla final, cada problema lleva «Se puede resolver» + lo que gana; el texto final dice que la radiografía llega en este mismo enlace.

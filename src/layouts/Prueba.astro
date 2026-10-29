@@ -1,0 +1,67 @@
+---
+// Layout for the /prueba/ showcase prototypes: noindex, A/B/C switcher, smooth scroll.
+// Each page brings its own fonts and styles; this layout only adds the shared chrome.
+interface Props {
+  titulo: string;
+  letra: "a" | "b" | "c";
+  fuentes: string;
+}
+const { titulo, letra, fuentes } = Astro.props;
+const opciones = [
+  { l: "a", t: "Talonario" },
+  { l: "b", t: "Panel" },
+  { l: "c", t: "Baldosas" },
+];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{titulo}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={fuentes} />
+  </head>
+  <body>
+    <slot />
+
+    <nav class="selector" aria-label="Cambiar de prototipo">
+      <span>Prototipo</span>
+      {opciones.map((o) => (
+        <a href={`/prueba/${o.l}/`} aria-current={o.l === letra ? "page" : undefined}>
+          {o.l.toUpperCase()}<small>{o.t}</small>
+        </a>
+      ))}
+    </nav>
+
+    <style is:global>
+      .selector{position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;align-items:center;gap:4px;
+        padding:6px;background:#111326ee;border:1px solid #ffffff22;border-radius:999px;font:600 12px/1 system-ui,sans-serif;color:#c9cce8;
+        backdrop-filter:blur(8px)}
+      .selector span{padding:0 8px;letter-spacing:.08em;text-transform:uppercase;font-size:10px;opacity:.7}
+      .selector a{display:flex;gap:6px;align-items:center;padding:8px 12px;border-radius:999px;color:#F2F3FB;text-decoration:none}
+      .selector a small{font-weight:500;opacity:.7}
+      .selector a[aria-current]{background:#8F9BFF;color:#111326}
+      @media (max-width:520px){.selector a small,.selector span{display:none}}
+      html.lenis,html.lenis body{height:auto}
+      .lenis.lenis-smooth{scroll-behavior:auto!important}
+    </style>
+
+    <script>
+      import Lenis from "lenis";
+      import { gsap } from "gsap";
+      import { ScrollTrigger } from "gsap/ScrollTrigger";
+      // Smooth scroll wired into ScrollTrigger; skipped when the visitor asks for reduced motion.
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.registerPlugin(ScrollTrigger);
+        const lenis = new Lenis({ lerp: 0.1 });
+        lenis.on("scroll", ScrollTrigger.update);
+        gsap.ticker.add((t) => lenis.raf(t * 1000));
+        gsap.ticker.lagSmoothing(0);
+      }
+    </script>
+  </body>
+</html>

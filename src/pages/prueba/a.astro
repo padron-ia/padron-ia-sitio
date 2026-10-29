@@ -1,0 +1,1088 @@
+---
+// Prototype A · «El talonario con papel de calco».
+// Every process is a numbered sheet: it comes in scribbled, leaves printed and stamped.
+// Content lives in the HTML; GSAP only places it. Reduced motion or no JS = static, fully readable page.
+import Prueba from "../../layouts/Prueba.astro";
+
+const fuentes =
+  "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Caveat:wght@500;700&family=Courier+Prime:wght@400;700&display=swap";
+const WA =
+  "https://wa.me/34624664907?text=Hola%2C%20quiero%20la%20revisi%C3%B3n%20gratis%20de%20mi%20negocio";
+
+const hojas = [
+  { n: "0001", t: "Clientes que se van", antes: "¿Marta? hace mil que no viene", sueltas: ["¿3 meses?", "Luis también??"], despues: "Te avisamos cuando un cliente deja de venir, antes de perderlo." },
+  { n: "0002", t: "Recuperar clientes", antes: "habría que escribirles… algún día", sueltas: ["¿descuento?", "lista → ???"], despues: "Le llega el mensaje justo en el momento justo, y vuelve." },
+  { n: "0003", t: "Seguimiento", antes: "¿a quién le debía una respuesta?", sueltas: ["llamar jueves", "¿le contesté?"], despues: "Cada cliente con su siguiente paso. Nadie se queda sin contestar." },
+  { n: "0004", t: "Facturas y trimestre", antes: "caja de tickets para la gestoría", sueltas: ["147,30 + IVA", "¡¡día 20!!"], despues: "Las facturas salen solas y el trimestre llega preparado." },
+  { n: "0005", t: "Redes sociales", antes: "subir algo esta semana (otra vez)", sueltas: ["último: julio", "¿fotos?"], despues: "Publicaciones preparadas y programadas sin estar encima." },
+  { n: "0006", t: "WhatsApp", antes: "14 sin leer, 3 de ayer", sueltas: ["+ 4 audios", "23:58"], despues: "Contesta al momento, a cualquier hora, y te pasa lo importante." },
+  { n: "0007", t: "Cómo están tus clientes", antes: "lo tengo en la cabeza", sueltas: ["¿Ana debía algo?", "¿quién más?"], despues: "Un panel: quién está bien, quién se enfría, quién debe." },
+];
+// Slight tilt per sheet while it is still «crumpled».
+const giros = ["1.6deg", "-1.2deg", "1.1deg", "-1.7deg", "1.3deg", "-0.9deg", "1.5deg"];
+
+const notasHero = [
+  { t: "llamar a Marta (¿se fue?)", r: "-4deg", x: "0px" },
+  { t: "facturas del trimestre!!", r: "3deg", x: "64px" },
+  { t: "contestar 14 whatsapps", r: "-2deg", x: "8px" },
+  { t: "subir algo a Instagram", r: "4deg", x: "40px" },
+];
+
+const suena = [
+  { t: "Las facturas las hago cuando puedo, casi siempre de noche.", r: "-1.5deg" },
+  { t: "Hay clientes que dejan de venir y ni me entero.", r: "1deg" },
+  { t: "Contesto WhatsApps hasta en la cena.", r: "-0.8deg" },
+  { t: "El trimestre siempre me pilla.", r: "1.6deg" },
+  { t: "Instagram lo tengo abandonado.", r: "-1.2deg" },
+];
+
+const pasos = [
+  { n: "1", t: "Revisión del negocio", d: "30 minutos y tres arreglos por escrito en 48 horas. Gratis.", s: "Gratis" },
+  { n: "2", t: "Puesta en orden", d: "Precio y plazo cerrados. Pagas por hitos.", s: "Cerrado" },
+  { n: "3", t: "A tu lado", d: "Cuota mensual sin permanencia: lo vigilamos, lo arreglamos y lo mejoramos.", s: "Sin permanencia" },
+];
+
+// Loader papers: scattered offsets and tilts before they square up into a pad.
+const papeles = [
+  { x: "-38vw", y: "-22vh", r: "-28deg" },
+  { x: "30vw", y: "-30vh", r: "22deg" },
+  { x: "-26vw", y: "28vh", r: "14deg" },
+  { x: "36vw", y: "20vh", r: "-18deg" },
+  { x: "-8vw", y: "-38vh", r: "9deg" },
+  { x: "14vw", y: "36vh", r: "-12deg" },
+  { x: "0vw", y: "0vh", r: "-6deg" },
+];
+---
+
+<Prueba titulo="Prototipo A · Talonario · Padrón IA" letra="a" fuentes={fuentes}>
+  <script is:inline>
+    // Animation-ready flag: hidden initial states only apply when motion is allowed and JS runs.
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("anim");
+  </script>
+
+  <div class="carga" data-anim="carga" aria-hidden="true">
+    {papeles.map((p, i) => (
+      <i style={`--i:${i};--x:${p.x};--y:${p.y};--r:${p.r}`}>{i === 6 && <b>Nº 0001</b>}</i>
+    ))}
+  </div>
+
+  <div class="talonario">
+    <!-- Stub of the pad = navigation, clock and phone -->
+    <aside class="matriz">
+      <a class="marca" href="#arriba">PADRÓN <b>IA</b></a>
+      <nav class="indice" aria-label="Las 7 hojas">
+        <ol>
+          {hojas.map((h, i) => (
+            <li>
+              <a href={`#hoja-${h.n}`} data-anim="indice" data-i={i}>
+                <span class="mn">{h.n}</span><span class="mt">{h.t}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <p class="reloj"><span class="reloj-l">Hora</span><b data-anim="reloj">23:47</b></p>
+      <a class="tel" href={WA}>+34 624 66 49 07</a>
+    </aside>
+
+    <main class="mesa">
+      <!-- 2 · First screen: sheet Nº 0001 -->
+      <section class="pliego" id="arriba" aria-labelledby="titular">
+        <div class="hoja hoja-hero">
+          <header class="cab">
+            <p class="tipo">Hoja de orden · Tu negocio</p>
+            <p class="num"><small>Nº</small>0001</p>
+          </header>
+          <dl class="casillas c4">
+            <div><dt>Para</dt><dd>el dueño</dd></div>
+            <div><dt>Sector</dt><dd>el tuyo</dd></div>
+            <div><dt>Permanencia</dt><dd>ninguna</dd></div>
+            <div><dt>Tus datos</dt><dd>siempre tuyos</dd></div>
+          </dl>
+
+          <h1 id="titular" class="titular">
+            <span class="l"><span data-anim="linea">Tu negocio,</span></span>
+            <span class="l"><span data-anim="linea"><em>en orden.</em></span></span>
+          </h1>
+
+          <div class="hero-pie">
+            <div class="hero-texto">
+              <p class="sub" data-anim="entra">
+                Clientes que no se pierden, seguimiento al día, facturas y trimestre listos, un WhatsApp que contesta.
+                Lo ponemos en marcha y nos quedamos para que siga funcionando.
+              </p>
+              <div class="cta" data-anim="entra">
+                <a class="btn" href={WA} data-anim="btn-hero">Pide tu revisión gratis por WhatsApp</a>
+                <p class="cta-nota">30 min · 3 arreglos por escrito en 48 h</p>
+              </div>
+            </div>
+
+            <div class="lio">
+              <p class="lio-l">Lo de esta noche</p>
+              <ul class="notas">
+                {notasHero.map((n) => (
+                  <li class="nota" style={`--r:${n.r};--x:${n.x}`}>
+                    <span class="nota-t" data-anim="nota">
+                      {n.t}<i class="tachon" data-anim="tachon" aria-hidden="true"></i>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <div class="sello sello-hero" data-anim="sello-hero" aria-label="Sello: en orden">
+                <span>EN ORDEN<small>LO HACEMOS</small></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 · ¿Te suena? -->
+      <section class="pliego" id="te-suena" aria-labelledby="t-suena" data-anim="sec-suena">
+        <div class="hoja hoja-suena">
+          <header class="cab">
+            <p class="tipo">Notas al margen</p>
+            <p class="num"><small>Nº</small>0002</p>
+          </header>
+          <div class="suena">
+            <h2 id="t-suena" class="h2-gordo">¿Te<br />suena?</h2>
+            <ul class="margen">
+              {suena.map((s) => (
+                <li data-anim="suena"><span style={`--r:${s.r}`}>«{s.t}»</span></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 · The 7 sheets (signature piece) -->
+      <section class="sec-hojas" id="hojas" aria-labelledby="t-hojas" data-anim="sec-hojas">
+        <div class="escenario" data-anim="escenario">
+          <h2 id="t-hojas" class="escenario-l">Lo que ponemos en orden · 7 hojas</h2>
+          <div class="pila">
+            {hojas.map((h, i) => (
+              <article class="proc" id={`hoja-${h.n}`} data-anim="proc" style={`--z:${7 - i};--rot:${giros[i]}`} aria-labelledby={`t-${h.n}`}>
+                <div class="proc-copia" data-anim="copia" aria-hidden="true">
+                  <p class="cp-n">COPIA · Nº {h.n}</p>
+                  <p class="cp-t">{h.t}</p>
+                  <p class="cp-d">{h.despues}</p>
+                </div>
+                <div class="proc-hoja" data-anim="hoja">
+                  <span class="arrugas" data-anim="arrugas" aria-hidden="true"></span>
+                  <header class="cab">
+                    <p class="tipo">Hoja de orden</p>
+                    <p class="num"><small>Nº</small>{h.n}</p>
+                  </header>
+                  <dl class="casillas c2">
+                    <div>
+                      <dt>Estado</dt>
+                      <dd class="estado">
+                        <span class="est-pend" data-anim="est-pend">pendiente</span>
+                        <span class="est-ok" data-anim="est-ok">en orden</span>
+                      </dd>
+                    </div>
+                    <div><dt>Lo lleva</dt><dd>nosotros, contigo</dd></div>
+                  </dl>
+                  <h3 id={`t-${h.n}`} class="proc-t">{h.t}</h3>
+                  <div class="proc-cuerpo">
+                    <div class="proc-antes" data-anim="antes">
+                      <p class="lbl">Así estaba</p>
+                      <p class="garabato">{h.antes}<i class="tachon" aria-hidden="true"></i></p>
+                      <p class="sueltas" aria-hidden="true">
+                        <span>{h.sueltas[0]}</span><span>{h.sueltas[1]}</span>
+                      </p>
+                    </div>
+                    <div class="proc-despues" data-anim="despues">
+                      <p class="lbl">Así queda</p>
+                      <p class="impreso">{h.despues}</p>
+                    </div>
+                  </div>
+                  <div class="sello sello-proc" data-anim="sello-proc" aria-hidden="true">
+                    <span>EN ORDEN<small>Nº {h.n}</small></span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+          <p class="escala">Funciona igual con 10 clientes que con 1.000.</p>
+        </div>
+      </section>
+
+      <!-- 5 · How we work -->
+      <section class="pliego" id="como" aria-labelledby="t-como" data-anim="sec-como">
+        <div class="hoja">
+          <header class="cab">
+            <p class="tipo">Cómo trabajamos</p>
+            <p class="num"><small>Nº</small>0008</p>
+          </header>
+          <h2 id="t-como" class="h2-gordo h2-medio">Tres pasos,<br />por escrito.</h2>
+          <ol class="pasos">
+            {pasos.map((p) => (
+              <li class="paso" data-anim="paso">
+                <span class="paso-n">{p.n}</span>
+                <h3 class="paso-t">{p.t}</h3>
+                <p class="paso-d">{p.d}</p>
+                <span class="sello sello-mini" data-anim="sello-paso" aria-hidden="true"><span>{p.s}</span></span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <!-- 6 · Who -->
+      <section class="pliego" id="quien" aria-labelledby="t-quien" data-anim="sec-quien">
+        <div class="hoja hoja-quien">
+          <div class="foto" data-anim="aparece">
+            <span class="grapa" aria-hidden="true"></span>
+            <span class="foto-t">Foto de Jesús</span>
+          </div>
+          <div class="quien-texto" data-anim="aparece">
+            <p class="tipo">Quién lo lleva</p>
+            <h2 id="t-quien" class="quien-h">Jesús Martínez Padrón lleva tu negocio contigo.</h2>
+            <p class="quien-p">Con nombre, con WhatsApp y sin desaparecer.</p>
+            <p class="casilla-suelta"><span>Tus datos</span>siempre tuyos.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7 · Close -->
+      <section class="pliego pliego-final" id="cierre" aria-labelledby="t-cierre" data-anim="sec-cierre">
+        <div class="hoja hoja-cierre">
+          <header class="cab">
+            <p class="tipo">Hoja de orden · La tuya</p>
+            <p class="num"><small>Nº</small>0009</p>
+          </header>
+          <dl class="casillas c3">
+            <div><dt>Hora</dt><dd>08:00</dd></div>
+            <div><dt>Primer paso</dt><dd>revisión gratis</dd></div>
+            <div><dt>Permanencia</dt><dd>ninguna</dd></div>
+          </dl>
+          <h2 id="t-cierre" class="h2-gordo h2-cierre" data-anim="aparece">¿Lo ponemos<br /><em>en orden?</em></h2>
+          <div class="cta cta-cierre" data-anim="aparece">
+            <a class="btn" href={WA}>Pide tu revisión gratis por WhatsApp</a>
+            <p class="cta-nota">o escríbenos a <a href="mailto:hola@padron-ia.es">hola@padron-ia.es</a></p>
+          </div>
+          <div class="sello sello-cierre" data-anim="sello-cierre" aria-hidden="true">
+            <span>EN ORDEN<small>08:00</small></span>
+          </div>
+        </div>
+      </section>
+      <footer class="pie">
+        <p>© 2026 Padrón IA</p>
+        <nav aria-label="Legal">
+          <a href="/legal">Aviso legal</a>
+          <a href="/privacidad">Privacidad</a>
+          <a href="/cookies">Cookies</a>
+        </nav>
+      </footer>
+    </main>
+  </div>
+</Prueba>
+
+<style is:global>
+  :root {
+    --papel: #f2f3fb;
+    --tinta: #1b1e3a;
+    --calco: #3a43b8;
+    --rojo: #c8352b;
+    --lav: #8f9bff;
+    --gris: #50557f; /* labels on paper: ~6.6:1 */
+    --linea: #c9cce0;
+    --matriz: #e4e6f4;
+    --boli: #262b66; /* handwriting ink */
+    --casa: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+  html { background: var(--tinta); }
+  body {
+    margin: 0;
+    background: var(--tinta);
+    color: var(--tinta);
+    font-family: Archivo, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, p, ul, ol, dl, dd { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--lav); outline-offset: 3px; }
+  [id] { scroll-margin-top: 24px; }
+
+  /* ---------- 1 · Loader: papers square up into a pad, then the curtain rises ---------- */
+  .carga { display: none; }
+  .anim .carga {
+    display: grid;
+    place-items: center;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: var(--tinta);
+    animation: cortina 0.4s cubic-bezier(0.7, 0, 0.84, 0) 0.8s forwards;
+  }
+  .carga i {
+    position: absolute;
+    width: min(40vw, 240px);
+    aspect-ratio: 3 / 4;
+    background: var(--papel) repeating-linear-gradient(transparent 0 22px, #c9cce066 22px 23px);
+    border-left: 10px dotted #b9bdd8;
+    border-radius: 2px;
+    box-shadow: 0 12px 28px #0006;
+    transform: translate(var(--x), var(--y)) rotate(var(--r));
+    animation: apilar 0.55s var(--casa) forwards;
+    animation-delay: calc(var(--i) * 40ms);
+  }
+  .carga i b {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font: 700 16px/1 "Courier Prime", monospace;
+    color: var(--rojo);
+  }
+  @keyframes apilar { to { transform: translate(0, calc(var(--i) * -3px)) rotate(0deg); } }
+  @keyframes cortina { to { transform: translateY(-100%); visibility: hidden; } }
+
+  /* ---------- Layout: stub on the left, sheets on the desk ---------- */
+  .talonario {
+    display: grid;
+    grid-template-columns: 248px minmax(0, 1fr);
+    overflow-x: clip;
+    min-height: 100vh;
+  }
+  .matriz {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    padding: 30px 26px 30px 22px;
+    background: var(--matriz);
+    z-index: 20;
+  }
+  /* perforation */
+  .matriz::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -6px;
+    width: 12px;
+    background: radial-gradient(circle, var(--tinta) 3px, transparent 3.5px) 0 0 / 12px 18px;
+  }
+  .marca {
+    font: 800 24px/1 Archivo, sans-serif;
+    font-stretch: 78%;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+  }
+  .marca b { color: var(--calco); }
+  .indice ol { display: grid; gap: 4px; }
+  .indice a {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    align-items: baseline;
+    padding: 7px 0;
+    text-decoration: none;
+    font: 600 15px/1.2 Archivo, sans-serif;
+    font-stretch: 75%;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    position: relative;
+  }
+  .indice .mn { font: 700 14px/1 "Courier Prime", monospace; color: var(--rojo); letter-spacing: 0; }
+  .indice a:hover .mt { text-decoration: underline; text-underline-offset: 3px; }
+  .indice a.on { color: var(--calco); }
+  .indice a.on::after {
+    content: "";
+    position: absolute;
+    left: 52px;
+    bottom: 0;
+    height: 3px;
+    width: 64%;
+    background: var(--lav);
+  }
+  .indice a.hecho .mn { color: var(--tinta); }
+  .indice a.hecho .mn::after {
+    content: "";
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-left: 4px;
+    border: 2px solid var(--rojo);
+    border-radius: 50%;
+    vertical-align: 1px;
+  }
+  .reloj { margin-top: auto; display: grid; gap: 4px; }
+  .reloj-l { font: 600 12px/1 Archivo, sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gris); }
+  .reloj b { font: 700 34px/1 "Courier Prime", monospace; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+  .tel { font: 700 14px/1 "Courier Prime", monospace; color: var(--gris); text-decoration: none; }
+  .tel:hover { color: var(--calco); text-decoration: underline; }
+
+  .mesa { padding: 32px 44px 0 40px; display: grid; gap: 72px; min-width: 0; }
+
+  /* A sheet with its carbon copy peeking underneath */
+  .pliego { position: relative; }
+  .pliego::before {
+    content: "";
+    position: absolute;
+    inset: 16px -12px -14px 14px;
+    background: var(--calco);
+    border-radius: 3px;
+    transform: rotate(-1deg);
+  }
+  .hoja {
+    position: relative;
+    z-index: 1;
+    background: var(--papel);
+    padding: 36px 56px 48px 52px;
+    box-shadow: 0 24px 50px #0005;
+  }
+
+  /* Printed parts */
+  .cab {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    border-bottom: 3px solid var(--tinta);
+    padding-bottom: 12px;
+  }
+  .tipo {
+    font: 800 15px/1.2 Archivo, sans-serif;
+    font-stretch: 70%;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+  .num { font: 700 30px/1 "Courier Prime", monospace; color: var(--rojo); letter-spacing: 0.06em; text-align: right; }
+  .num small { display: block; font-size: 12px; color: var(--gris); letter-spacing: 0.12em; margin-bottom: 4px; }
+  .casillas { display: grid; border-bottom: 1px solid var(--linea); }
+  .casillas.c4 { grid-template-columns: repeat(4, 1fr); }
+  .casillas.c3 { grid-template-columns: repeat(3, 1fr); }
+  .casillas.c2 { grid-template-columns: repeat(2, 1fr); }
+  .casillas > div { padding: 10px 12px; border-right: 1px solid var(--linea); }
+  .casillas > div:last-child { border-right: 0; }
+  .casillas dt {
+    font: 600 12.5px/1.2 Archivo, sans-serif;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gris);
+  }
+  .casillas dd { font: 700 16px/1.3 "Courier Prime", monospace; margin-top: 4px; }
+
+  /* Rubber stamp */
+  .sello {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 172px;
+    height: 172px;
+    border: 5px solid var(--rojo);
+    border-radius: 50%;
+    color: var(--rojo);
+    text-align: center;
+    font: 900 28px/1 Archivo, sans-serif;
+    font-stretch: 70%;
+    letter-spacing: 0.06em;
+    mix-blend-mode: multiply;
+    transform: rotate(-12deg);
+    pointer-events: none;
+    box-shadow: inset 0 0 0 4px var(--papel), inset 0 0 0 6px var(--rojo);
+  }
+  .sello small { display: block; font: 700 13px/1 "Courier Prime", monospace; letter-spacing: 0.1em; margin-top: 6px; }
+
+  /* Red strike = pending */
+  .tachon {
+    position: absolute;
+    left: -6px;
+    right: -6px;
+    top: 54%;
+    height: 3px;
+    background: var(--rojo);
+    border-radius: 2px;
+    transform-origin: left center;
+  }
+
+  /* Button */
+  .btn {
+    display: inline-block;
+    background: var(--tinta);
+    color: var(--papel);
+    font: 800 19px/1.15 Archivo, sans-serif;
+    font-stretch: 85%;
+    letter-spacing: 0.02em;
+    padding: 20px 28px;
+    border-radius: 2px;
+    text-decoration: none;
+    box-shadow: 6px 6px 0 var(--calco);
+    transition: transform 0.15s var(--casa), box-shadow 0.15s var(--casa);
+  }
+  .btn:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--calco); }
+  .btn:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0 var(--calco); }
+  .cta { display: flex; flex-wrap: wrap; gap: 18px 26px; align-items: center; }
+  .cta-nota { font: 700 15px/1.3 "Courier Prime", monospace; color: var(--gris); }
+  .cta-nota a { color: var(--calco); }
+
+  /* ---------- 2 · Hero ---------- */
+  .hoja-hero { min-height: calc(100vh - 64px); display: flex; flex-direction: column; }
+  .titular {
+    margin-top: clamp(28px, 5vh, 52px);
+    font: 900 clamp(64px, 11.5vw, 176px)/0.86 Archivo, sans-serif;
+    font-stretch: 62%;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  .titular .l { display: block; overflow: hidden; padding-bottom: 0.04em; }
+  .titular .l > span { display: block; }
+  .titular em { font-style: normal; color: var(--calco); }
+  .hero-pie {
+    margin-top: auto;
+    padding-top: 36px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(300px, 1fr);
+    gap: 40px;
+    align-items: end;
+  }
+  .hero-texto { display: grid; gap: 30px; }
+  .sub { font: 500 clamp(18px, 1.5vw, 21px)/1.5 Archivo, sans-serif; max-width: 600px; color: #2b2f55; }
+  .lio { position: relative; min-height: 270px; padding-right: 150px; }
+  .lio-l, .lbl {
+    font: 600 12.5px/1 Archivo, sans-serif;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gris);
+    margin-bottom: 14px;
+  }
+  .notas { display: grid; gap: 10px; }
+  .nota { transform: translateX(var(--x)) rotate(var(--r)); transform-origin: left center; }
+  .nota-t {
+    position: relative;
+    display: inline-block;
+    font: 700 28px/1.15 Caveat, cursive;
+    color: var(--boli);
+    padding: 0 8px;
+    clip-path: inset(0% 0% 0% 0%);
+  }
+  .sello-hero { right: 0; bottom: -6px; }
+
+  /* ---------- 3 · ¿Te suena? ---------- */
+  .hoja-suena {
+    background:
+      linear-gradient(90deg, transparent 0 172px, #c8352b55 172px 174px, transparent 174px 178px, #c8352b55 178px 180px, transparent 180px),
+      repeating-linear-gradient(var(--papel) 0 47px, #c9cce099 47px 48px),
+      var(--papel);
+  }
+  .suena { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); gap: 40px; margin-top: 36px; align-items: start; }
+  .h2-gordo {
+    font: 900 clamp(56px, 8.5vw, 132px)/0.86 Archivo, sans-serif;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+  .h2-gordo em { font-style: normal; color: var(--calco); }
+  .margen { display: grid; gap: 14px; padding-top: 6px; }
+  .margen li span {
+    display: inline-block;
+    font: 700 clamp(26px, 2.5vw, 36px)/1.2 Caveat, cursive;
+    color: var(--boli);
+    transform: rotate(var(--r));
+  }
+
+  /* ---------- 4 · The 7 sheets ---------- */
+  .sec-hojas { position: relative; }
+  .escenario { display: grid; gap: 28px; }
+  .escenario-l {
+    font: 700 15px/1.3 "Courier Prime", monospace;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lav);
+  }
+  .pila { display: grid; gap: 64px; justify-items: center; }
+  .proc { position: relative; width: min(900px, 100%); z-index: var(--z); }
+  .proc-hoja {
+    position: relative;
+    z-index: 1;
+    background: var(--papel);
+    padding: 30px 44px 36px;
+    box-shadow: 0 22px 46px #0006;
+    overflow: hidden;
+  }
+  .proc-copia {
+    position: absolute;
+    inset: 12px -10px -12px 12px;
+    background: var(--calco);
+    color: #c5c9f5;
+    padding: 30px 44px;
+    transform: rotate(-1.2deg);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .cp-n { font: 700 14px/1 "Courier Prime", monospace; letter-spacing: 0.12em; }
+  .cp-t { font: 900 clamp(40px, 5vw, 76px)/0.9 Archivo, sans-serif; font-stretch: 62%; text-transform: uppercase; margin-top: 70px; opacity: 0.55; }
+  .cp-d { font: 600 22px/1.35 Archivo, sans-serif; margin-top: 18px; max-width: 30ch; opacity: 0.55; }
+  .arrugas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 3;
+    background:
+      linear-gradient(112deg, transparent 31%, #1b1e3a12 32%, transparent 35%),
+      linear-gradient(66deg, transparent 54%, #ffffffaa 55%, transparent 57.5%),
+      linear-gradient(158deg, transparent 68%, #1b1e3a14 69%, transparent 73%),
+      linear-gradient(22deg, transparent 14%, #1b1e3a0e 15%, transparent 19%),
+      linear-gradient(95deg, transparent 80%, #ffffff88 81%, transparent 83%);
+  }
+  .estado { position: relative; display: grid; }
+  .est-pend, .est-ok { grid-area: 1 / 1; }
+  .est-pend { color: var(--rojo); text-decoration: line-through; text-decoration-thickness: 2px; opacity: 0; }
+  .est-ok { color: var(--calco); }
+  .proc-t {
+    margin-top: 22px;
+    font: 900 clamp(44px, min(5.4vw, 9vh), 88px)/0.88 Archivo, sans-serif;
+    font-stretch: 62%;
+    text-transform: uppercase;
+    max-width: 75%;
+  }
+  .proc-cuerpo { display: grid; gap: 18px; margin-top: 22px; padding-right: 150px; }
+  .garabato {
+    position: relative;
+    display: inline-block;
+    font: 700 30px/1.15 Caveat, cursive;
+    color: var(--boli);
+  }
+  .sueltas { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 6px; }
+  .sueltas span { font: 500 24px/1.1 Caveat, cursive; color: var(--boli); opacity: 0.8; }
+  .sueltas span:nth-child(1) { transform: rotate(-5deg); }
+  .sueltas span:nth-child(2) { transform: rotate(4deg) translateY(4px); }
+  .proc-antes { opacity: 0.8; }
+  .impreso { font: 600 clamp(20px, 1.9vw, 27px)/1.35 Archivo, sans-serif; max-width: 32ch; border-left: 4px solid var(--calco); padding-left: 16px; }
+  .sello-proc { right: 34px; bottom: 30px; width: 140px; height: 140px; font-size: 24px; }
+  .escala {
+    text-align: center;
+    font: 700 clamp(16px, 1.4vw, 19px)/1.3 "Courier Prime", monospace;
+    color: var(--papel);
+    letter-spacing: 0.02em;
+  }
+
+  /* ---------- 5 · How we work ---------- */
+  .h2-medio { font-size: clamp(48px, 6.5vw, 104px); margin-top: 30px; }
+  .pasos { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 36px; border: 2px solid var(--tinta); }
+  .paso { position: relative; padding: 22px 22px 120px; border-right: 1px solid var(--linea); min-height: 280px; }
+  .paso:last-child { border-right: 0; }
+  .paso-n { font: 700 40px/1 "Courier Prime", monospace; color: var(--rojo); }
+  .paso-t { margin-top: 14px; font: 800 26px/1.05 Archivo, sans-serif; font-stretch: 75%; text-transform: uppercase; letter-spacing: 0.01em; }
+  .paso-d { margin-top: 10px; font: 500 17px/1.5 Archivo, sans-serif; color: #2b2f55; }
+  .sello-mini {
+    width: 116px;
+    height: 116px;
+    right: 18px;
+    bottom: 14px;
+    font-size: 14px;
+    line-height: 1.05;
+    border-width: 4px;
+    padding: 10px;
+    box-shadow: inset 0 0 0 3px var(--papel), inset 0 0 0 5px var(--rojo);
+  }
+
+  /* ---------- 6 · Who ---------- */
+  .hoja-quien { display: grid; grid-template-columns: minmax(220px, 340px) minmax(0, 1fr); gap: 48px; align-items: center; }
+  .foto {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    border: 3px dashed var(--gris);
+    display: grid;
+    place-items: center;
+    background: #e8eaf6;
+    transform: rotate(-1.5deg);
+  }
+  .foto-t { font: 700 16px/1 "Courier Prime", monospace; color: var(--gris); }
+  /* staple = kept for later */
+  .grapa {
+    position: absolute;
+    top: -10px;
+    left: 38%;
+    width: 74px;
+    height: 16px;
+    border: 3px solid #6e7290;
+    border-bottom: 0;
+    border-radius: 3px 3px 0 0;
+    transform: rotate(-7deg);
+    box-shadow: 0 2px 0 #fff8;
+  }
+  .quien-texto { display: grid; gap: 18px; }
+  .quien-h { font: 900 clamp(38px, 4.6vw, 72px)/0.95 Archivo, sans-serif; font-stretch: 68%; text-transform: uppercase; }
+  .quien-p { font: 500 clamp(19px, 1.6vw, 22px)/1.5 Archivo, sans-serif; color: #2b2f55; }
+  .casilla-suelta {
+    justify-self: start;
+    border: 2px solid var(--tinta);
+    padding: 10px 14px;
+    font: 700 17px/1.2 "Courier Prime", monospace;
+  }
+  .casilla-suelta span {
+    display: block;
+    font: 600 12.5px/1 Archivo, sans-serif;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gris);
+    margin-bottom: 6px;
+  }
+
+  /* ---------- 7 · Close ---------- */
+  .hoja-cierre { overflow: hidden; }
+  .h2-cierre { margin-top: 40px; font-size: clamp(56px, 9vw, 150px); }
+  .cta-cierre { margin-top: 40px; }
+  .sello-cierre { right: 56px; top: 210px; }
+  .pie {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding: 8px 0 96px;
+    font: 700 14px/1.4 "Courier Prime", monospace;
+    color: #c9cce8;
+  }
+  .pie nav { display: flex; gap: 22px; flex-wrap: wrap; }
+  .pie a { color: #c9cce8; }
+  .pie a:hover { color: var(--lav); }
+
+  /* ---------- Animated initial states (only with .anim → no flash, no hidden content without JS) ---------- */
+  .anim [data-anim="linea"] { transform: translateY(105%); }
+  .anim [data-anim="entra"],
+  .anim [data-anim="aparece"] { opacity: 0; transform: translateY(24px); }
+  .anim [data-anim="nota"] { clip-path: inset(0% 100% 0% 0%); }
+  .anim [data-anim="tachon"] { transform: scaleX(0); }
+  .anim .sello[data-anim] { opacity: 0; }
+  .anim [data-anim="suena"] { opacity: 0; transform: translateY(30px); }
+  .anim [data-anim="paso"] { opacity: 0; transform: translateY(24px); }
+  .anim .arrugas { opacity: 1; }
+  .anim .est-pend { opacity: 1; }
+  .anim .est-ok { opacity: 0; }
+  .anim .proc-antes { opacity: 1; }
+  .anim [data-anim="despues"] { opacity: 0; clip-path: inset(0% 100% 0% 0%); }
+
+  /* Desktop with motion: the pad is stacked and pinned */
+  @media (min-width: 900px) {
+    .anim .escenario {
+      height: 100vh;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 18px;
+      padding: 28px 0 76px; /* bottom room keeps the line clear of the A/B/C switcher */
+    }
+    .anim .pila { gap: 0; align-items: center; }
+    .anim .proc { grid-area: 1 / 1; }
+    .anim .proc-hoja { transform: rotate(var(--rot)); }
+    .anim .proc-copia { inset: 0; transform: rotate(-1.6deg); }
+    .anim .proc-cuerpo { grid-template-areas: "x"; }
+    .anim .proc-antes,
+    .anim .proc-despues { grid-area: x; align-self: start; }
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 899px) {
+    .talonario { grid-template-columns: minmax(0, 1fr); }
+    .matriz {
+      height: auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 6px 12px;
+      padding: 10px 16px 12px;
+      box-shadow: 0 6px 18px #0004;
+    }
+    .matriz::after {
+      top: auto;
+      left: 0;
+      right: 0;
+      bottom: -6px;
+      width: auto;
+      height: 12px;
+      background: radial-gradient(circle, var(--tinta) 3px, transparent 3.5px) 0 0 / 18px 12px;
+    }
+    .marca { font-size: 20px; }
+    .reloj { margin: 0; grid-row: 1; grid-column: 2; grid-auto-flow: column; align-items: baseline; gap: 8px; }
+    .reloj-l { font-size: 14px; letter-spacing: 0.1em; }
+    .reloj b { font-size: 22px; }
+    .tel { display: none; }
+    .indice { grid-column: 1 / -1; }
+    .indice ol { display: flex; justify-content: space-between; gap: 2px; }
+    .indice a { display: block; padding: 6px 2px 8px; }
+    .indice .mt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .indice a.on::after { left: 0; width: 100%; }
+    .indice a.hecho .mn::after { display: none; }
+    .indice a.hecho .mn { color: var(--calco); }
+    [id] { scroll-margin-top: 104px; }
+
+    .mesa { padding: 24px 16px 0; gap: 56px; }
+    .pliego::before { inset: 10px -6px -8px 8px; }
+    .hoja { padding: 22px 18px 32px; }
+    .tipo { font-size: 14px; letter-spacing: 0.18em; }
+    .num { font-size: 24px; }
+    .num small { font-size: 14px; }
+    .casillas.c4, .casillas.c3 { grid-template-columns: repeat(2, 1fr); }
+    .casillas > div { border-bottom: 1px solid var(--linea); }
+    .casillas.c4 > div:nth-child(2n), .casillas.c3 > div:nth-child(2n) { border-right: 0; }
+    .casillas dt, .lio-l, .lbl, .casilla-suelta span { font-size: 14px; letter-spacing: 0.1em; }
+    .casillas dd { font-size: 16px; }
+    .hoja-hero { min-height: 0; }
+    .hero-pie { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-top: 24px; }
+    .btn { display: block; width: 100%; text-align: center; font-size: 18px; padding: 18px 16px; }
+    .cta-nota { font-size: 15px; }
+    .lio { min-height: 0; padding-right: 0; padding-bottom: 136px; }
+    .sello small { font-size: 14px; }
+    .nota-t { font-size: 26px; }
+    .sello-hero { width: 124px; height: 124px; font-size: 20px; right: 4px; bottom: 0; }
+
+    .hoja-suena { background: repeating-linear-gradient(var(--papel) 0 47px, #c9cce099 47px 48px), var(--papel); }
+    .suena { grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 24px; }
+    .margen li span { font-size: 27px; }
+
+    .proc-hoja, .proc-copia { padding: 22px 18px 26px; }
+    .proc-copia { inset: 8px -6px -8px 8px; }
+    .proc-t { max-width: none; font-size: clamp(40px, 12vw, 56px); }
+    .proc-cuerpo { padding-right: 0; padding-bottom: 104px; }
+    .garabato { font-size: 27px; }
+    .sueltas span { font-size: 22px; }
+    .impreso { font-size: 19px; }
+    .sello-proc { width: 112px; height: 112px; font-size: 19px; right: 16px; bottom: 16px; }
+    .escala { font-size: 16px; padding: 0 8px; }
+
+    .pasos { grid-template-columns: minmax(0, 1fr); }
+    .paso { border-right: 0; border-bottom: 1px solid var(--linea); min-height: 0; padding: 20px 18px 24px; padding-right: 124px; }
+    .paso:last-child { border-bottom: 0; }
+    .paso-d { font-size: 16px; }
+    .sello-mini { width: 100px; height: 100px; font-size: 14px; right: 12px; top: 18px; bottom: auto; }
+
+    .hoja-quien { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+    .foto { max-width: 280px; }
+
+    .sello-cierre { position: relative; right: auto; top: auto; margin: 36px 0 0 auto; width: 120px; height: 120px; font-size: 20px; }
+    .pie { flex-direction: column; padding-bottom: 120px; }
+  }
+
+  /* Reduced motion: no loader, no pin, everything placed and still */
+  @media (prefers-reduced-motion: reduce) {
+    .carga { display: none !important; }
+    .btn { transition: none; }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
+  const root = document.documentElement;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const EASE = "power3.out"; // house ease for entrances
+  const q = (s: string, el: ParentNode = document) => el.querySelector<HTMLElement>(s);
+  const qa = (s: string, el: ParentNode = document) => Array.from(el.querySelectorAll<HTMLElement>(s));
+
+  // ---- Clock and stub state (shared by every mode) ----
+  const reloj = q('[data-anim="reloj"]');
+  const enlaces = qa('[data-anim="indice"]');
+  const INICIO = 23 * 60 + 47; // 23:47
+  const TRAMO = 24 * 60 - INICIO + 8 * 60; // → 08:00 next morning
+  const dos = (n: number) => String(n).padStart(2, "0");
+  let ultimo = -2;
+
+  function marcar(progreso: number) {
+    const p = Math.min(1, Math.max(0, progreso));
+    const m = Math.round(INICIO + TRAMO * p) % (24 * 60);
+    if (reloj) reloj.textContent = `${dos(Math.floor(m / 60))}:${dos(m % 60)}`;
+    // index of the sheet on top: switches once the previous one has been torn off
+    const activo = p <= 0 ? -1 : p >= 1 ? 7 : Math.min(6, Math.floor(p * 7 + 0.08));
+    if (activo === ultimo) return;
+    ultimo = activo;
+    enlaces.forEach((a, i) => {
+      const on = i === activo;
+      a.classList.toggle("on", on);
+      a.classList.toggle("hecho", i < activo);
+      if (on) a.setAttribute("aria-current", "step");
+      else a.removeAttribute("aria-current");
+    });
+  }
+
+  if (!reduce && root.classList.contains("anim")) {
+    // ---- 1 · Loader is pure CSS; this line removes it once the curtain is up ----
+    gsap.delayedCall(1.2, () => q('[data-anim="carga"]')?.remove());
+
+    // ---- 2 · Hero ----
+    const sello = q('[data-anim="sello-hero"]');
+    const hero = gsap.timeline({ delay: 0.95, defaults: { ease: EASE } });
+    hero
+      .to('[data-anim="linea"]', { y: 0, yPercent: 0, duration: 0.9, stagger: 0.08 })
+      .to('[data-anim="entra"]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 }, "-=0.55")
+      .fromTo(
+        '[data-anim="nota"]',
+        { clipPath: "inset(0% 100% 0% 0%)" },
+        { clipPath: "inset(0% 0% 0% 0%)", duration: 0.5, stagger: 0.25, ease: "power2.out" },
+        "-=0.3",
+      )
+      .to('[data-anim="tachon"]', { scaleX: 1, duration: 0.35, stagger: 0.08, ease: "power3.inOut" }, "+=0.15")
+      .fromTo(
+        sello,
+        { scale: 1.6, rotation: -24, opacity: 0 },
+        { scale: 1, rotation: -12, opacity: 1, duration: 0.45, ease: "back.out(2.2)" },
+        "+=0.05",
+      );
+
+    // micro-interaction: the stamp «thumps» when the button is hovered
+    q('[data-anim="btn-hero"]')?.addEventListener("mouseenter", () => {
+      if (!sello || hero.isActive()) return;
+      gsap.fromTo(sello, { scale: 0.92 }, { scale: 1, duration: 0.2, ease: EASE, overwrite: "auto" });
+    });
+
+    // ---- 3 · ¿Te suena? ----
+    gsap.to('[data-anim="suena"]', {
+      y: 0,
+      opacity: 1,
+      duration: 0.7,
+      stagger: 0.12,
+      ease: EASE,
+      scrollTrigger: { trigger: '[data-anim="sec-suena"]', start: "top 75%" },
+    });
+
+    // ---- 4 · The 7 sheets ----
+    const seccion = q('[data-anim="sec-hojas"]')!;
+    const escenario = q('[data-anim="escenario"]')!;
+    const procs = qa('[data-anim="proc"]');
+    let pinST: ScrollTrigger | null = null;
+    const mm = gsap.matchMedia();
+
+    // Desktop: pinned pad, one sheet per 90vh of scroll
+    mm.add("(min-width: 900px)", () => {
+      const tl = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: escenario,
+          pin: true,
+          scrub: 0.6,
+          start: "top top",
+          end: () => "+=" + window.innerHeight * 0.9 * procs.length,
+          invalidateOnRefresh: true,
+          onUpdate: (st) => marcar(st.progress),
+          onLeave: () => marcar(1),
+          onLeaveBack: () => marcar(0),
+        },
+      });
+      pinST = tl.scrollTrigger ?? null;
+
+      procs.forEach((p, i) => {
+        const hoja = q('[data-anim="hoja"]', p);
+        const t = i; // one timeline unit per sheet
+        tl.to(q('[data-anim="arrugas"]', p), { opacity: 0, duration: 0.25 }, t + 0.05)
+          .to(hoja, { rotation: 0, duration: 0.25, ease: EASE }, t + 0.05)
+          .to(q('[data-anim="antes"]', p), { opacity: 0, y: -12, duration: 0.18 }, t + 0.1)
+          .fromTo(
+            q('[data-anim="despues"]', p),
+            { opacity: 0, clipPath: "inset(0% 100% 0% 0%)" },
+            { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.22, ease: EASE },
+            t + 0.24,
+          )
+          .to(q('[data-anim="est-pend"]', p), { opacity: 0, duration: 0.06 }, t + 0.46)
+          .to(q('[data-anim="est-ok"]', p), { opacity: 1, duration: 0.06 }, t + 0.48)
+          .fromTo(
+            q('[data-anim="sello-proc"]', p),
+            { scale: 1.6, rotation: -24, opacity: 0 },
+            { scale: 1, rotation: -12, opacity: 1, duration: 0.12, ease: "back.out(2.2)" },
+            t + 0.46,
+          );
+        if (i < procs.length - 1) {
+          // tear the sheet off; its carbon copy shows for a moment, then gives way to the next sheet
+          tl.to(hoja, { yPercent: -120, rotation: -4, duration: 0.2, ease: "power2.in" }, t + 0.72)
+            .to(hoja, { autoAlpha: 0, duration: 0.04 }, t + 0.9) // gone from the desk once torn off
+            .to(q('[data-anim="copia"]', p), { opacity: 0, duration: 0.07 }, t + 0.93);
+        } else {
+          tl.to({}, { duration: 0.3 }, t + 0.7); // the last sheet stays, sealed
+        }
+      });
+
+      return () => {
+        pinST = null;
+      };
+    });
+
+    // Mobile: sheets stacked in flow, each one is put in order and stamped as it enters
+    mm.add("(max-width: 899px)", () => {
+      procs.forEach((p) => {
+        gsap
+          .timeline({ defaults: { ease: EASE }, scrollTrigger: { trigger: p, start: "top 70%" } })
+          .to(q('[data-anim="arrugas"]', p), { opacity: 0, duration: 0.4 })
+          .to(q('[data-anim="antes"]', p), { opacity: 0.8, duration: 0.3 }, "<")
+          .fromTo(
+            q('[data-anim="despues"]', p),
+            { opacity: 0, clipPath: "inset(0% 100% 0% 0%)" },
+            { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 0.5 },
+            "-=0.1",
+          )
+          .to(q('[data-anim="est-pend"]', p), { opacity: 0, duration: 0.15 })
+          .to(q('[data-anim="est-ok"]', p), { opacity: 1, duration: 0.15 }, "<")
+          .fromTo(
+            q('[data-anim="sello-proc"]', p),
+            { scale: 1.6, rotation: -24, opacity: 0 },
+            { scale: 1, rotation: -12, opacity: 1, duration: 0.45, ease: "back.out(2.2)" },
+            "<",
+          );
+      });
+      ScrollTrigger.create({
+        trigger: seccion,
+        start: "top center",
+        end: "bottom center",
+        onUpdate: (st) => marcar(st.progress),
+        onLeave: () => marcar(1),
+        onLeaveBack: () => marcar(0),
+      });
+    });
+
+    // Stub links: inside the pinned pad, jump to the scroll point where that sheet is stamped
+    enlaces.forEach((a, i) =>
+      a.addEventListener("click", (e) => {
+        if (!pinST) return;
+        e.preventDefault();
+        const y = pinST.start + ((i + 0.62) / procs.length) * (pinST.end - pinST.start);
+        window.scrollTo(0, y);
+      }),
+    );
+
+    // ---- 5 · How we work: each box lands, then its stamp ----
+    const pasos = gsap.timeline({
+      defaults: { ease: EASE },
+      scrollTrigger: { trigger: '[data-anim="sec-como"]', start: "top 75%" },
+    });
+    qa('[data-anim="paso"]').forEach((paso, i) => {
+      pasos
+        .to(paso, { opacity: 1, y: 0, duration: 0.6 }, i * 0.22)
+        .fromTo(
+          q('[data-anim="sello-paso"]', paso),
+          { scale: 1.6, rotation: -24, opacity: 0 },
+          { scale: 1, rotation: -12, opacity: 1, duration: 0.45, ease: "back.out(2.2)" },
+          i * 0.22 + 0.35,
+        );
+    });
+
+    // ---- 6 · Who ----
+    gsap.to('[data-anim="sec-quien"] [data-anim="aparece"]', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: EASE,
+      scrollTrigger: { trigger: '[data-anim="sec-quien"]', start: "top 75%" },
+    });
+
+    // ---- 7 · Close ----
+    gsap
+      .timeline({ defaults: { ease: EASE }, scrollTrigger: { trigger: '[data-anim="sec-cierre"]', start: "top 70%" } })
+      .to('[data-anim="sec-cierre"] [data-anim="aparece"]', { opacity: 1, y: 0, duration: 0.8, stagger: 0.15 })
+      .fromTo(
+        '[data-anim="sello-cierre"]',
+        { scale: 1.6, rotation: -24, opacity: 0 },
+        { scale: 1, rotation: -12, opacity: 1, duration: 0.45, ease: "back.out(2.2)" },
+        "-=0.2",
+      );
+
+    document.fonts?.ready.then(() => ScrollTrigger.refresh());
+  }
+</script>
