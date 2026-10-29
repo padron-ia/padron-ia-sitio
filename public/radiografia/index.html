@@ -132,7 +132,9 @@
   .lista li { display: flex; align-items: baseline; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--linea-o); font-size: 15px; color: var(--bone); }
   .lista li .n { font-family: var(--mono); color: var(--lavanda); }
   .lista li .primero { margin-left: auto; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--perla); white-space: nowrap; }
-  .lista li:first-child.tiene-primero { font-weight: 700; }
+  .lista li:first-child.tiene-primero .txt { font-weight: 700; }
+  .lista li .gana { display: block; font-weight: 400; font-size: 13.5px; line-height: 1.4; color: var(--suave-o); margin-top: 4px; }
+  .lista li .gana b { color: var(--lavanda); font-weight: 700; }
   .despues { margin-top: 26px; padding: 18px; border-radius: 20px; border: 1px solid var(--linea-o); background: rgba(242, 243, 251, .04); }
   .despues p { margin: 0; color: var(--bone); font-size: 15px; }
   .despues p + p { margin-top: 8px; color: var(--suave-o); font-size: 13px; }
@@ -471,15 +473,33 @@
       precios: 'Que todo sube y el margen no llega', numeros: 'No saber cómo va el negocio', personal: 'Encontrar personal',
       coordinar: 'Coordinar al equipo', papeleo: 'El papeleo y los impuestos', agenda: 'La agenda, las citas y las reservas',
       pedidos: 'Proveedores, pedidos y stock', info: 'La información repartida', errores: 'Los errores y olvidos', redes: 'Las redes y la publicidad' };
+    // Under each problem, what they win once it is solved (Jesús, 29-oct): the gain, never the method.
+    const GANA = { captar: 'Que te lleguen clientes nuevos cada semana sin depender del boca a boca.',
+      mensajes: 'Que nadie se quede sin respuesta y tú no vivas pegado al móvil.',
+      seguimiento: 'Que cada cliente y cada presupuesto tenga su siguiente paso, sin depender de tu memoria.',
+      presupuestos: 'Cerrar más de los presupuestos que ya haces.',
+      cobros: 'Cobrar en fecha sin tener que perseguir a nadie.',
+      facturas: 'Que ningún trabajo se quede sin facturar.',
+      precios: 'Saber qué te deja dinero y qué no, para ajustar a tiempo.',
+      numeros: 'Ver cómo va el negocio de un vistazo, sin sentarte a hacer cuentas.',
+      personal: 'Que buscar y formar a tu gente te quite menos tiempo y te salga mejor.',
+      coordinar: 'Que cada uno sepa qué le toca sin que tengas que repetirlo.',
+      papeleo: 'Quitarte horas de papeles cada mes.',
+      agenda: 'Una agenda que se llena y se ordena sola, sin huecos ni solapes.',
+      pedidos: 'Pedir lo justo y a tiempo, sin roturas de stock.',
+      info: 'Tenerlo todo en un sitio y encontrarlo en segundos.',
+      errores: 'Menos olvidos y menos errores que te cuestan clientes.',
+      redes: 'Que tus redes trabajen para traerte clientes con menos esfuerzo.',
+      otro: 'Lo miramos contigo en la llamada.' };
     const lista = elegidos(R); if (lista.includes(R.primero)) { lista.splice(lista.indexOf(R.primero), 1); lista.unshift(R.primero); }
-    const tareas = lista.map(x => x === 'otro' ? (R.tiempo_otro ? `«${R.tiempo_otro.trim()}»` : null) : (TU[x] || etiqueta(x))).filter(Boolean);
+    const tareas = lista.map(x => x === 'otro' ? (R.tiempo_otro ? [`«${R.tiempo_otro.trim()}»`, GANA.otro] : null) : [TU[x] || etiqueta(x), GANA[x]]).filter(Boolean);
     const conPrimero = !!(R.primero && lista[0] === R.primero);
     pinta(`<h1>${esc(D.nombre)}, esto es lo que te cuestan cada mes tus mayores problemas.</h1>
       <div class="grande"><span id="euros">${recien ? '0' : euros(c.euros_mes)}</span> €</div>
       <p class="que">al mes</p>
       <p class="cuenta"><span class="num">${coma(c.horas_semana)} h</span> a la semana × <span class="num">${c.valor_hora} €</span> tu hora × <span class="num">4,33</span> semanas</p>
-      ${tareas.length ? `<ul class="lista">${tareas.map((t, i) => `<li class="${i === 0 && conPrimero ? 'tiene-primero' : ''}"><span class="n">${i + 1}</span>${esc(t)}${i === 0 && conPrimero ? '<span class="primero">Lo primero</span>' : ''}</li>`).join('')}</ul>` : ''}
-      <div class="despues"><p>En 48 horas te llega por ${D.canal === 'correo' ? 'correo' : 'WhatsApp'} tu radiografía completa, con tres cosas que puedes cambiar mañana sin gastar nada.</p>
+      ${tareas.length ? `<ul class="lista">${tareas.map(([t, g], i) => `<li class="${i === 0 && conPrimero ? 'tiene-primero' : ''}"><span class="n">${i + 1}</span><span class="txt">${esc(t)}${g ? `<span class="gana"><b>Se puede resolver.</b> ${esc(g)}</span>` : ''}</span>${i === 0 && conPrimero ? '<span class="primero">Lo primero</span>' : ''}</li>`).join('')}</ul>` : ''}
+      <div class="despues"><p>En 48 horas tienes tu radiografía completa en este mismo enlace, con tres cosas que puedes cambiar mañana sin gastar nada. Te aviso por ${D.canal === 'correo' ? 'correo' : 'WhatsApp'}.</p>
       <p>La cifra sale de tus respuestas: es una estimación, no una auditoría. Puedes volver a este enlace cuando quieras.</p></div>`);
     if (recien) contar($('euros'), c.euros_mes);
   }

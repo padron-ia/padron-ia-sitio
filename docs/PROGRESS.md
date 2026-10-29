@@ -17,7 +17,9 @@
   reanudar, audio por la función, llave mala rechazada, cifras cuadradas a mano (7,5 h × 25 € × 4,33 = 812 €).
 
 ## En curso
-- Nada: publicada el 29-oct-2026 (despliegue por URL, 200 en ~30 s, cabeceras comprobadas con curl, recorrido con llave de prueba en producción).
+- Radiografía completa como página interactiva en el mismo enlace (decisión de Jesús, 29-oct): boceto en el OS, falta que Jesús elija; después, el código aquí.
+- 29-oct: en la pantalla final, cada problema lleva «Se puede resolver» + lo que gana; el texto final dice que la radiografía llega en este mismo enlace.
+- Antes: publicada el 29-oct-2026 (despliegue por URL, 200 en ~30 s, cabeceras comprobadas con curl, recorrido con llave de prueba en producción).
 
 ## Bloqueado (qué y por quién)
 -
