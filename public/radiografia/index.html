@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#1b1e3a">
-<title>Tu radiografía · Padrón IA</title>
+<title>Tu negocio, visto por un cliente · Padrón IA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap">
 <style>
@@ -157,9 +157,9 @@
 <body class="oscuro">
 <header>
   <div class="barra" id="barra" aria-hidden="true"></div>
-  <div class="cab"><div class="logo">PADRÓN<b>·IA</b></div><div class="rot" id="paso">Radiografía</div></div>
+  <div class="cab"><div class="logo">PADRÓN<b>·IA</b></div><div class="rot" id="paso">Tu negocio</div></div>
 </header>
-<main id="app" aria-live="polite"><p class="suave">Cargando tu radiografía…</p></main>
+<main id="app" aria-live="polite"><p class="suave">Cargando…</p></main>
 <div class="pie" id="pie" hidden><div class="dentro">
   <button class="btn atras" id="atras" type="button" aria-label="Atrás"><svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M13 8H3m4-4L3 8l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <button class="btn prim" id="sig" type="button">Seguir</button>
@@ -223,7 +223,7 @@
     { k: 'valor_hora', tipo: 'una', t: 'Una hora tuya, ¿cuánto vale para el negocio?', a: 'Lo usamos solo para calcular tu cifra. Si dudas, marca 25 €.', o: [
       ['10', '10 €', 10], ['15', '15 €', 15], ['25', '25 €', 25], ['40', '40 €', 40], ['60', '60 € o más', 60]] },
     { k: 'quitar', tipo: 'abierta', t: 'Si mañana pudieras quitarte UNA cosa del día, ¿cuál sería?', a: 'Cuéntalo como se lo contarías a un amigo. Puedes escribirlo o mandar un audio.' },
-    { k: 'llamada', tipo: 'una', t: 'Cuando te llegue la radiografía, ¿te apetece que la veamos juntos 20 minutos?', a: 'Sin compromiso: te cuento qué haría yo en tu lugar.', o: [
+    { k: 'llamada', tipo: 'una', t: 'Cuando te llegue todo lo que he visto, ¿te apetece que lo veamos juntos 20 minutos?', a: 'Sin compromiso: te cuento qué haría yo en tu lugar.', o: [
       ['si', 'Sí, me viene bien'], ['no', 'No hace falta, con el informe me vale']] }
   ];
   const opciones = p => (typeof p.o === 'function' ? p.o() : p.o);
@@ -258,7 +258,7 @@
   function progreso() {
     const v = visibles();
     $('barra').innerHTML = v.map((_, i) => `<i class="${pos >= 0 && i <= pos ? 'on' : ''}"></i>`).join('');
-    $('paso').textContent = pos >= 0 && pos < v.length ? `${pos + 1} / ${v.length}` : pos >= v.length ? 'Tu cifra' : 'Radiografía';
+    $('paso').textContent = pos >= 0 && pos < v.length ? `${pos + 1} / ${v.length}` : pos >= v.length ? 'Tu cifra' : 'Tu negocio';
     $('paso').classList.toggle('num', pos >= 0 && pos < v.length);
   }
 
@@ -273,7 +273,7 @@
   function bloquePublico() {
     const p = D.publico;
     if (!p || (!p.maps && !p.ias)) {
-      return `<div class="panel"><div class="dato"><div class="rot">Google y las IAs</div><div class="que">Estamos mirando cómo te encuentra un cliente. Te lo enseñamos en tu radiografía completa.</div></div></div>`;
+      return `<div class="panel"><div class="dato"><div class="rot">Google y las IAs</div><div class="que">Estamos mirando cómo te encuentra un cliente. Te lo enseño cuando lo tenga.</div></div></div>`;
     }
     let h = '<div class="panel">';
     if (p.maps) {
@@ -499,7 +499,7 @@
       <p class="que">al mes</p>
       <p class="cuenta"><span class="num">${coma(c.horas_semana)} h</span> a la semana × <span class="num">${c.valor_hora} €</span> tu hora × <span class="num">4,33</span> semanas</p>
       ${tareas.length ? `<ul class="lista">${tareas.map(([t, g], i) => `<li class="${i === 0 && conPrimero ? 'tiene-primero' : ''}"><span class="n">${i + 1}</span><span class="txt">${esc(t)}${g ? `<span class="gana"><b>Se puede resolver.</b> ${esc(g)}</span>` : ''}</span>${i === 0 && conPrimero ? '<span class="primero">Lo primero</span>' : ''}</li>`).join('')}</ul>` : ''}
-      <div class="despues"><p>En 48 horas tienes tu radiografía completa en este mismo enlace, con lo que haría yo primero en tu lugar. Te aviso por ${D.canal === 'correo' ? 'correo' : 'WhatsApp'}.</p>
+      <div class="despues"><p>En 48 horas tienes en este mismo enlace todo lo que he visto de tu negocio, con lo que haría yo primero en tu lugar. Te aviso por ${D.canal === 'correo' ? 'correo' : 'WhatsApp'}.</p>
       <p>La cifra sale de tus respuestas: es una estimación, no una auditoría. Puedes volver a este enlace cuando quieras.</p></div>`);
     if (recien) contar($('euros'), c.euros_mes);
   }
@@ -510,9 +510,9 @@
   (async () => {
     const aviso = (t, x) => { tema(true); app.innerHTML = `<h1>${t}</h1><p class="suave">${x}</p>`; };
     if (token.length < 16) return aviso('Este enlace no está completo', 'Ábrelo tal cual te llegó por WhatsApp o por correo. Si sigue sin ir, contéstanos al mensaje y te mandamos otro.');
-    try { D = await rpc('estudio_leer', { p_token: token }); } catch { return aviso('No hemos podido cargar tu radiografía', 'Revisa la conexión y recarga la página.'); }
+    try { D = await rpc('estudio_leer', { p_token: token }); } catch { return aviso('No hemos podido cargar la página', 'Revisa la conexión y recarga la página.'); }
     if (!D) return aviso('Este enlace no vale', 'Puede que esté mal copiado. Contéstanos al mensaje y te mandamos otro.');
-    if (D.cerrado) return aviso('Esta radiografía ya está cerrada', 'Si quieres verla o rehacerla, contéstanos al mensaje.');
+    if (D.cerrado) return aviso('Este enlace ya está cerrado', 'Si quieres verlo o rehacerlo, contéstanos al mensaje.');
     R = D.respuestas || {}; A = D.audios || {};
     if (D.terminado_en) return pintarFinal(false);
     pintarInicio();
