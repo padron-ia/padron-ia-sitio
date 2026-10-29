@@ -4,7 +4,7 @@
 
 ## Etapa
 - Talla: pequena · Modo: professional
-- Estado: OPERANDO (sitio) · CONSTRUIDO (radiografía)
+- Estado: OPERANDO (sitio y radiografía)
 - Negocio: `clients/_personal/padron-ia` en el OS.
 
 ## Controles aprobados
@@ -17,7 +17,7 @@
   reanudar, audio por la función, llave mala rechazada, cifras cuadradas a mano (7,5 h × 25 € × 4,33 = 812 €).
 
 ## En curso
-- Desplegar y comprobar cabeceras en producción.
+- Nada: publicada el 29-oct-2026 (despliegue por URL, 200 en ~30 s, cabeceras comprobadas con curl, recorrido con llave de prueba en producción).
 
 ## Bloqueado (qué y por quién)
 -
