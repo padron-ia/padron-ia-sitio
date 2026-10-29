@@ -95,7 +95,7 @@ html:not(.anim) .reloj,html:not(.anim) .contador{visibility:hidden}
 .laura{position:relative;color:var(--mostaza)}
 .subraya{position:absolute;left:0;bottom:-.1em;width:92%;height:.16em;overflow:visible}
 .subraya path{fill:none;stroke:var(--mostaza);stroke-width:5;stroke-linecap:round;stroke-dasharray:1}
-.badge{position:absolute;top:.02em;right:-.42em;display:grid;place-items:center;min-width:1.4em;padding:.25em .35em;border-radius:999px;
+.badge{position:absolute;top:-.9em;right:-2em;display:grid;place-items:center;min-width:1.4em;padding:.25em .35em;border-radius:999px;
   background:var(--coral);color:var(--tinta);font:800 max(14px,.2em)/1 'Bricolage Grotesque',sans-serif;letter-spacing:0;font-variant-numeric:tabular-nums}
 .port-p{font:400 clamp(19px,1.8vw,26px)/1.45 'Atkinson Hyperlegible',sans-serif;max-width:32ch;margin:28px 0 36px;color:#dcdff5}
 .baja{position:absolute;left:var(--gut);bottom:30px;display:flex;align-items:center;gap:12px;font:700 14px/1 'Atkinson Hyperlegible',sans-serif;
@@ -277,8 +277,10 @@ html:not(.anim) .t-txt,.tareas li.hecha .t-txt{opacity:.72}
   .portada{padding-bottom:64px}
   .port-in{grid-template-columns:1fr;gap:8px}
   .port-fig{order:-1;height:45svh}
+  /* Portrait figure in a wide box: show her whole, head included, instead of cropping to fill */
+  .port-fig img{object-fit:contain;object-position:50% 100%;-webkit-mask-image:linear-gradient(to bottom,#000 90%,transparent);mask-image:linear-gradient(to bottom,#000 90%,transparent)}
   .port-p{margin:16px 0 22px}
-  .baja{bottom:18px}
+  .baja{bottom:24px;font-size:12px;letter-spacing:.08em;max-width:calc(100% - 170px)}
 }
 @media (prefers-reduced-motion:reduce){
   .ll,.dos,.baja i{animation:none}
