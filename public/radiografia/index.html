@@ -58,8 +58,8 @@
   .panel { margin: 22px 0 12px; border-radius: 20px; background: rgba(242, 243, 251, .04); border: 1px solid var(--linea-o); position: relative; overflow: hidden; }
   .panel::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 70px; pointer-events: none;
     background: linear-gradient(to bottom, rgba(143, 155, 255, 0), rgba(143, 155, 255, .10) 80%, rgba(143, 155, 255, .55));
-    transform: translateY(-80px); animation: escaner 2.4s var(--sale) .3s 2 forwards; }
-  @keyframes escaner { 0% { transform: translateY(-80px); } 100% { transform: translateY(var(--alto, 420px)); } }
+    transform: translateY(-80px); opacity: 0; animation: escaner 2.6s var(--sale) .3s 1; }
+  @keyframes escaner { 0% { transform: translateY(-80px); opacity: 1; } 85% { opacity: 1; } 100% { transform: translateY(var(--alto, 420px)); opacity: 0; } }
   /* Visible by default; the entrance only plays on top (backwards fill), so a paused animation never hides data. */
   .dato { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 6px 14px; padding: 16px 18px; border-top: 1px solid var(--linea-o);
     animation: aparece .6s var(--sale) backwards; }
@@ -68,6 +68,13 @@
   .dato:nth-child(4) { animation-delay: 1.55s; } .dato:nth-child(5) { animation-delay: 1.95s; }
   @keyframes aparece { from { opacity: 0; transform: translateY(6px); } }
   .dato .rot { color: var(--lavanda); grid-column: 1 / -1; }
+  .dato .busca { display: block; color: var(--suave-o); font-size: 12.5px; margin-top: 2px; }
+  .resumen { margin: 18px 0 0; font-size: 16px; line-height: 1.45; color: var(--bone); }
+  .resumen b { color: #fff; }
+  .resumen .bien { color: var(--lavanda); font-weight: 700; }
+  .resumen .falta { color: var(--perla); font-weight: 700; }
+  .ordinal { font-family: var(--sans); font-weight: 800; letter-spacing: -0.03em; }
+  .ordinal sup { font-size: .5em; vertical-align: .9em; margin-left: 1px; }
   .dato .que { font-size: 14.5px; line-height: 1.35; color: var(--bone); }
   .dato .que small { display: block; color: var(--suave-o); font-size: 12.5px; margin-top: 3px; }
   .dato .val { font-family: var(--mono); font-weight: 700; font-size: 30px; letter-spacing: -0.02em; line-height: 1; color: #fff; text-align: right; }
@@ -270,21 +277,22 @@
     if (p.maps) {
       const m = p.maps;
       h += m.puesto
-        ? `<div class="dato"><div class="rot">Google Maps · «${esc(m.busqueda)}»</div><div class="que">Sales ${m.puesto === 1 ? 'el primero' : `en el puesto ${m.puesto}`} cuando te buscan${m.primeros && m.primeros[0] && m.puesto > 1 ? `<small>Primero sale ${esc(m.primeros[0].nombre)}</small>` : ''}</div><div class="val">${m.puesto}.º</div></div>`
-        : `<div class="dato"><div class="rot">Google Maps · «${esc(m.busqueda)}»</div><div class="que">No sales entre los primeros cuando te buscan</div><div class="val">—</div></div>`;
+        ? `<div class="dato"><div class="rot">Google Maps</div><div class="que">Sales ${m.puesto === 1 ? 'el primero' : `el ${m.puesto}.º`} cuando buscan «${esc(m.busqueda)}»${m.primeros && m.primeros[0] && m.puesto > 1 ? `<small>Primero sale ${esc(m.primeros[0].nombre)}</small>` : ''}</div><div class="val ordinal">${m.puesto}<sup>º</sup></div></div>`
+        : `<div class="dato"><div class="rot">Google Maps</div><div class="que">No sales entre los primeros cuando buscan «${esc(m.busqueda)}»</div><div class="val">—</div></div>`;
       if (m.nota) {
         const mejor = (m.primeros || []).every(x => !x.nota || x.nota <= m.nota);
         h += `<div class="dato"><div class="rot">Tu nota en Google</div><div class="que">${mejor ? 'La mejor de los que salen arriba' : 'Lo que ve quien compara antes de llamar'}</div><div class="val">${coma(m.nota)}<small>${m.resenas ?? 0} reseñas</small></div></div>`;
       }
     }
     for (const x of p.ias || []) {
-      const quien = x.ia === 'Google' ? 'El resumen con IA de Google' : x.ia;
+      const quien = x.ia === 'Google' ? 'Google · resumen con IA' : x.ia;
       const que = x.sin_resumen
         ? '<span class="marca">Google no saca resumen con IA para esta búsqueda</span>'
         : x.te_nombra
           ? `<span class="marca si">${ICONO.si}Te nombra</span>`
           : `<span class="marca no">${ICONO.no}No te nombra</span>${x.nombra && x.nombra.length ? `<small>Recomienda a ${esc(x.nombra.slice(0, 2).join(' y '))}</small>` : ''}`;
-      h += `<div class="dato"><div class="rot">${esc(quien)} · «${esc(x.pregunta)}»</div><div class="que">${que}</div></div>`;
+      const busca = x.ia === 'Google' ? `Al buscar «${esc(x.pregunta)}», arriba del todo` : `Al preguntarle «${esc(x.pregunta)}»`;
+      h += `<div class="dato"><div class="rot">${esc(quien)}</div><div class="que">${que}<span class="busca">${busca}</span></div></div>`;
     }
     if (p.web) {
       const f = p.web.hallazgos || [];
@@ -295,8 +303,31 @@
           : `<div class="dato"><div class="rot">Tu web</div><div class="que"><span class="marca si">${ICONO.si}Cumple lo básico</span></div></div>`;
     }
     h += '</div>';
+    h = resumen(p) + h;
     h += `<p class="tenue">Consultado el ${fecha(D.publico_en)}. Google y las IAs cambian sus respuestas: es una foto de ese momento.</p>`;
     return h;
+  }
+
+  // The plain-words verdict above the panel, so a non-technical owner knows at once if it is good or bad news.
+  function resumen(p) {
+    const bien = [], falta = [];
+    const m = p.maps || {};
+    if (m.puesto && m.puesto <= 3) bien.push(`sales ${m.puesto === 1 ? 'el primero' : `el ${m.puesto}.º`} en Google Maps`);
+    else if (m.puesto) falta.push(`subir en Google Maps (sales el ${m.puesto}.º)`);
+    else if (m.busqueda) falta.push('aparecer en Google Maps');
+    if (m.nota && (m.primeros || []).every(x => !x.nota || x.nota <= m.nota)) bien.push(`tienes la mejor nota (${coma(m.nota)})`);
+    const ias = p.ias || [];
+    const si = ias.filter(x => x.te_nombra), no = ias.filter(x => !x.te_nombra && !x.sin_resumen);
+    if (si.length) bien.push(`${si.map(x => x.ia === 'Google' ? 'el resumen con IA de Google' : x.ia).join(' y ')} te ${si.length > 1 ? 'nombran' : 'nombra'}`);
+    if (no.length) falta.push(`que ${no.map(x => x.ia === 'Google' ? 'el resumen de Google' : x.ia).join(' y ')} te ${no.length > 1 ? 'nombren' : 'nombre'}`);
+    const f = (p.web || {}).hallazgos || [];
+    if (p.web && !p.web.tiene) falta.push('tener web');
+    else if (f.length) falta.push(`${f.length} ${f.length === 1 ? 'cosa' : 'cosas'} en tu web`);
+    const y = xs => xs.length > 1 ? xs.slice(0, -1).join(', ') + ' y ' + xs.at(-1) : xs[0];
+    let t = '';
+    if (bien.length) t += `<span class="bien">Lo bueno:</span> ${y(bien)}. `;
+    if (falta.length) t += `<span class="falta">Lo que falta:</span> ${y(falta)}.`;
+    return t ? `<p class="resumen">${t}</p>` : '';
   }
 
   function pintarInicio() {
