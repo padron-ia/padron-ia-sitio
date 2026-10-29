@@ -15,6 +15,7 @@
 
 ## Alcance de la fase actual
 - Entra: portada, páginas por sector, legales, y `/radiografia/`.
+- Fase 3 (29-oct): rediseño escaparate de la portada, «del desorden al orden», proceso a proceso. Producto en `PRODUCT.md`.
 - **No entra**: el portal de cliente y `/centro` (viven en portal.padron-ia.es, otro repo).
 
 ## Datos sensibles y claves
@@ -23,7 +24,9 @@
 - En este repo solo hay la clave **publicable** de Supabase (pública por diseño). Ningún secreto.
 
 ## Reglas de construcción
-- HTML estático, cero JavaScript salvo donde haga falta (la radiografía).
+- HTML estático, cero JavaScript salvo donde haga falta (la radiografía) y, desde el 29-oct-2026 con OK de Jesús, la
+  animación de la portada escaparate (GSAP + ScrollTrigger, Lenis, Three.js). Todo el texto se lee sin JavaScript y con el
+  movimiento reducido. Plan y línea: `clients/_personal/padron-ia/projects/web-rework/2026-10-29-linea-y-plan-escaparate.md`.
 - `add_header` no se hereda: cada `location` con cabeceras propias incluye su fichero de seguridad.
 - SEO sagrado: un cambio de URL lleva su 301.
 
