@@ -1,221 +1,341 @@
 ---
-// Prototype C · «Baldosas vivas»: Metro tiles, giant lowercase type, from mess to order.
+// Prototype C · «La semana de Laura»: illustrated scroll story (comic panels with captions).
+// Script: clients/_personal/padron-ia/projects/web-rework/2026-10-29-historia-c-laura.md (OS repo).
 import Prueba from "../../layouts/Prueba.astro";
 import "./_c.css";
 
-const wa =
-  "https://wa.me/34624664907?text=Hola%2C%20quiero%20la%20revisi%C3%B3n%20gratis%20de%20mi%20negocio";
+const WA = "https://wa.me/34624664907?text=Hola%2C%20quiero%20la%20revisi%C3%B3n%20gratis%20de%20mi%20negocio";
+const fuentes =
+  "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap";
 
-// Loader pieces: scattered offsets/rotations (CSS vars) that settle into a 3×3 grid.
-const piezas = [
-  ["-140%", "-90%", "-24deg"], ["30%", "-160%", "18deg"], ["150%", "-60%", "-12deg"],
-  ["-180%", "20%", "32deg"], ["0%", "0%", "-45deg"], ["170%", "40%", "14deg"],
-  ["-90%", "150%", "-8deg"], ["-20%", "180%", "26deg"], ["120%", "130%", "-30deg"],
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+// Big headings enter word by word: each word is its own inline-block span.
+const palabras = (t: string) => t.split(" ").map((w) => `<span class="w" data-w>${esc(w)}</span>`).join(" ");
+// Clock digits as spans so the bar can roll the ones that change.
+const cifras = (t: string) => [...t].map((c) => `<span class="d${c === ":" ? " dos" : ""}">${esc(c)}</span>`).join("");
+
+type Obj = { t: string; x: string; y: string; txt?: string; m?: false; r?: string; c?: string };
+type Escena = {
+  img: string; alt: string; dia: string; hora: string; cuando: string; fuegos: number;
+  lado: "izq" | "der"; tono: "claro" | "tinta"; movil: "oscuro" | "claro"; cartela?: false;
+  fx: string; fxm: string; h: string; p?: string; objs: Obj[];
+};
+
+// fx / fxm: horizontal focal point of the illustration (desktop / stacked layout), chosen per scene so Laura and
+// the objects stay in frame while the caption sits on the free side. Object x/y are % of the illustration.
+const escenas: Escena[] = [
+  {
+    img: "01-noche", dia: "LUN", hora: "23:47", cuando: "Lunes, 23:47", fuegos: 0,
+    lado: "izq", tono: "claro", movil: "oscuro", fx: "50%", fxm: "78%",
+    alt: "Ilustración: de noche, Laura sentada en el sofá mira el móvil con cara de cansancio; en la mesa, el portátil abierto, papeles y una taza.",
+    h: "Son las 23:47 y sigue contestando mensajes.",
+    p: "Lleva seis años con su negocio. Hace seis años que no desconecta.",
+    objs: [
+      { t: "burbuja", x: "58%", y: "40%", txt: "1", m: false },
+      { t: "burbuja", x: "75%", y: "43%", txt: "4" },
+      { t: "burbuja", x: "74%", y: "58%", txt: "9" },
+      { t: "burbuja", x: "58%", y: "56%", txt: "14" },
+    ],
+  },
+  {
+    img: "02-manana", dia: "MAR", hora: "08:05", cuando: "Martes, 08:05", fuegos: 2,
+    lado: "izq", tono: "tinta", movil: "claro", fx: "30%", fxm: "85%",
+    alt: "Ilustración: por la mañana, Laura cruza su local a toda prisa con un café en una mano y el móvil sonando en la otra, delante de una pared llena de pósits.",
+    h: "A las ocho ya va tarde.",
+    p: "14 WhatsApps sin leer. Tres son de ayer.",
+    objs: [
+      { t: "fuego", x: "80%", y: "15%" },
+      { t: "fuego", x: "59%", y: "79%" },
+      { t: "posit", x: "76%", y: "70%", txt: "Factura", r: "-7deg", c: "#F2F3FB" },
+      { t: "posit", x: "46%", y: "26%", txt: "¡Llamar!", r: "6deg", c: "#D9A62E", m: false },
+      { t: "posit", x: "45%", y: "50%", txt: "Pedido", r: "-4deg", c: "#8F9BFF", m: false },
+    ],
+  },
+  {
+    img: "03-silla", dia: "MAR", hora: "12:40", cuando: "Martes, 12:40", fuegos: 3,
+    lado: "der", tono: "tinta", movil: "claro", fx: "100%", fxm: "39%",
+    alt: "Ilustración: Laura, de pie y preocupada, mira una silla vacía junto a la pared; detrás, un calendario y unas plantas.",
+    h: "Rosa ya no viene.",
+    p: "Era clienta de siempre. Nadie se ha dado cuenta de que se fue.",
+    objs: [
+      { t: "apaga", x: "54.5%", y: "71%" },
+      { t: "fuego", x: "47%", y: "48%" },
+    ],
+  },
+  {
+    img: "04-papeles", dia: "JUE", hora: "22:15", cuando: "Jueves, 22:15", fuegos: 4,
+    lado: "der", tono: "tinta", movil: "oscuro", cartela: false, fx: "100%", fxm: "30%",
+    alt: "Ilustración: de noche, Laura se sujeta la frente en su mesa entre montones de papeles y una caja de tickets; a su lado, un calendario con un día rodeado en rojo.",
+    h: "El trimestre, otra vez encima.",
+    p: "Una caja de tickets para la gestoría y el día 20 en rojo.",
+    objs: [
+      { t: "fuego", x: "46%", y: "19%" },
+      { t: "circulo", x: "53.8%", y: "57.8%" },
+      { t: "ticket", x: "56%", y: "76%", r: "-14deg" },
+      { t: "ticket", x: "61%", y: "73%", r: "11deg" },
+      { t: "ticket", x: "51%", y: "80%", r: "-4deg", m: false },
+    ],
+  },
+  {
+    img: "05-cabeza", dia: "VIE", hora: "23:59", cuando: "Viernes, 23:59", fuegos: 7,
+    lado: "izq", tono: "claro", movil: "oscuro", fx: "50%", fxm: "85%",
+    alt: "Ilustración: Laura, con las manos en la cabeza, rodeada de móviles, facturas, mensajes, un calendario y pequeños fuegos que giran a su alrededor.",
+    h: "Su día a día es apagar fuegos.",
+    p: "Seguimiento, redes, cobros, clientes que se enfrían… Todo en su cabeza.",
+    objs: [
+      { t: "fuego", x: "52%", y: "40%" },
+      { t: "fuego", x: "88%", y: "60%" },
+      { t: "fuego", x: "61%", y: "12%" },
+    ],
+  },
+  {
+    img: "06-whatsapp", dia: "SÁB", hora: "10:00", cuando: "Sábado, 10:00", fuegos: 7,
+    lado: "der", tono: "tinta", movil: "claro", fx: "60%", fxm: "14%",
+    alt: "Ilustración: un sábado por la mañana, Laura sonríe sentada en una cafetería junto a la ventana mientras escribe en el móvil; en la mesa, un café y un libro.",
+    h: "Un sábado escribió un WhatsApp.",
+    p: "30 minutos de conversación. Tres arreglos por escrito en 48 horas.",
+    objs: [{ t: "chat", x: "38%", y: "20%", txt: "Hola, quiero la revisión gratis de mi negocio" }],
+  },
+  {
+    img: "07-orden", dia: "Tres semanas", hora: "después", cuando: "Tres semanas después", fuegos: 0,
+    lado: "der", tono: "tinta", movil: "claro", fx: "10%", fxm: "14%",
+    alt: "Ilustración: Laura, tranquila y con los ojos cerrados, se recuesta en su silla con los brazos cruzados; en la mesa, el portátil muestra un panel ordenado y una planta.",
+    h: "Lo pusimos en orden. Uno a uno.",
+    objs: [{ t: "fria", x: "50%", y: "50%" }],
+  },
+  {
+    img: "08-vuelve", dia: "Un martes", hora: "cualquiera", cuando: "Un martes cualquiera", fuegos: 0,
+    lado: "izq", tono: "tinta", movil: "claro", fx: "0%", fxm: "74%",
+    alt: "Ilustración: en la puerta de su local, Laura sonríe y da la mano a una clienta que vuelve, rodeadas de macetas con flores.",
+    h: "Rosa ha vuelto.",
+    p: "Le llegó el mensaje justo a tiempo. Y no es la única.",
+    objs: [{ t: "aviso", x: "64%", y: "20%", txt: "Rosa ha reservado" }],
+  },
+  {
+    img: "09-cierre", dia: "", hora: "19:00", cuando: "19:00", fuegos: 0,
+    lado: "izq", tono: "tinta", movil: "claro", fx: "0%", fxm: "71%",
+    alt: "Ilustración: al atardecer, Laura pasea sonriente por una calle de casas blancas con su perro y una bolsa al hombro.",
+    h: "Ahora cierra a las siete.",
+    p: "Y el domingo es domingo. Su negocio sigue funcionando, en orden.",
+    objs: [{ t: "luz", x: "50%", y: "50%" }],
+  },
 ];
 
-// Live hero tiles. Each pool: [number, text]; first two are the HTML faces, the rest rotate in.
-const vivas = [
-  { ancha: true, tono: "t-indigo", pool: [["14", "whatsapps contestados esta noche"], ["22", "citas confirmadas sin llamar"], ["9", "dudas resueltas antes de abrir"]] },
-  { tono: "t-lavanda", pool: [["3", "clientes avisados"], ["4", "recordatorios enviados hoy"], ["1", "cliente que se enfría, avisado"]] },
-  { tono: "t-oscuro", pool: [["✓", "trimestre listo"], ["31", "facturas emitidas este mes"], ["0", "tickets en la caja"]] },
-  { tono: "t-indigo", pool: [["2", "vuelven esta semana"], ["6", "mensajes de vuelta enviados"], ["1", "reseña nueva"]] },
-  { ancha: true, tono: "t-lavanda", pool: [["5", "publicaciones programadas"], ["3", "semanas preparadas"], ["✓", "instagram al día"]] },
-  { tono: "t-oscuro", pool: [["0", "clientes sin respuesta"], ["12", "siguientes pasos al día"], ["1 min", "en contestar"]] },
-];
-
-// «¿Te suena?»: scattered/overlapping start (percent of the tile, so it scales on phones).
-const quejas = [
-  { t: "Las facturas las hago de noche.", x: "18%", y: "30%", r: "-7deg" },
-  { t: "Hay clientes que dejan de venir y ni me entero.", x: "-6%", y: "-22%", r: "5deg" },
-  { t: "Contesto WhatsApps hasta en la cena.", x: "-22%", y: "38%", r: "-11deg" },
-  { t: "El trimestre siempre me pilla.", x: "14%", y: "-34%", r: "9deg" },
-  { t: "Instagram lo tengo abandonado.", x: "-12%", y: "-12%", r: "-4deg" },
-];
-
-const procesos = [
-  { nombre: "Clientes que se van", antes: "¿Marta? hace mil que no viene", despues: "Te avisamos cuando un cliente deja de venir, antes de perderlo.", tono: "t-indigo" },
-  { nombre: "Recuperar clientes", antes: "habría que escribirles algún día", despues: "Le llega el mensaje en el momento justo, y vuelve.", tono: "t-lavanda" },
-  { nombre: "Seguimiento", antes: "¿a quién le debía una respuesta?", despues: "Cada cliente con su siguiente paso. Nadie se queda sin contestar.", tono: "t-indigo" },
-  { nombre: "Facturas y trimestre", antes: "caja de tickets para la gestoría", despues: "Las facturas salen solas y el trimestre llega preparado.", tono: "t-indigo" },
-  { nombre: "Redes sociales", antes: "subir algo esta semana (otra vez)", despues: "Publicaciones preparadas y programadas sin estar encima.", tono: "t-lavanda" },
-  { nombre: "WhatsApp", antes: "14 sin leer, 3 de ayer", despues: "Contesta al momento, a cualquier hora, y te pasa lo importante.", tono: "t-indigo" },
-  { nombre: "Cómo están tus clientes", antes: "lo tengo en la cabeza", despues: "Un panel: quién está bien, quién se enfría, quién debe.", tono: "t-indigo" },
+const tareas = [
+  "Clientes que se van",
+  "Recuperar clientes",
+  "Seguimiento",
+  "Facturas y trimestre",
+  "Redes sociales",
+  "WhatsApp",
+  "Cómo están tus clientes",
 ];
 
 const pasos = [
-  { n: "1", lado: "izq", t: "revisión del negocio", p: "30 minutos contigo y tres arreglos por escrito en 48 horas. Gratis." },
-  { n: "2", lado: "der", t: "puesta en orden", p: "Precio y plazo cerrados antes de empezar. Pagas por hitos, según lo ves funcionar." },
-  { n: "3", lado: "izq", t: "a tu lado", p: "Cuota mensual sin permanencia: lo vigilamos, lo arreglamos y lo mejoramos." },
+  { t: "Revisión del negocio", x: "30 minutos y tres arreglos por escrito en 48 horas.", pie: "Gratis" },
+  { t: "Puesta en orden", x: "Precio y plazo cerrados antes de empezar. Pagas por hitos.", pie: "Precio cerrado" },
+  { t: "A tu lado", x: "Cuota mensual sin permanencia: lo vigilamos, lo arreglamos y lo mejoramos.", pie: "Sin permanencia" },
 ];
+
+// Coral flame with a mustard core; .humo is the smoke wisp shown when it goes out.
+const llama = `<span class="orb"><span class="orb-i"><svg class="ll" viewBox="0 0 40 52" aria-hidden="true"><path d="M20 1c2 10 14 16 14 31a14 14 0 0 1-28 0c0-8 5-12 7-18 3 5 2 9 5 11 2-7 0-15 2-24Z" fill="#E8664F"/><path d="M20 25c2 5 7 8 7 14a7 7 0 0 1-14 0c0-4 3-6 4-9 1 2 2 3 3 3 0-3-1-5 0-8Z" fill="#F2B544"/></svg></span></span><span class="humo"><i></i><i></i><i></i></span>`;
+const btnIco = `<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`;
 ---
 
-<Prueba
-  titulo="Padrón IA · tu negocio, en orden"
-  letra="c"
-  fuentes="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600&display=swap"
->
+<Prueba titulo="Padrón IA · La semana de Laura (prototipo C)" letra="c" fuentes={fuentes}>
   <script is:inline>
-    // Animated mode only with motion allowed; falls back to the static page if the module never starts.
+    // Animation states only when JS runs and motion is welcome; dropped if the module has not started in 4 s.
     (function () {
       var d = document.documentElement;
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      d.classList.add("c-anima");
-      setTimeout(function () { if (!d.classList.contains("c-listo")) d.classList.remove("c-anima"); }, 4000);
+      d.classList.add("anim");
+      setTimeout(function () { if (!d.classList.contains("listo")) d.classList.remove("anim"); }, 4000);
     })();
   </script>
 
-  <div class="c">
-    <div class="carga" data-carga aria-hidden="true">
-      <div class="carga-rejilla">
-        {piezas.map(([x, y, r]) => <span data-pieza style={`--x:${x};--y:${y};--r:${r}`}></span>)}
+  <!-- Loader: seven loose papers that stack themselves (CSS only, removed by GSAP) -->
+  <div class="carga" data-carga aria-hidden="true">
+    <div class="papeles">
+      <i style="--i:0;--c:#F2F3FB;--x:-140px;--y:-90px;--r:-38deg;--rf:-4deg"></i>
+      <i style="--i:1;--c:#D9A62E;--x:150px;--y:-70px;--r:42deg;--rf:3deg"></i>
+      <i style="--i:2;--c:#8F9BFF;--x:-160px;--y:80px;--r:24deg;--rf:-2deg"></i>
+      <i style="--i:3;--c:#E8664F;--x:130px;--y:110px;--r:-30deg;--rf:4deg"></i>
+      <i style="--i:4;--c:#F2F3FB;--x:-30px;--y:-150px;--r:60deg;--rf:-3deg"></i>
+      <i style="--i:5;--c:#D9A62E;--x:40px;--y:150px;--r:-55deg;--rf:2deg"></i>
+      <i style="--i:6;--c:#4CB782;--x:0px;--y:-40px;--r:12deg;--rf:0deg"></i>
+    </div>
+    <p>Lunes, 23:47</p>
+  </div>
+
+  <header class="barra">
+    <div class="b-marca"><span class="marca">PADRÓN <b>IA</b></span><span class="rotulo">Historia de ejemplo</span></div>
+    <div class="reloj" data-reloj aria-hidden="true">
+      <span class="r-dia" data-dia>LUN</span>
+      <span class="r-hora" data-hora set:html={cifras("23:47")} />
+    </div>
+    <div class="contador" data-contador aria-hidden="true">
+      <span class="c-txt">Fuegos</span><b class="c-num" data-fuegos>0</b>
+    </div>
+  </header>
+
+  <ol class="progreso" aria-hidden="true">
+    {escenas.map((_, i) => <li data-punto><span>{i + 1}</span></li>)}
+  </ol>
+
+  <main>
+    <!-- 0 · Cover -->
+    <section class="portada" data-portada>
+      <div class="port-in">
+        <h1 class="port-h">
+          <span class="w" data-w>Esta</span> <span class="w" data-w>es</span>
+          <span class="w laura" data-w>Laura.<svg class="subraya" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 14C70 6 160 4 296 10" pathLength="1" data-subraya /></svg><span class="badge" data-badge aria-hidden="true">14</span></span>
+        </h1>
+        <p class="port-p" data-port>Tiene un negocio que funciona. Por eso no para.</p>
+        <div class="cta" data-port>
+          <a class="btn" href={WA} target="_blank" rel="noopener"><Fragment set:html={btnIco} /><span>Pide tu revisión gratis</span><span class="btn-tick" aria-hidden="true">✓✓</span></a>
+          <span class="cta-nota">30 min · 3 arreglos por escrito en 48 h</span>
+        </div>
       </div>
+      <p class="baja" data-port aria-hidden="true">Baja y conoce su semana<i></i></p>
+    </section>
+
+    <!-- 1-9 · The week: one pinned stage, each scene enters like a turned page -->
+    <div class="historia" data-historia>
+      {escenas.map((e, k) => (
+        <section
+          class="escena"
+          data-escena
+          data-k={k}
+          data-lado={e.lado}
+          data-tono={e.tono}
+          data-movil={e.movil}
+          data-cartela={e.cartela === false ? "no" : undefined}
+          data-dia={e.dia}
+          data-hora={e.hora}
+          data-fuegos={e.fuegos}
+          style={`--fx:${e.fx};--fxm:${e.fxm}`}
+          aria-label={`Escena ${k + 1} de 9: ${e.cuando}`}
+        >
+          <div class="marco">
+            <div class="lienzo">
+              <div class="mueve" data-mueve>
+                <picture>
+                  <source media="(max-width: 760px)" srcset={`/prueba/c/${e.img}-m.webp`} type="image/webp" />
+                  <img
+                    src={`/prueba/c/${e.img}.webp`}
+                    width="1600"
+                    height="893"
+                    alt={e.alt}
+                    decoding="async"
+                    loading={k >= 2 ? "lazy" : undefined}
+                    fetchpriority={k === 0 ? "high" : undefined}
+                  />
+                </picture>
+                {e.objs.map((o) => (
+                  <span
+                    class={`obj ${o.t}`}
+                    data-obj={o.t}
+                    data-m={o.m === false ? "no" : undefined}
+                    style={`--x:${o.x};--y:${o.y}${o.r ? `;--r:${o.r}` : ""}${o.c ? `;--c:${o.c}` : ""}`}
+                    aria-hidden="true"
+                  >
+                    {o.t === "burbuja" && o.txt}
+                    {o.t === "fuego" && <Fragment set:html={llama} />}
+                    {o.t === "posit" && o.txt}
+                    {o.t === "circulo" && (
+                      <Fragment>
+                        <svg viewBox="0 0 100 80"><path d="M58 8C30 4 6 18 8 42c2 22 30 32 54 28 22-4 34-20 30-38C88 14 70 6 46 9" pathLength="1" data-trazo /></svg>
+                        <b data-num>20</b>
+                      </Fragment>
+                    )}
+                    {o.t === "chat" && (
+                      <Fragment>
+                        <span class="chat-t" data-chat-t>{o.txt}</span>
+                        <span class="chat-pie">10:00 <span class="ticks" data-ticks><i>✓</i><i data-tick2>✓</i></span></span>
+                      </Fragment>
+                    )}
+                    {o.t === "aviso" && (
+                      <Fragment>
+                        <span class="av-ico"><svg viewBox="0 0 20 20"><path d="M5 10.5l3.2 3.2L15 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+                        <span class="av-t"><b>{o.txt}</b><small>Martes · 10:30</small></span>
+                      </Fragment>
+                    )}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div class="texto">
+            <div class="cartela">
+              <p class="cuando">{e.cuando}</p>
+              <h2 set:html={palabras(e.h)} />
+              {e.p && <p class="peq" data-p>{e.p}</p>}
+              {k === 6 && (
+                <ul class="tareas" data-p>
+                  {tareas.map((t) => (
+                    <li data-tarea>
+                      <span class="t-fuego" aria-hidden="true"><Fragment set:html={llama} /><span class="t-ok">✓</span></span>
+                      <span class="t-txt">{t}<span class="raya" aria-hidden="true"></span></span>
+                      <span class="sr">: en orden</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </section>
+      ))}
     </div>
 
-    <header class="top"><a class="marca" href="/">padrón ia</a></header>
-
-    <main>
-      <!-- 1 · hero -->
-      <section class="hero" data-seccion="hero">
-        <div class="linea">
-          <h1 class="gigante" data-corre="hero"><span class="entra" data-hero="titular">tu negocio, <em>en orden</em></span></h1>
+    <!-- 10 · Close -->
+    <section class="cierre" data-cierre>
+      <div class="wrap">
+        <h2 class="cierre-h" set:html={palabras("¿Y tu semana?")} />
+        <p class="cierre-p" data-sube>Pide tu revisión gratis: 30 minutos y tres arreglos por escrito en 48 horas. Sin permanencia. Tus datos, siempre tuyos.</p>
+        <div class="cta" data-sube>
+          <a class="btn" href={WA} target="_blank" rel="noopener"><Fragment set:html={btnIco} /><span>Pide tu revisión gratis</span><span class="btn-tick" aria-hidden="true">✓✓</span></a>
+          <span class="cta-nota">O escríbenos a <a href="mailto:hola@padron-ia.es">hola@padron-ia.es</a></span>
         </div>
-        <div class="hero-cuerpo">
-          <div>
-            <p class="sub" data-hero="texto">
-              Clientes que no se pierden, seguimiento al día, facturas y trimestre listos, un WhatsApp que contesta.
-              Lo ponemos en marcha y nos quedamos.
-            </p>
-            <div data-hero="texto">
-              <a class="boton" href={wa} data-inclina>pide tu revisión gratis</a>
-              <span class="nota">30 min · 3 arreglos por escrito en 48 h</span>
-            </div>
-          </div>
-          <div class="mosaico-caja">
-            <span class="rotulo" data-hero="texto">ejemplo</span>
-            <ul class="mosaico" aria-label="Ejemplo de lo que ves un día cualquiera">
-              {vivas.map((v) => (
-                <li class={`baldosa flip ${v.tono} ${v.ancha ? "ancha" : ""}`} data-viva data-hero="baldosa" data-pool={JSON.stringify(v.pool)}>
-                  <div class="inclina" data-inclina>
-                    <div class="giro" data-giro>
-                      <div class="cara frente" data-cara><b class="dato">{v.pool[0][0]}</b><span>{v.pool[0][1]}</span></div>
-                      <div class="cara dorso" data-cara><b class="dato">{v.pool[1][0]}</b><span>{v.pool[1][1]}</span></div>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- 2 · ¿te suena? -->
-      <section class="seccion" data-suena aria-labelledby="t-suena">
-        <div class="linea"><h2 class="titulo" id="t-suena" data-desliza>¿te suena?</h2></div>
-        <p class="entradilla" data-desliza>Lo que nos cuentan los dueños en la primera conversación. Casi siempre, todo a la vez.</p>
-        <ul class="quejas">
-          {quejas.map((q, i) => (
-            <li class="queja" data-queja style={`--x:${q.x};--y:${q.y};--r:${q.r}`}>
-              <div class="inclina" data-inclina>
-                <span class="n" aria-hidden="true">0{i + 1}</span>
-                <blockquote><p>«{q.t}»</p></blockquote>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <!-- 3 · los 7 procesos -->
-      <section class="seccion" aria-labelledby="t-procesos">
-        <div class="linea"><h2 class="titulo" id="t-procesos" data-desliza>del lío <em>al orden</em></h2></div>
-        <p class="entradilla" data-desliza>Siete cosas que hoy llevas de cabeza. Las ponemos en orden una a una, a tu medida.</p>
-        <div class="procesos" data-procesos>
-          <div class="procesos-dentro">
-            <div class="panel-caja" aria-hidden="true">
-              <div class="panel" data-panel>
-                <p class="cuenta">00 / 07</p>
-                <p class="p-nombre">Así suele estar</p>
-                <p class="p-despues">Cada baldosa es un lío de hoy. Sigue bajando y míralas ponerse en orden.</p>
-              </div>
-              {procesos.map((p, i) => (
-                <div class="panel" data-panel>
-                  <p class="cuenta">0{i + 1} / 07</p>
-                  <p class="p-nombre">{p.nombre}</p>
-                  <p class="p-despues">{p.despues}</p>
-                  <p class="p-antes">«{p.antes}»</p>
-                </div>
-              ))}
-            </div>
-            <ul class="rejilla">
-              {procesos.map((p) => (
-                <li class={`baldosa flip proceso ${p.tono}`} data-proceso>
-                  <div class="inclina" data-inclina>
-                    <div class="giro" data-giro>
-                      <div class="cara frente" data-cara>
-                        <span class="nombre">{p.nombre}</span>
-                        <span class="cita">«{p.antes}»</span>
-                      </div>
-                      <div class="cara dorso" data-cara>
-                        <span class="nombre">{p.nombre}</span>
-                        <span class="res">{p.despues}</span>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <p class="capacidad" data-desliza>funciona igual con 10 clientes que con <em>1.000</em>.</p>
-      </section>
-
-      <!-- 4 · cómo trabajamos -->
-      <section class="seccion" aria-labelledby="t-como">
-        <div class="linea"><h2 class="titulo" id="t-como" data-desliza>cómo trabajamos</h2></div>
-        <p class="entradilla" data-desliza>Tres pasos. El primero es gratis y no te compromete a nada.</p>
-        <ol class="pasos" style="list-style:none;margin:0">
-          {pasos.map((p) => (
-            <li class="paso" data-paso={p.lado}>
-              <div class="paso-fondo" data-paso-fondo></div>
-              <span class="paso-num" data-paso-num aria-hidden="true">{p.n}</span>
-              <div class="paso-texto" data-paso-texto>
-                <h3><span class="sr">Paso {p.n}: </span>{p.t}</h3>
-                <p>{p.p}</p>
-              </div>
+    <section class="sec trabajo">
+      <div class="wrap">
+        <p class="eyebrow" data-sube>Cómo trabajamos</p>
+        <h2 class="sec-h" data-sube>Tres pasos, y nos quedamos</h2>
+        <ol class="pasos">
+          {pasos.map((p, i) => (
+            <li class="paso" data-sube>
+              <span class="paso-n" aria-hidden="true">{i + 1}</span>
+              <h3>{p.t}</h3>
+              <p>{p.x}</p>
+              <span class="paso-pie">{p.pie}</span>
             </li>
           ))}
         </ol>
-      </section>
+      </div>
+    </section>
 
-      <!-- 5 · quién -->
-      <section class="seccion" aria-labelledby="t-quien">
-        <div class="linea"><h2 class="titulo" id="t-quien" data-desliza="der">quién</h2></div>
-        <div class="quien" style="margin-top:40px">
-          <div class="foto" role="img" aria-label="Hueco para la foto de Jesús">foto de Jesús</div>
-          <div class="quien-texto" data-inclina>
-            <p class="grande">Jesús Martínez Padrón lleva tu negocio contigo. Con nombre, con WhatsApp y sin desaparecer.</p>
-            <p class="tuyos">tus datos, siempre tuyos.</p>
-          </div>
+    <section class="sec quien">
+      <div class="wrap quien-grid">
+        <div class="foto" data-sube>Foto de Jesús</div>
+        <div>
+          <p class="eyebrow" data-sube>Quién</p>
+          <h2 class="sec-h" data-sube>Jesús Martínez Padrón lleva tu negocio contigo.</h2>
+          <p class="lead" data-sube>Con nombre, con WhatsApp y sin desaparecer.</p>
+          <p class="datos" data-sube>Tus datos, siempre tuyos.</p>
         </div>
-      </section>
+      </div>
+    </section>
+  </main>
 
-      <!-- 6 · cierre -->
-      <section class="cierre" data-seccion="cierre" aria-labelledby="t-cierre">
-        <div class="linea">
-          <h2 class="gigante" id="t-cierre" data-corre="cierre">¿lo ponemos <em>en orden?</em></h2>
-        </div>
-        <div class="cierre-acciones">
-          <a class="boton" href={wa} data-inclina>pide tu revisión gratis</a>
-          <a class="correo" href="mailto:hola@padron-ia.es">hola@padron-ia.es</a>
-        </div>
-        <footer class="pie">
-          <span>© 2026 Padrón IA</span>
-          <a href="/legal">Aviso legal</a>
-          <a href="/privacidad">Privacidad</a>
-          <a href="/cookies">Cookies</a>
-        </footer>
-      </section>
-    </main>
-  </div>
+  <footer class="pie">
+    <div class="wrap">
+      <span>© 2026 Padrón IA · <a href="mailto:hola@padron-ia.es">hola@padron-ia.es</a></span>
+      <nav aria-label="Legal"><a href="/legal">Aviso legal</a><a href="/privacidad">Privacidad</a><a href="/cookies">Cookies</a></nav>
+    </div>
+  </footer>
 </Prueba>
 
 <script>
@@ -223,182 +343,257 @@ const pasos = [
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   gsap.registerPlugin(ScrollTrigger);
 
-  const raiz = document.documentElement;
-  const todos = <T extends Element = HTMLElement>(sel: string, dentro: ParentNode = document) =>
-    Array.from(dentro.querySelectorAll<T & HTMLElement>(sel));
+  const root = document.documentElement;
+  const E = "power3.out"; // the one easing of the page (bubbles and pops use back.out on purpose)
+  const $ = (s: string, c: ParentNode = document) => c.querySelector<HTMLElement>(s);
+  const $$ = (s: string, c: ParentNode = document) => Array.from(c.querySelectorAll<HTMLElement>(s));
 
-  if (raiz.classList.contains("c-anima") && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    raiz.classList.add("c-listo");
-    gsap.defaults({ ease: "power3.out" });
-    carga();
-    inclinar();
-    correr();
-    suena();
-    procesos();
-    deslizar();
-    pasos();
+  const escenas = $$("[data-escena]");
+  const N = escenas.length;
+  const K_ORDEN = 6; // scene 7: the list gets crossed out
+  const datos = escenas.map((e) => ({ dia: e.dataset.dia ?? "", hora: e.dataset.hora ?? "", f: Number(e.dataset.fuegos) }));
+
+  // ---------- Top bar: clock with rolling digits + fires counter ----------
+  const reloj = $("[data-reloj]")!;
+  const rDia = $("[data-dia]")!;
+  const rHora = $("[data-hora]")!;
+  let horaV = "23:47";
+  let diaV = "LUN";
+  function setReloj(dia: string, hora: string) {
+    if (dia !== diaV) {
+      diaV = dia;
+      rDia.textContent = dia;
+      rDia.hidden = !dia;
+      gsap.fromTo(rDia, { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.4, ease: E });
+    }
+    if (hora === horaV) return;
+    const prev = horaV;
+    horaV = hora;
+    rHora.textContent = "";
+    [...hora].forEach((c, i) => {
+      const s = document.createElement("span");
+      s.className = c === ":" ? "d dos" : "d";
+      s.textContent = c;
+      rHora.append(s);
+      if (prev[i] !== c) gsap.fromTo(s, { yPercent: 80, rotateX: -90, opacity: 0 }, { yPercent: 0, rotateX: 0, opacity: 1, duration: 0.5, delay: i * 0.035, ease: E });
+    });
+  }
+  const contador = $("[data-contador]")!;
+  const cNum = $("[data-fuegos]")!;
+  let fuegosV = 0;
+  function setFuegos(v: number, orden: boolean) {
+    contador.dataset.estado = v > 0 ? "fuego" : orden ? "orden" : "";
+    if (v === fuegosV) return;
+    fuegosV = v;
+    cNum.textContent = String(v);
+    gsap.fromTo(cNum, { scale: 1.45 }, { scale: 1, duration: 0.5, ease: "back.out(2)" });
+  }
+
+  // ---------- Scene 7: tasks crossed out one by one, each fire goes out with smoke ----------
+  const tareas = $$("[data-tarea]");
+  const tHecha = tareas.map(() => false);
+  function tarea(i: number, on: boolean) {
+    if (tHecha[i] === on) return;
+    tHecha[i] = on;
+    const li = tareas[i];
+    const ll = $(".orb", li)!, humo = $(".humo", li)!, raya = $(".raya", li)!, ok = $(".t-ok", li)!;
+    li.classList.toggle("hecha", on);
+    if (on) {
+      gsap.to(ll, { scale: 0, duration: 0.35, ease: E });
+      gsap.fromTo(humo, { y: 0, opacity: 0.9, scale: 0.6 }, { y: -26, opacity: 0, scale: 1.3, duration: 0.6, ease: E });
+      gsap.to(raya, { scaleX: 1, duration: 0.45, ease: E });
+      gsap.to(ok, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" });
+    } else {
+      gsap.to(ll, { scale: 1, duration: 0.35, ease: E });
+      gsap.set(humo, { opacity: 0 });
+      gsap.to(raya, { scaleX: 0, duration: 0.3, ease: E });
+      gsap.to(ok, { opacity: 0, scale: 0.4, duration: 0.25, ease: E });
+    }
+  }
+
+  // ---------- Scene intros (text word by word, then the objects drawn over the illustration) ----------
+  const hecho = escenas.map(() => false);
+  function intro(k: number) {
+    if (hecho[k]) return;
+    hecho[k] = true;
+    const e = escenas[k];
+    const tl = gsap.timeline();
+    tl.fromTo($$("[data-w]", e), { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.04, ease: E })
+      .fromTo($$("[data-p]", e), { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: E }, "-=0.45");
+    let d = 0.35;
+    $$("[data-obj]", e).forEach((o, i) => {
+      switch (o.dataset.obj) {
+        case "burbuja":
+          tl.fromTo(o, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, d);
+          d += 0.3;
+          break;
+        case "fuego":
+          tl.fromTo(o, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(2)", transformOrigin: "50% 100%" }, d);
+          d += 0.22;
+          break;
+        case "posit":
+          tl.fromTo(o, { y: -innerHeight * 0.7, rotation: i % 2 ? 40 : -35, opacity: 1 }, { y: 0, rotation: 0, duration: 0.9, ease: E }, d);
+          d += 0.2;
+          break;
+        case "ticket":
+          tl.fromTo(o, { y: -innerHeight * 0.6, rotation: i % 2 ? -30 : 25, opacity: 1 }, { y: 0, rotation: 0, duration: 0.8, ease: E }, d + 0.2);
+          d += 0.18;
+          break;
+        case "circulo":
+          tl.set(o, { opacity: 1 }, d)
+            .fromTo($("[data-trazo]", o), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1, ease: E }, d)
+            .fromTo($("[data-num]", o), { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, d + 0.6);
+          d += 0.4;
+          break;
+        case "apaga":
+          tl.fromTo(o, { opacity: 0, clipPath: "inset(0% 0% 100% 0%)" }, { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 1.6, ease: E }, d + 0.5);
+          break;
+        case "chat": {
+          const t = $("[data-chat-t]", o)!;
+          const txt = t.dataset.txt ?? "";
+          const escrito = $(".escrito", t)!;
+          const st = { n: 0 };
+          tl.fromTo(o, { y: 16, scale: 0.9, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, d)
+            .to(st, { n: txt.length, duration: txt.length * 0.045, ease: "none", onUpdate: () => { escrito.textContent = txt.slice(0, Math.round(st.n)); } }, d + 0.45)
+            .fromTo($("[data-tick2]", o), { opacity: 0, x: -4 }, { opacity: 1, x: 0, duration: 0.3, ease: E }, "+=0.3")
+            .add(() => o.classList.add("leido"), "+=0.35");
+          break;
+        }
+        case "aviso":
+          tl.fromTo(o, { y: -24, opacity: 0, scale: 0.92 }, { y: 0, opacity: 1, scale: 1, duration: 0.7, ease: "back.out(2)" }, d + 0.4)
+            .add(() => o.classList.add("ping"), d + 0.9);
+          break;
+        case "luz":
+          tl.fromTo(o, { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1.15, duration: 2.6, ease: E }, 0.2);
+          break;
+      }
+    });
+    if (k === 4) {
+      // Peak: a short shudder once, and the fires orbit slowly.
+      const m = $("[data-mueve]", e)!;
+      gsap.fromTo(m, { x: -3 }, { x: 3, duration: 0.05, repeat: 5, yoyo: true, ease: "none", delay: 0.2, onComplete: () => { gsap.set(m, { x: 0 }); } });
+      $$(".obj .orb", e).forEach((o, i) => {
+        gsap.to(o, { rotation: i % 2 ? -360 : 360, duration: 9 + i * 2, repeat: -1, ease: "none" });
+        gsap.to($(".orb-i", o), { rotation: i % 2 ? 360 : -360, duration: 9 + i * 2, repeat: -1, ease: "none" });
+      });
+    }
+  }
+
+  // ---------- Active scene: clock, counter, progress dots ----------
+  const puntos = $$("[data-punto]");
+  let activa = -2;
+  function setActiva(k: number) {
+    if (k === activa) return;
+    activa = k;
+    const d = k < 0 ? { dia: "LUN", hora: "23:47", f: 0 } : datos[k];
+    setReloj(d.dia, d.hora);
+    reloj.classList.toggle("parado", k === N - 1);
+    if (k !== K_ORDEN) setFuegos(d.f, k > K_ORDEN);
+    else setFuegos(7 - tHecha.filter(Boolean).length, true);
+    puntos.forEach((p, i) => {
+      p.classList.toggle("activo", i === k);
+      p.classList.toggle("pasado", i < k);
+    });
+    if (k >= 0) intro(k);
+  }
+
+  function main() {
+    if (!root.classList.contains("anim")) return; // reduced motion or JS too late: static, readable page
+
+    // Prepare the typed chat bubble (full text stays in the HTML for no-JS readers).
+    $$("[data-chat-t]").forEach((t) => {
+      const txt = t.textContent ?? "";
+      t.dataset.txt = txt;
+      t.textContent = "";
+      const f = document.createElement("span");
+      f.className = "fantasma";
+      f.textContent = txt;
+      const w = document.createElement("span");
+      w.className = "escrito";
+      t.append(f, w);
+    });
+    tareas.forEach((li) => {
+      gsap.set($(".raya", li), { scaleX: 0 });
+      gsap.set($(".t-ok", li), { opacity: 0, scale: 0.4 });
+      gsap.set($(".humo", li), { opacity: 0 });
+    });
+
+    // 1 · Loader: papers finish stacking (CSS, ~0.9 s), then the sheet lifts off.
+    const carga = $("[data-carga]")!;
+    const espera = Math.max(0.1, 0.85 - performance.now() / 1000);
+    gsap.timeline({ delay: espera })
+      .to(carga, { clipPath: "inset(0% 0% 100% 0%)", duration: 0.35, ease: E })
+      .set(carga, { display: "none" });
+
+    // 2 · Cover
+    const port = $("[data-portada]")!;
+    const t0 = espera + 0.15;
+    gsap.timeline({ delay: t0 })
+      .fromTo($$("[data-w]", port), { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.04, ease: E })
+      .fromTo("[data-subraya]", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.8, ease: E }, 0.35)
+      .fromTo("[data-badge]", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, 0.7)
+      .fromTo($$("[data-port]", port), { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: E }, 0.3);
+
+    // 3 · The week: one pinned stage; each scene slowly zooms and drifts, the next one is revealed bottom-up.
+    const historia = $("[data-historia]")!;
+    ScrollTrigger.create({
+      trigger: historia,
+      start: "top 55%",
+      onEnter: () => setActiva(0),
+      onLeaveBack: () => setActiva(-1),
+    });
+
+    const mm = gsap.matchMedia();
+    mm.add({ mob: "(max-width: 760px)", desk: "(min-width: 761px)" }, (ctx) => {
+      const { mob } = ctx.conditions as { mob: boolean };
+      const tramo = mob ? 0.9 : 1.2; // viewport heights of scroll per scene
+      const tl = gsap.timeline({ defaults: { ease: "none" } });
+      escenas.forEach((e, k) => {
+        const ini = Math.max(0, k - 0.3);
+        tl.fromTo($("[data-mueve]", e), { scale: 1.08, yPercent: 4 }, { scale: 1, yPercent: -4, duration: k + 1 - ini }, ini);
+        if (k > 0) tl.fromTo(e, { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: E }, k - 0.3);
+      });
+      // Scene 7 warms up: cold indigo layer fades out while the list is crossed out.
+      const fria = $('[data-obj="fria"]', escenas[K_ORDEN]);
+      if (fria) tl.fromTo(fria, { opacity: 0.35 }, { opacity: 0, duration: 0.75 }, K_ORDEN + 0.05);
+
+      ScrollTrigger.create({
+        trigger: historia,
+        pin: true,
+        start: "top top",
+        end: () => `+=${N * tramo * innerHeight}`,
+        scrub: 0.6,
+        animation: tl,
+        invalidateOnRefresh: true,
+        onToggle: (self) => root.classList.toggle("en-historia", self.isActive),
+        onUpdate(self) {
+          const t = self.progress * N;
+          tareas.forEach((_, i) => tarea(i, t >= K_ORDEN + 0.1 + i * 0.11));
+          const k = Math.min(N - 1, Math.floor(t + 0.3));
+          if (k === K_ORDEN && activa === K_ORDEN) setFuegos(7 - tHecha.filter(Boolean).length, true);
+          setActiva(k);
+        },
+      });
+    });
+
+    // 4 · Close and the sections after it
+    const cierre = $("[data-cierre]")!;
+    ScrollTrigger.create({
+      trigger: cierre,
+      start: "top 70%",
+      once: true,
+      onEnter: () => {
+        gsap.fromTo($$("[data-w]", cierre), { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.06, ease: E });
+      },
+    });
+    $$("[data-sube]").forEach((el) =>
+      gsap.fromTo(el, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: E, scrollTrigger: { trigger: el, start: "top 90%", once: true } }),
+    );
+
+    setActiva(-1);
+    root.classList.add("listo");
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
   }
 
-  // 1 · loader: scattered tiles settle into a 3×3 grid, then open like doors (≈1.1 s).
-  function carga() {
-    const capa = document.querySelector<HTMLElement>("[data-carga]");
-    if (!capa) return entradaHero();
-    const piezas = todos("[data-pieza]", capa);
-    gsap.timeline({ onComplete: () => { capa.remove(); } })
-      .to(piezas, { x: 0, y: 0, rotation: 0, duration: 0.55, stagger: { each: 0.02, from: "random" } })
-      .to(piezas, {
-        rotationY: -90, transformPerspective: 700, transformOrigin: "left center",
-        duration: 0.32, ease: "power3.inOut", stagger: 0.02,
-      }, "-=0.05")
-      .to(capa, { autoAlpha: 0, duration: 0.3 }, "<0.1")
-      .add(entradaHero, "<0.05");
-  }
-
-  function entradaHero() {
-    gsap.timeline()
-      .to("[data-hero='titular']", { x: 0, opacity: 1, duration: 1 })
-      .to("[data-hero='texto']", { y: 0, opacity: 1, duration: 0.8, stagger: 0.08 }, 0.15)
-      .to("[data-hero='baldosa']", { x: 0, opacity: 1, duration: 0.8, stagger: 0.06 }, 0.25)
-      .add(vivas);
-  }
-
-  // Hero tiles flip every 3-5 s; the face that just went out of view gets the next fact.
-  function vivas() {
-    const caja = document.querySelector(".mosaico");
-    let visible = true;
-    if (caja) new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(caja);
-    todos("[data-viva]").forEach((t) => {
-      const giro = t.querySelector("[data-giro]");
-      const caras = todos("[data-cara]", t);
-      const pool: string[][] = JSON.parse(t.dataset.pool || "[]");
-      if (!giro || caras.length < 2 || pool.length < 2) return;
-      let giros = 0;
-      let idx = 1;
-      const girar = () => {
-        if (!visible || document.hidden) { gsap.delayedCall(1, girar); return; }
-        giros++;
-        gsap.to(giro, {
-          rotationY: giros * 180, duration: 0.7, ease: "power3.inOut",
-          onComplete: () => {
-            const oculta = caras[giros % 2 === 0 ? 1 : 0];
-            idx = (idx + 1) % pool.length;
-            const b = oculta.querySelector("b");
-            const s = oculta.querySelector("span");
-            if (b) b.textContent = pool[idx][0];
-            if (s) s.textContent = pool[idx][1];
-            gsap.delayedCall(gsap.utils.random(3, 5), girar);
-          },
-        });
-      };
-      gsap.delayedCall(gsap.utils.random(1.2, 3.5), girar);
-    });
-  }
-
-  // Press a tile: it tilts towards the pointer (max 8°, perspective 700px).
-  function inclinar() {
-    todos("[data-inclina]").forEach((el) => {
-      gsap.set(el, { transformPerspective: 700 });
-      const rx = gsap.quickTo(el, "rotationX", { duration: 0.4, ease: "power3.out" });
-      const ry = gsap.quickTo(el, "rotationY", { duration: 0.4, ease: "power3.out" });
-      el.addEventListener("pointerdown", (e) => {
-        const r = el.getBoundingClientRect();
-        const px = (e.clientX - r.left) / r.width - 0.5;
-        const py = (e.clientY - r.top) / r.height - 0.5;
-        ry(gsap.utils.clamp(-8, 8, px * 16));
-        rx(gsap.utils.clamp(-8, 8, -py * 16));
-      });
-      const soltar = () => { rx(0); ry(0); };
-      ["pointerup", "pointerleave", "pointercancel"].forEach((ev) => el.addEventListener(ev, soltar));
-    });
-  }
-
-  // Giant headline cut by the right edge slides inside its own clipped line to reveal the end.
-  function correr() {
-    todos("[data-corre]").forEach((el) => {
-      const linea = el.parentElement as HTMLElement;
-      const sec = el.closest("section") as HTMLElement;
-      const fin = () => {
-        const cs = getComputedStyle(linea);
-        const util = linea.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-        return Math.min(0, util - el.offsetWidth);
-      };
-      const hero = el.dataset.corre === "hero";
-      gsap.fromTo(el, { x: 0 }, {
-        x: fin, ease: "none",
-        scrollTrigger: {
-          trigger: hero ? sec : linea,
-          start: hero ? "top top" : "top 85%",
-          end: hero ? () => "+=" + window.innerHeight * 0.6 : "bottom bottom",
-          endTrigger: hero ? undefined : sec,
-          scrub: true, invalidateOnRefresh: true,
-        },
-      });
-    });
-  }
-
-  // «¿Te suena?»: scattered, tilted, overlapping tiles straighten into the grid while scrolling.
-  function suena() {
-    const sec = document.querySelector("[data-suena]");
-    if (!sec) return;
-    gsap.to(todos("[data-queja]", sec), {
-      x: 0, y: 0, rotation: 0, stagger: 0.08, ease: "power3.out",
-      scrollTrigger: { trigger: ".quejas", start: "top 85%", end: "center 55%", scrub: 0.6 },
-    });
-  }
-
-  // Signature piece: 7 tiles flip from «mess» to «order» one by one.
-  function procesos() {
-    const sec = document.querySelector<HTMLElement>("[data-procesos]");
-    if (!sec) return;
-    const baldosas = todos("[data-proceso]", sec);
-    const paneles = todos("[data-panel]", sec);
-    const mm = gsap.matchMedia();
-
-    mm.add("(min-width: 900px)", () => {
-      const tl = gsap.timeline({
-        defaults: { ease: "power3.inOut" },
-        scrollTrigger: {
-          trigger: sec, pin: true, scrub: 0.6, start: "top top",
-          end: () => "+=" + window.innerHeight * 0.8 * baldosas.length, invalidateOnRefresh: true,
-        },
-      });
-      baldosas.forEach((b, i) => {
-        const giro = b.querySelector("[data-giro]");
-        tl.to(giro, { rotationY: 180, duration: 0.7 }, i)
-          .to(b, { scale: 1.08, zIndex: 2, duration: 0.5 }, i)
-          .to(paneles[i], { autoAlpha: 0, y: -30, duration: 0.35 }, i)
-          .fromTo(paneles[i + 1], { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.4, immediateRender: false }, i + 0.3);
-        if (i > 0) tl.to(baldosas[i - 1], { scale: 1, zIndex: 1, duration: 0.5 }, i);
-      });
-      tl.to(baldosas[baldosas.length - 1], { scale: 1, zIndex: 1, duration: 0.5 }, baldosas.length)
-        .to({}, { duration: 0.3 });
-    });
-
-    mm.add("(max-width: 899px)", () => {
-      baldosas.forEach((b) => {
-        gsap.to(b.querySelector("[data-giro]"), {
-          rotationY: 180, duration: 0.7, ease: "power3.inOut",
-          scrollTrigger: { trigger: b, start: "top 70%", toggleActions: "play none none reverse" },
-        });
-      });
-    });
-  }
-
-  // Section titles and lines slide in from the edge.
-  function deslizar() {
-    todos("[data-desliza]").forEach((el) => {
-      gsap.to(el, { x: 0, opacity: 1, duration: 1, scrollTrigger: { trigger: el, start: "top 88%", once: true } });
-    });
-  }
-
-  // «Cómo trabajamos»: the giant number arrives first, the tile follows, then the text.
-  function pasos() {
-    todos("[data-paso]").forEach((p) => {
-      gsap.timeline({ scrollTrigger: { trigger: p, start: "top 85%", once: true } })
-        .to(p.querySelector("[data-paso-num]"), { x: 0, duration: 0.8 })
-        .to(p.querySelector("[data-paso-fondo]"), { x: 0, duration: 0.9 }, 0.08)
-        .to(p.querySelector("[data-paso-texto]"), { opacity: 1, y: 0, duration: 0.6 }, 0.45);
-    });
-  }
+  main();
 </script>
