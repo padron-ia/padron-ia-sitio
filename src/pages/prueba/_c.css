@@ -57,7 +57,7 @@ html:not(.anim) .reloj,html:not(.anim) .contador{visibility:hidden}
 
 /* ---------- Story progress (desktop) ---------- */
 .progreso{display:none}
-@media (min-width:900px) and (min-aspect-ratio:5/4){
+@media (min-width:700px){
   .anim .progreso{display:flex;flex-direction:column;gap:14px;list-style:none;position:fixed;left:20px;top:50%;translate:0 -50%;z-index:40;
     opacity:0;transition:opacity .5s var(--ease);pointer-events:none}
   .anim.en-historia .progreso{opacity:1}
@@ -81,9 +81,16 @@ html:not(.anim) .reloj,html:not(.anim) .contador{visibility:hidden}
 .cta-nota{font:400 16px/1.4 'Atkinson Hyperlegible',sans-serif;color:var(--gris)}
 
 /* ---------- 0 · Cover ---------- */
-.portada{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;
-  padding:calc(var(--bar) + 48px) var(--gut) 96px;background:var(--tinta);color:var(--hueso);overflow:hidden}
-.port-in{width:100%;max-width:1200px;margin:0 auto}
+.portada{--port:#2B3056;position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+  padding:calc(var(--bar) + 12px) var(--gut) 52px;background:var(--port);color:var(--hueso);overflow:hidden}
+.port-in{width:100%;max-width:1280px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);align-items:center;gap:clamp(12px,3vw,48px)}
+.port-fig{height:min(calc(100svh - var(--bar) - 64px),980px)}
+/* Same flat background as the illustration; the image is cropped to Laura and its edges fade, so no border shows. */
+.port-fig img{display:block;width:100%;height:100%;object-fit:cover;object-position:56% 50%;transform-origin:50% 100%;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent),linear-gradient(to bottom,transparent,#000 6%,#000 95%,transparent);
+  -webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent),linear-gradient(to bottom,transparent,#000 6%,#000 95%,transparent);
+  mask-composite:intersect}
+.anim [data-port-fig]{opacity:0}
 .port-h{font:var(--titular);letter-spacing:-.02em}
 .laura{position:relative;color:var(--mostaza)}
 .subraya{position:absolute;left:0;bottom:-.1em;width:92%;height:.16em;overflow:visible}
@@ -106,19 +113,31 @@ html:not(.anim) .reloj,html:not(.anim) .contador{visibility:hidden}
 
 .marco{position:absolute;inset:0;overflow:hidden}
 /* Manual «cover» around a focal point, oversized 10 % in height for the parallax drift; objects use % of the illustration. */
-.lienzo{--h:100svh;position:absolute;top:50%;left:var(--fx);width:max(100%,calc(var(--h) * 1.1 * 1.7917));aspect-ratio:1600/893;
-  translate:calc(var(--fx) * -1) -50%;container-type:inline-size}
-.mueve{position:absolute;inset:0;will-change:transform}
-.mueve picture,.mueve img{display:block;width:100%;height:100%}
+/* The point --lx of the illustration lands at --tx of the screen (opposite the caption), clamped so it always covers. */
+.lienzo{--h:100svh;--lw:max(100%,calc(var(--h) * 1.1 * 1.7917));--tx:.7;--fx:var(--lx);position:absolute;top:50%;width:var(--lw);aspect-ratio:1600/893;
+  left:clamp(calc(100% - var(--lw)),calc(100% * var(--tx) - var(--lw) * var(--fx)),0%);translate:0 -50%;container-type:inline-size}
+.escena[data-lado=der] .lienzo{--tx:.3}
+.mueve{position:absolute;inset:0;perspective:1200px}
+.fondo,.frente{position:absolute;inset:0;display:block;will-change:transform}
+.mueve picture,.mueve img,.mueve video{display:block;width:100%;height:100%}
+.mueve video{object-fit:cover}
+.recorte{position:absolute;inset:0;filter:drop-shadow(0 20px 30px rgba(27,30,58,.25));pointer-events:none}
 
-.texto{position:absolute;top:var(--bar);bottom:0;width:min(38vw,600px);display:flex;align-items:center;z-index:2}
+.texto{position:absolute;top:var(--bar);bottom:0;width:clamp(380px,40vw,600px);display:flex;align-items:center;z-index:2}
 .escena[data-lado=izq] .texto{left:5vw}
 .escena[data-lado=der] .texto{right:4vw}
-.escena[data-cartela=no] .texto{right:7vw;width:min(33vw,540px)}
+/* Taller-than-wide desktop windows see less of each picture: scene 4 recentres on Laura and the calendar. */
+@media (max-aspect-ratio:13/10){
+  .escena[data-k="3"] .lienzo{--lx:.38}
+  .escena[data-k="3"] .texto{align-items:flex-start;padding-top:28px}
+}
+@media (min-aspect-ratio:13/10){
+  .escena[data-cartela=no] .texto{right:7vw;width:min(33vw,540px)}
+  .escena[data-cartela=no] .cartela{background:none!important;box-shadow:none!important}
+}
 .cartela{padding:clamp(20px,2.2vw,36px);border-radius:6px}
 .escena[data-tono=tinta] .cartela{background:rgba(242,243,251,.92);color:var(--tinta);box-shadow:0 18px 40px -24px rgba(27,30,58,.5)}
 .escena[data-tono=claro] .cartela{background:rgba(27,30,58,.62);color:var(--hueso)}
-.escena[data-cartela=no] .cartela{background:none;box-shadow:none}
 .cartela h2{font:800 var(--h2e)/.98 'Bricolage Grotesque',sans-serif;letter-spacing:-.02em}
 .cuando{font:700 14px/1 'Atkinson Hyperlegible',sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;opacity:.8}
 .anim .cuando{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -186,18 +205,19 @@ html:not(.anim) .t-txt,.tareas li.hecha .t-txt{opacity:.72}
 .av-ico svg{width:62%;height:62%}
 .av-t b{display:block;font:800 max(15px,1.3cqw)/1.15 'Bricolage Grotesque',sans-serif}
 .av-t small{display:block;font:400 max(14px,.95cqw)/1.3 'Atkinson Hyperlegible',sans-serif;color:var(--suave)}
-.luz{width:100%;height:100%;background:radial-gradient(circle at 62% 38%,rgba(255,196,84,.75),rgba(217,166,46,.25) 45%,rgba(217,166,46,0) 70%);mix-blend-mode:soft-light;pointer-events:none}
-.fria{width:100%;height:100%;background:#3d4699;mix-blend-mode:multiply;pointer-events:none}
-.obj.fria{opacity:0}
-.anim .obj.fria{opacity:.35}
+.capa-color{position:absolute;inset:0;z-index:3;pointer-events:none}
+.anim .luz{opacity:0}
+.luz{background:radial-gradient(circle at 62% 38%,rgba(255,196,84,.75),rgba(217,166,46,.25) 45%,rgba(217,166,46,0) 70%);mix-blend-mode:soft-light;pointer-events:none}
+.fria{background:#3d4699;mix-blend-mode:multiply;opacity:0}
+.anim .fria{opacity:.35}
 
 /* ---------- Stacked layout (phones and portrait screens): image on top, caption below ---------- */
-@media (max-aspect-ratio:5/4){
-  :root{--hm:60svh}
+@media (max-width:699px){
+  :root{--hm:50svh}
   .escena{height:auto;display:flex;flex-direction:column}
-  .escena[data-k="6"]{--hm:46svh}
+  .escena[data-k="6"]{--hm:40svh}
   .marco{position:relative;inset:auto;height:var(--hm);flex:none}
-  .lienzo{--h:var(--hm);left:var(--fxm);translate:calc(var(--fxm) * -1) -50%}
+  .escena[data-lado] .lienzo{--h:var(--hm);--tx:.5;--fx:var(--lxm)}
   .escena[data-lado] .texto{position:relative;top:auto;bottom:auto;left:auto;right:auto;width:auto;flex:1;display:block;
     padding:clamp(18px,3vw,40px) var(--gut) 64px;background:var(--fondo-e)}
   .escena[data-lado] .cartela{background:none!important;box-shadow:none!important;padding:0;color:var(--txt-m)}
@@ -239,9 +259,8 @@ html:not(.anim) .t-txt,.tareas li.hecha .t-txt{opacity:.72}
 .anim .subraya path{stroke-dashoffset:1}
 
 /* ---------- Phones ---------- */
-@media (max-width:760px){
-  :root{--bar:68px;--hm:50svh}
-  .escena[data-k="6"]{--hm:40svh}
+@media (max-width:699px){
+  :root{--bar:68px}
   .barra{grid-template-columns:1fr auto;grid-template-rows:30px 30px;gap:0 12px;padding:4px 16px}
   .b-marca{grid-column:1 / -1;justify-content:space-between}
   .rotulo{padding:4px 9px}
@@ -255,7 +274,11 @@ html:not(.anim) .t-txt,.tareas li.hecha .t-txt{opacity:.72}
   .quien-grid{grid-template-columns:1fr}
   .foto{max-width:260px}
   .btn{width:100%;justify-content:center}
-  .portada{padding-bottom:110px}
+  .portada{padding-bottom:64px}
+  .port-in{grid-template-columns:1fr;gap:8px}
+  .port-fig{order:-1;height:45svh}
+  .port-p{margin:16px 0 22px}
+  .baja{bottom:18px}
 }
 @media (prefers-reduced-motion:reduce){
   .ll,.dos,.baja i{animation:none}

@@ -18,15 +18,17 @@ type Obj = { t: string; x: string; y: string; txt?: string; m?: false; r?: strin
 type Escena = {
   img: string; alt: string; dia: string; hora: string; cuando: string; fuegos: number;
   lado: "izq" | "der"; tono: "claro" | "tinta"; movil: "oscuro" | "claro"; cartela?: false;
-  fx: string; fxm: string; h: string; p?: string; objs: Obj[];
+  lx: number; lxm: number; video?: true; capa?: true; prof?: number; h: string; p?: string; objs: Obj[];
 };
 
-// fx / fxm: horizontal focal point of the illustration (desktop / stacked layout), chosen per scene so Laura and
-// the objects stay in frame while the caption sits on the free side. Object x/y are % of the illustration.
+// lx / lxm: x of the point to keep in frame (Laura and her objects), as a fraction of the illustration, for the
+// overlay layout (it lands at 70 % or 30 % of the screen, opposite the caption) and for the stacked phone layout
+// (centred). video: looping clip instead of the still. capa: cut-out of Laura on its own layer (depth parallax);
+// prof scales that layer's extra travel down where the cut-out edges would show. Object x/y are % of the illustration.
 const escenas: Escena[] = [
   {
     img: "01-noche", dia: "LUN", hora: "23:47", cuando: "Lunes, 23:47", fuegos: 0,
-    lado: "izq", tono: "claro", movil: "oscuro", fx: "50%", fxm: "78%",
+    lado: "izq", tono: "claro", movil: "oscuro", lx: .65, lxm: .66, video: true,
     alt: "Ilustración: de noche, Laura sentada en el sofá mira el móvil con cara de cansancio; en la mesa, el portátil abierto, papeles y una taza.",
     h: "Son las 23:47 y sigue contestando mensajes.",
     p: "Lleva seis años con su negocio. Hace seis años que no desconecta.",
@@ -39,7 +41,7 @@ const escenas: Escena[] = [
   },
   {
     img: "02-manana", dia: "MAR", hora: "08:05", cuando: "Martes, 08:05", fuegos: 2,
-    lado: "izq", tono: "tinta", movil: "claro", fx: "30%", fxm: "85%",
+    lado: "izq", tono: "tinta", movil: "claro", lx: .63, lxm: .70, capa: true, prof: 0.25,
     alt: "Ilustración: por la mañana, Laura cruza su local a toda prisa con un café en una mano y el móvil sonando en la otra, delante de una pared llena de pósits.",
     h: "A las ocho ya va tarde.",
     p: "14 WhatsApps sin leer. Tres son de ayer.",
@@ -53,10 +55,10 @@ const escenas: Escena[] = [
   },
   {
     img: "03-silla", dia: "MAR", hora: "12:40", cuando: "Martes, 12:40", fuegos: 3,
-    lado: "der", tono: "tinta", movil: "claro", fx: "100%", fxm: "39%",
+    lado: "der", tono: "tinta", movil: "claro", lx: .42, lxm: .44, capa: true,
     alt: "Ilustración: Laura, de pie y preocupada, mira una silla vacía junto a la pared; detrás, un calendario y unas plantas.",
-    h: "Rosa ya no viene.",
-    p: "Era clienta de siempre. Nadie se ha dado cuenta de que se fue.",
+    h: "Antonio ya no viene.",
+    p: "Era cliente de siempre. Nadie se ha dado cuenta de que se fue.",
     objs: [
       { t: "apaga", x: "54.5%", y: "71%" },
       { t: "fuego", x: "47%", y: "48%" },
@@ -64,7 +66,7 @@ const escenas: Escena[] = [
   },
   {
     img: "04-papeles", dia: "JUE", hora: "22:15", cuando: "Jueves, 22:15", fuegos: 4,
-    lado: "der", tono: "tinta", movil: "oscuro", cartela: false, fx: "100%", fxm: "30%",
+    lado: "der", tono: "tinta", movil: "oscuro", cartela: false, lx: .46, lxm: .39, capa: true,
     alt: "Ilustración: de noche, Laura se sujeta la frente en su mesa entre montones de papeles y una caja de tickets; a su lado, un calendario con un día rodeado en rojo.",
     h: "El trimestre, otra vez encima.",
     p: "Una caja de tickets para la gestoría y el día 20 en rojo.",
@@ -78,8 +80,8 @@ const escenas: Escena[] = [
   },
   {
     img: "05-cabeza", dia: "VIE", hora: "23:59", cuando: "Viernes, 23:59", fuegos: 7,
-    lado: "izq", tono: "claro", movil: "oscuro", fx: "50%", fxm: "85%",
-    alt: "Ilustración: Laura, con las manos en la cabeza, rodeada de móviles, facturas, mensajes, un calendario y pequeños fuegos que giran a su alrededor.",
+    lado: "izq", tono: "claro", movil: "oscuro", lx: .58, lxm: .56, video: true,
+    alt: "Ilustración: Laura, con las manos en la cabeza, rodeada de móviles, papeles, mensajes, un calendario y pequeños fuegos que giran a su alrededor.",
     h: "Su día a día es apagar fuegos.",
     p: "Seguimiento, redes, cobros, clientes que se enfrían… Todo en su cabeza.",
     objs: [
@@ -90,7 +92,7 @@ const escenas: Escena[] = [
   },
   {
     img: "06-whatsapp", dia: "SÁB", hora: "10:00", cuando: "Sábado, 10:00", fuegos: 7,
-    lado: "der", tono: "tinta", movil: "claro", fx: "60%", fxm: "14%",
+    lado: "der", tono: "tinta", movil: "claro", lx: .28, lxm: .30, capa: true,
     alt: "Ilustración: un sábado por la mañana, Laura sonríe sentada en una cafetería junto a la ventana mientras escribe en el móvil; en la mesa, un café y un libro.",
     h: "Un sábado escribió un WhatsApp.",
     p: "30 minutos de conversación. Tres arreglos por escrito en 48 horas.",
@@ -98,22 +100,22 @@ const escenas: Escena[] = [
   },
   {
     img: "07-orden", dia: "Tres semanas", hora: "después", cuando: "Tres semanas después", fuegos: 0,
-    lado: "der", tono: "tinta", movil: "claro", fx: "10%", fxm: "14%",
+    lado: "der", tono: "tinta", movil: "claro", lx: .25, lxm: .30, capa: true,
     alt: "Ilustración: Laura, tranquila y con los ojos cerrados, se recuesta en su silla con los brazos cruzados; en la mesa, el portátil muestra un panel ordenado y una planta.",
     h: "Lo pusimos en orden. Uno a uno.",
     objs: [{ t: "fria", x: "50%", y: "50%" }],
   },
   {
     img: "08-vuelve", dia: "Un martes", hora: "cualquiera", cuando: "Un martes cualquiera", fuegos: 0,
-    lado: "izq", tono: "tinta", movil: "claro", fx: "0%", fxm: "74%",
-    alt: "Ilustración: en la puerta de su local, Laura sonríe y da la mano a una clienta que vuelve, rodeadas de macetas con flores.",
-    h: "Rosa ha vuelto.",
-    p: "Le llegó el mensaje justo a tiempo. Y no es la única.",
-    objs: [{ t: "aviso", x: "64%", y: "20%", txt: "Rosa ha reservado" }],
+    lado: "izq", tono: "tinta", movil: "claro", lx: .62, lxm: .64, capa: true,
+    alt: "Ilustración: en la puerta de su local, Laura sonríe y da la mano a un cliente que vuelve, rodeados de macetas con flores.",
+    h: "Antonio ha vuelto.",
+    p: "Le llegó el mensaje justo a tiempo. Y no es el único.",
+    objs: [{ t: "aviso", x: "64%", y: "20%", txt: "Antonio ha reservado" }],
   },
   {
     img: "09-cierre", dia: "", hora: "19:00", cuando: "19:00", fuegos: 0,
-    lado: "izq", tono: "tinta", movil: "claro", fx: "0%", fxm: "71%",
+    lado: "izq", tono: "tinta", movil: "claro", lx: .60, lxm: .62, video: true,
     alt: "Ilustración: al atardecer, Laura pasea sonriente por una calle de casas blancas con su perro y una bolsa al hombro.",
     h: "Ahora cierra a las siete.",
     p: "Y el domingo es domingo. Su negocio sigue funcionando, en orden.",
@@ -186,14 +188,20 @@ const btnIco = `<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true"><pat
     <!-- 0 · Cover -->
     <section class="portada" data-portada>
       <div class="port-in">
-        <h1 class="port-h">
-          <span class="w" data-w>Esta</span> <span class="w" data-w>es</span>
-          <span class="w laura" data-w>Laura.<svg class="subraya" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 14C70 6 160 4 296 10" pathLength="1" data-subraya /></svg><span class="badge" data-badge aria-hidden="true">14</span></span>
-        </h1>
-        <p class="port-p" data-port>Tiene un negocio que funciona. Por eso no para.</p>
-        <div class="cta" data-port>
-          <a class="btn" href={WA} target="_blank" rel="noopener"><Fragment set:html={btnIco} /><span>Pide tu revisión gratis</span><span class="btn-tick" aria-hidden="true">✓✓</span></a>
-          <span class="cta-nota">30 min · 3 arreglos por escrito en 48 h</span>
+        <div class="port-txt">
+          <h1 class="port-h">
+            <span class="w" data-w>Esta</span> <span class="w" data-w>es</span>
+            <span class="w laura" data-w>Laura.<svg class="subraya" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 14C70 6 160 4 296 10" pathLength="1" data-subraya /></svg><span class="badge" data-badge aria-hidden="true">14</span></span>
+          </h1>
+          <p class="port-p" data-port>Tiene un negocio que funciona. Por eso no para.</p>
+          <div class="cta" data-port>
+            <a class="btn" href={WA} target="_blank" rel="noopener"><Fragment set:html={btnIco} /><span>Pide tu revisión gratis</span><span class="btn-tick" aria-hidden="true">✓✓</span></a>
+            <span class="cta-nota">30 min · 3 arreglos por escrito en 48 h</span>
+          </div>
+        </div>
+        <div class="port-fig" data-port-fig>
+          <img src="/prueba/c/laura-de-pie.webp" width="821" height="1100" fetchpriority="high" decoding="async"
+            alt="Ilustración: Laura de cuerpo entero, con gafas redondas y chaqueta mostaza, sonríe con el móvil en la mano." />
         </div>
       </div>
       <p class="baja" data-port aria-hidden="true">Baja y conoce su semana<i></i></p>
@@ -213,25 +221,50 @@ const btnIco = `<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true"><pat
           data-dia={e.dia}
           data-hora={e.hora}
           data-fuegos={e.fuegos}
-          style={`--fx:${e.fx};--fxm:${e.fxm}`}
+          data-capa={e.capa ? "si" : undefined}
+          data-prof={e.prof ?? 0.35}
+          style={`--lx:${e.lx};--lxm:${e.lxm}`}
           aria-label={`Escena ${k + 1} de 9: ${e.cuando}`}
         >
           <div class="marco">
             <div class="lienzo">
               <div class="mueve" data-mueve>
-                <picture>
-                  <source media="(max-width: 760px)" srcset={`/prueba/c/${e.img}-m.webp`} type="image/webp" />
-                  <img
-                    src={`/prueba/c/${e.img}.webp`}
+                {e.video ? (
+                  <video
+                    class="fondo"
+                    data-fondo
+                    data-video
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    poster={`/prueba/c/${e.img}.webp`}
                     width="1600"
                     height="893"
-                    alt={e.alt}
-                    decoding="async"
-                    loading={k >= 2 ? "lazy" : undefined}
-                    fetchpriority={k === 0 ? "high" : undefined}
-                  />
-                </picture>
-                {e.objs.map((o) => (
+                    role="img"
+                    aria-label={e.alt}
+                  >
+                    <source src={`/prueba/c/${e.img}.mp4`} type="video/mp4" />
+                  </video>
+                ) : (
+                  <picture class="fondo" data-fondo>
+                    <source media="(max-width: 699px)" srcset={`/prueba/c/${e.img}-m.webp`} type="image/webp" />
+                    <img
+                      src={`/prueba/c/${e.img}.webp`}
+                      width="1600"
+                      height="893"
+                      alt={e.alt}
+                      decoding="async"
+                      loading={k >= 2 ? "lazy" : undefined}
+                      fetchpriority={k === 0 ? "high" : undefined}
+                    />
+                  </picture>
+                )}
+                <div class="frente" data-frente>
+                {e.capa && (
+                  <img class="recorte" src={`/prueba/c/${e.img}-laura.webp`} width="1600" height="893" alt="" decoding="async" loading="lazy" />
+                )}
+                {e.objs.filter((o) => o.t !== "fria" && o.t !== "luz").map((o) => (
                   <span
                     class={`obj ${o.t}`}
                     data-obj={o.t}
@@ -261,6 +294,10 @@ const btnIco = `<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true"><pat
                       </Fragment>
                     )}
                   </span>
+                ))}
+                </div>
+                {e.objs.filter((o) => o.t === "fria" || o.t === "luz").map((o) => (
+                  <span class={`capa-color ${o.t}`} data-obj={o.t} aria-hidden="true" />
                 ))}
               </div>
             </div>
@@ -495,6 +532,13 @@ const btnIco = `<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true"><pat
       p.classList.toggle("pasado", i < k);
     });
     if (k >= 0) intro(k);
+    // Looping clips play only while their scene is on screen.
+    escenas.forEach((e, i) => {
+      const v = e.querySelector<HTMLVideoElement>("[data-video]");
+      if (!v) return;
+      if (i === k) v.play().catch(() => {});
+      else v.pause();
+    });
   }
 
   function main() {
@@ -532,7 +576,11 @@ const btnIco = `<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true"><pat
       .fromTo($$("[data-w]", port), { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.04, ease: E })
       .fromTo("[data-subraya]", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.8, ease: E }, 0.35)
       .fromTo("[data-badge]", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, 0.7)
-      .fromTo($$("[data-port]", port), { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: E }, 0.3);
+      .fromTo($$("[data-port]", port), { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: E }, 0.3)
+      .fromTo("[data-port-fig]", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: E }, 0.1)
+      .add(() => {
+        gsap.fromTo("[data-port-fig] img", { scale: 1 }, { scale: 1.015, duration: 3, ease: "sine.inOut", yoyo: true, repeat: -1, transformOrigin: "50% 100%" });
+      });
 
     // 3 · The week: one pinned stage; each scene slowly zooms and drifts, the next one is revealed bottom-up.
     const historia = $("[data-historia]")!;
@@ -544,13 +592,19 @@ const btnIco = `<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true"><pat
     });
 
     const mm = gsap.matchMedia();
-    mm.add({ mob: "(max-width: 760px)", desk: "(min-width: 761px)" }, (ctx) => {
+    mm.add({ mob: "(max-width: 699px)", desk: "(min-width: 700px)" }, (ctx) => {
       const { mob } = ctx.conditions as { mob: boolean };
       const tramo = mob ? 0.9 : 1.2; // viewport heights of scroll per scene
       const tl = gsap.timeline({ defaults: { ease: "none" } });
       escenas.forEach((e, k) => {
         const ini = Math.max(0, k - 0.3);
-        tl.fromTo($("[data-mueve]", e), { scale: 1.08, yPercent: 4 }, { scale: 1, yPercent: -4, duration: k + 1 - ini }, ini);
+        const dur = k + 1 - ini;
+        // Depth: the background drifts slowly, Laura's layer (cut-out + objects) a bit faster and bigger.
+        const p = Number(e.dataset.prof ?? 1);
+        tl.fromTo($("[data-fondo]", e), { scale: 1.06, yPercent: 3 }, { scale: 1, yPercent: -3, duration: dur }, ini);
+        // Both layers line up exactly mid-scene (k + 0.35, the middle of the reading window), so the copy of Laura
+        // still painted in the background never peeks out while the scene is being read.
+        tl.fromTo($("[data-frente]", e), { scale: 1.06 + 0.04 * p, yPercent: 3 + 3 * p }, { scale: 1 - 0.04 * p, yPercent: -3 - 3 * p, duration: dur }, ini);
         if (k > 0) tl.fromTo(e, { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: E }, k - 0.3);
       });
       // Scene 7 warms up: cold indigo layer fades out while the list is crossed out.
@@ -565,7 +619,13 @@ const btnIco = `<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true"><pat
         scrub: 0.6,
         animation: tl,
         invalidateOnRefresh: true,
-        onToggle: (self) => root.classList.toggle("en-historia", self.isActive),
+        onToggle: (self) => {
+          root.classList.toggle("en-historia", self.isActive);
+          // Past the end of the story the last clip stops; coming back resumes the active one.
+          const v = escenas[activa]?.querySelector<HTMLVideoElement>("[data-video]");
+          if (v && !self.isActive && self.progress >= 1) v.pause();
+          else if (v && self.isActive) v.play().catch(() => {});
+        },
         onUpdate(self) {
           const t = self.progress * N;
           tareas.forEach((_, i) => tarea(i, t >= K_ORDEN + 0.1 + i * 0.11));
@@ -575,6 +635,26 @@ const btnIco = `<svg class="btn-ico" viewBox="0 0 24 24" aria-hidden="true"><pat
         },
       });
     });
+
+    // Pointer tilt on desktop: Laura's layer up to 3°, the background 1° (depth scenes only).
+    if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      let nx = 0, ny = 0, raf = 0;
+      const inclina = () => {
+        raf = 0;
+        const e = escenas[activa];
+        if (!e || !root.classList.contains("en-historia")) return;
+        const p = Number(e.dataset.prof ?? 1);
+        const f = $("[data-fondo]", e), l = $("[data-frente]", e);
+        const o = { duration: 0.6, ease: "power2.out", overwrite: "auto" as const };
+        gsap.to(f, { rotationY: nx * 1, rotationX: -ny * 1, ...o });
+        if (e.dataset.capa) gsap.to(l, { rotationY: nx * (1 + 2 * p), rotationX: -ny * (1 + 2 * p), ...o });
+      };
+      addEventListener("pointermove", (ev) => {
+        nx = (ev.clientX / innerWidth) * 2 - 1;
+        ny = (ev.clientY / innerHeight) * 2 - 1;
+        if (!raf) raf = requestAnimationFrame(inclina);
+      }, { passive: true });
+    }
 
     // 4 · Close and the sections after it
     const cierre = $("[data-cierre]")!;
