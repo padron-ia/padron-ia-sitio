@@ -42,6 +42,9 @@
   .marca-si { color: var(--ok); font-weight: 700; }
   .marca-no { color: var(--mal); font-weight: 700; }
   .opciones { display: grid; gap: 10px; margin: 18px 0 8px; }
+  .bloque { font-family: var(--mono); font-size: 0.75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--tenue); margin: 10px 0 -2px; }
+  .bloque:first-child { margin-top: 0; }
+  .otro { width: 100%; font: inherit; padding: 12px 14px; border: 1.5px solid var(--iris); border-radius: 12px; background: #fff; }
   .op { width: 100%; text-align: left; font: inherit; color: inherit; background: #fff; border: 1.5px solid var(--linea); border-radius: 12px; padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; min-height: 52px; }
   .op:hover { border-color: var(--lavender); }
   .op[aria-pressed="true"] { border-color: var(--iris); background: #EEF0FF; font-weight: 600; }
@@ -89,13 +92,27 @@
   const token = new URLSearchParams(location.search).get('t') || '';
 
   // Preguntas. `v` = valor numérico que entra en la cifra. La clave es la columna `pregunta`.
+  // Problems grouped in blocks (['#', 'Título'] = block heading, not an option). Jesús, 29-oct: we can solve any
+  // internal problem of a small business, so the list is wide and has «Otro» with its own words.
+  const PROBLEMAS = [
+    ['#', 'Clientes'], ['captar', 'Conseguir clientes nuevos'], ['mensajes', 'Contestar mensajes y llamadas a todas horas'],
+    ['seguimiento', 'Seguir a clientes y presupuestos («quedé en llamarle y no le llamé»)'], ['presupuestos', 'Presupuestos que no se cierran'],
+    ['#', 'Dinero'], ['cobros', 'Cobrar a tiempo'], ['facturas', 'Acordarme de sacar y mandar las facturas'],
+    ['precios', 'Todo sube y el margen no llega'], ['numeros', 'No saber cómo va el negocio sin sentarme a hacer números'],
+    ['#', 'Equipo'], ['personal', 'Encontrar personal'], ['coordinar', 'Coordinar al equipo y que cada uno sepa qué hacer'],
+    ['#', 'Organización'], ['papeleo', 'Papeleo e impuestos'], ['agenda', 'Agenda, citas y reservas'], ['pedidos', 'Proveedores, pedidos y stock'],
+    ['info', 'La información repartida entre papeles, Excel, WhatsApp y mi cabeza'], ['errores', 'Errores y olvidos (pedidos, citas, encargos)'],
+    ['#', 'Otros'], ['redes', 'Redes sociales y publicidad'], ['otro', 'Otro']];
+  const elegidos = r => (r.tiempo || '').split(',').filter(Boolean);
+  const etiqueta = k => k === 'otro' ? (R.tiempo_otro ? `Otro: ${R.tiempo_otro}` : 'Otro') : ((PROBLEMAS.find(o => o[0] === k) || [, k])[1]);
+
+  // Preguntas. `v` = valor numérico que entra en la cifra. La clave es la columna `pregunta`.
   const PREGUNTAS = [
     // The key stays «tiempo» (answers already stored under it); since 29-oct it asks for the biggest daily problems.
-    { k: 'tiempo', tipo: 'varias', max: 3, t: '¿Cuáles son los mayores problemas de tu negocio en el día a día?', a: 'Elige hasta tres.', o: [
-      ['captar', 'Conseguir clientes nuevos'], ['mensajes', 'Contestar mensajes y llamadas a todas horas'],
-      ['cobros', 'Cobrar a tiempo'], ['papeleo', 'Papeleo, facturas e impuestos'], ['personal', 'Encontrar o gestionar personal'],
-      ['agenda', 'Agenda, citas y reservas'], ['presupuestos', 'Presupuestos que no se cierran'],
-      ['pedidos', 'Proveedores, pedidos y stock'], ['precios', 'Todo sube y el margen no llega'], ['redes', 'Redes sociales y publicidad']] },
+    { k: 'tiempo', tipo: 'varias', max: 3, t: '¿Cuáles son los mayores problemas de tu negocio en el día a día?', a: 'Elige hasta tres.', o: PROBLEMAS },
+    // Which one hurts most: the one that matters to choose a niche. Only shown with two or three ticked.
+    { k: 'primero', tipo: 'una', t: 'De esos, ¿cuál te quitarías primero?', si: r => elegidos(r).length > 1,
+      o: () => elegidos(R).map(k => [k, etiqueta(k)]) },
     { k: 'horas', tipo: 'una', t: 'Entre todo, ¿cuántas horas a la semana te llevan esos problemas?', o: [
       ['2', 'Menos de 2 horas', 1.5], ['5', 'Entre 2 y 5', 3.5], ['10', 'Entre 5 y 10', 7.5], ['15', 'Más de 10', 12]] },
     { k: 'clientes', tipo: 'una', t: '¿Se te escapan clientes porque no llegas a contestar o a hacer seguimiento?', o: [
@@ -108,16 +125,18 @@
       ['no', 'No'], ['pocos', 'Sí, unos pocos'], ['muchos', 'Sí, bastantes']] },
     { k: 'sin_ti', tipo: 'una', t: 'Si te vas una semana sin móvil, ¿qué pasa con el negocio?', o: [
       ['sigue', 'Sigue igual'], ['resiente', 'Se resiente'], ['para', 'Se para'], ['solo', 'Cierro: trabajo solo']] },
-    { k: 'herramientas', tipo: 'varias', t: '¿Con qué te organizas hoy?', a: 'Marca todas las que uses.', o: [
-      ['papel', 'Papel y libreta'], ['excel', 'Excel u hojas de cálculo'], ['whatsapp', 'WhatsApp'], ['programa', 'Un programa de gestión'], ['varios', 'Varios programas o apps'], ['nada', 'Con la cabeza']] },
-    { k: 'paga', tipo: 'una', t: '¿Pagas ya por algo que te quite parte de esto de encima?', a: 'Un programa, una gestoría, alguien que te ayuda…', o: [
-      ['no', 'No'], ['persona', 'Sí, una gestoría o una persona'], ['programa', 'Sí, un programa o una app'], ['ambos', 'Sí, las dos cosas']] },
+    { k: 'tamano', tipo: 'una', t: '¿Cuántas personas trabajáis en el negocio, contándote a ti?', o: [
+      ['1', 'Solo yo'], ['2_5', 'De 2 a 5'], ['6_15', 'De 6 a 15'], ['mas_15', 'Más de 15']] },
+    // What they already tried says more about paying than any «how much would you pay» (29-oct).
+    { k: 'intentado', tipo: 'una', t: '¿Has intentado quitarte alguno de estos problemas?', o: [
+      ['no', 'No'], ['persona', 'Sí, con una gestoría o una persona'], ['programa', 'Sí, con un programa o una app'], ['dejado', 'Lo probé y lo dejé']] },
     { k: 'valor_hora', tipo: 'una', t: 'Una hora tuya, ¿cuánto vale para el negocio?', a: 'Lo usamos solo para calcular tu cifra. Si dudas, marca 25 €.', o: [
       ['10', '10 €', 10], ['15', '15 €', 15], ['25', '25 €', 25], ['40', '40 €', 40], ['60', '60 € o más', 60]] },
     { k: 'quitar', tipo: 'abierta', t: 'Si mañana pudieras quitarte UNA cosa del día, ¿cuál sería?', a: 'Cuéntalo como se lo contarías a un amigo. Puedes escribirlo o mandar un audio.' },
     { k: 'llamada', tipo: 'una', t: 'Cuando te llegue la radiografía, ¿te apetece que la veamos juntos 20 minutos?', a: 'Sin compromiso: te cuento qué haría yo en tu lugar.', o: [
       ['si', 'Sí, me viene bien'], ['no', 'No hace falta, con el informe me vale']] }
   ];
+  const opciones = p => (typeof p.o === 'function' ? p.o() : p.o);
 
   const $ = id => document.getElementById(id);
   const app = $('app'), pie = $('pie'), sig = $('sig'), atras = $('atras');
@@ -134,7 +153,7 @@
   // es-ES leaves 4-digit numbers ungrouped (2078); we want 2.078.
   const euros = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   const visibles = () => PREGUNTAS.filter(p => !p.si || p.si(R));
-  const valor = (k) => { const p = PREGUNTAS.find(x => x.k === k); const o = p && p.o.find(x => x[0] === R[k]); return o ? (o[2] ?? 0) : 0; };
+  const valor = (k) => { const p = PREGUNTAS.find(x => x.k === k); const o = p && opciones(p).find(x => x[0] === R[k]); return o ? (o[2] ?? 0) : 0; };
 
   function cifra() {
     const horas = valor('horas');
@@ -214,8 +233,10 @@
         ${A[p.k] ? '<button class="btn" id="quitar-audio" type="button">Quitar audio</button>' : ''}</div>`;
     } else {
       const sel = p.tipo === 'varias' ? (R[p.k] ? R[p.k].split(',') : []) : [R[p.k]];
-      h += `<div class="opciones" role="group">` + p.o.map(o =>
-        `<button type="button" class="op ${p.tipo === 'una' ? 'unica' : ''}" data-v="${o[0]}" aria-pressed="${sel.includes(o[0])}"><span class="caja">${sel.includes(o[0]) ? '✓' : ''}</span>${esc(o[1])}</button>`).join('') + `</div>`;
+      h += `<div class="opciones" role="group">` + opciones(p).map(o => o[0] === '#'
+        ? `<div class="bloque">${esc(o[1])}</div>`
+        : `<button type="button" class="op ${p.tipo === 'una' ? 'unica' : ''}" data-v="${o[0]}" aria-pressed="${sel.includes(o[0])}"><span class="caja">${sel.includes(o[0]) ? '✓' : ''}</span>${esc(o[1])}</button>`
+          + (o[0] === 'otro' ? `<input id="otro" class="otro" maxlength="200" placeholder="Cuéntalo en pocas palabras" value="${esc(R.tiempo_otro || '')}" ${sel.includes('otro') ? '' : 'hidden'}>` : '')).join('') + `</div>`;
     }
     h += `<div class="error" id="error"></div><div class="guardado" id="guardado"></div>`;
     app.innerHTML = h; window.scrollTo(0, 0);
@@ -228,6 +249,8 @@
       const qa = $('quitar-audio'); if (qa) qa.addEventListener('click', async () => { await rpc('estudio_quitar_audio', { p_token: token, p_pregunta: p.k }); delete A[p.k]; pintarPregunta(); });
     } else {
       app.querySelectorAll('.op').forEach(b => b.addEventListener('click', () => elegir(p, b.dataset.v)));
+      const otro = $('otro');
+      if (otro) otro.addEventListener('blur', () => guardar('tiempo_otro', otro.value).catch(() => {}));
     }
     revisar();
   }
@@ -235,6 +258,7 @@
   function revisar() {
     const p = visibles()[pos]; if (!p) return;
     if (p.tipo === 'abierta') sig.disabled = false; // la abierta no se exige: mejor algo que nada
+    else if (p.k === 'primero') sig.disabled = !elegidos(R).includes(R.primero); // a stale pick after changing the list does not count
     else sig.disabled = !R[p.k];
   }
 
@@ -247,6 +271,7 @@
       R[p.k] = s.join(',');
     }
     app.querySelectorAll('.op').forEach(b => { const on = (R[p.k] || '').split(',').includes(b.dataset.v); b.setAttribute('aria-pressed', on); b.querySelector('.caja').textContent = on ? '✓' : ''; });
+    const otro = $('otro'); if (otro) { otro.hidden = !elegidos(R).includes('otro'); if (!otro.hidden && v === 'otro') otro.focus(); }
     $('error').textContent = '';
     revisar();
     try { await guardar(p.k, R[p.k]); } catch { return; }
@@ -312,7 +337,14 @@
 
   function pintarFinal() {
     const c = D.cifra || cifra(); pos = visibles().length; progreso(); pie.hidden = true;
-    const tareas = (R.tiempo || '').split(',').filter(Boolean).map(x => (PREGUNTAS[0].o.find(o => o[0] === x) || [, x])[1].toLowerCase());
+    // The options speak as «yo» («acordarme de…»); the result speaks to them as «tú».
+    const TU = { captar: 'conseguir clientes nuevos', mensajes: 'contestar mensajes y llamadas', seguimiento: 'seguir a clientes y presupuestos',
+      presupuestos: 'presupuestos que no se cierran', cobros: 'cobrar a tiempo', facturas: 'acordarte de sacar y mandar las facturas',
+      precios: 'que todo sube y el margen no llega', numeros: 'no saber cómo va el negocio', personal: 'encontrar personal',
+      coordinar: 'coordinar al equipo', papeleo: 'el papeleo y los impuestos', agenda: 'la agenda, las citas y las reservas',
+      pedidos: 'proveedores, pedidos y stock', info: 'la información repartida', errores: 'los errores y olvidos', redes: 'las redes y la publicidad' };
+    const lista = elegidos(R); if (lista.includes(R.primero)) { lista.splice(lista.indexOf(R.primero), 1); lista.unshift(R.primero); }
+    const tareas = lista.map(x => x === 'otro' ? (R.tiempo_otro ? `«${R.tiempo_otro.trim()}»` : null) : (TU[x] || etiqueta(x))).filter(Boolean);
     app.innerHTML = `<div class="eti">Tu cifra · ${esc(D.negocio)}</div>
       <h1>Gracias, ${esc(D.nombre)}. Esto es lo que te cuestan cada mes tus mayores problemas.</h1>
       <div class="cifra">
