@@ -176,6 +176,13 @@
         p.ias.map(x => `<li><span>${esc(x.ia)}</span><span>${x.te_nombra ? '<span class="marca-si">Te nombra</span>' : `<span class="marca-no">No te nombra</span>`}</span></li>` +
           (!x.te_nombra && x.nombra && x.nombra.length ? `<li><span class="tenue">Recomienda a</span><span class="tenue">${esc(x.nombra.slice(0, 3).join(', '))}</span></li>` : '')).join('') + `</ul></div>`;
     }
+    if (p.web) {
+      const f = p.web.hallazgos || [];
+      h += `<div class="tarjeta"><div class="eti">Tu web</div>` + (f.length
+        ? `<h3>${p.web.tiene ? 'Lo que se encuentra quien entra en tu web' : 'Sin web'}</h3><ul class="lista">` +
+          f.slice(0, 4).map(x => `<li><span>${esc(x)}</span></li>`).join('') + `</ul>`
+        : `<h3>Tu web cumple lo básico: se llama, se escribe y Google sabe de qué va.</h3>`) + `</div>`;
+    }
     h += `<p class="tenue">Consultado el ${fecha(D.publico_en)}. Google y las IAs cambian sus respuestas: es una foto de ese momento.</p>`;
     return h;
   }
