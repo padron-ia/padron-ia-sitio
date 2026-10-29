@@ -1,0 +1,248 @@
+{
+ "title": "Elige el mundo visual de la portada",
+ "question": "Concepto fijado: «del desorden al orden». El sorteo asignó el talonario de facturas con papel de calco. Quédate con él, coge otro o pide otra mano.",
+ "options": [
+  {
+   "id": "assigned",
+   "kind": "assigned",
+   "label": "El talonario con papel de calco",
+   "kicker": "THE ROLL",
+   "lineage": "Talonario de facturas y albaranes con matriz, papel de calco azul y numeración en rojo",
+   "thesis": "Cada proceso es una hoja numerada que entra garabateada y sale sellada, con su copia azul debajo.",
+   "palette": [
+    "#F2F3FB",
+    "#1B1E3A",
+    "#3A43B8",
+    "#C8352B",
+    "#8F9BFF"
+   ],
+   "materials": [
+    "papel bond con perforado",
+    "calco índigo",
+    "tinta de numerador roja",
+    "sello de goma"
+   ],
+   "viewport": "Una hoja de talonario a pantalla completa: a la izquierda la matriz con los 7 procesos numerados (0001-0007) como menú; en la hoja, notas a mano tachadas que se pasan a limpio al cargar, el titular «Tu negocio, en orden.» impreso y el botón de WhatsApp como sello.",
+   "risk": "Si el papel se pinta tímido parece una plantilla de oficina; tiene que ser papel de verdad, con perforado y calco que se ve.",
+   "raised": [
+    {
+     "from": "challenger-select-rail",
+     "raise": "El estado es una marca, no un color: tachón = pendiente, sello «HECHO» = resuelto, grapa = guardado para luego."
+    },
+    {
+     "from": "challenger-dubois",
+     "raise": "Cada proceso inventa su gráfico de antes y después (espiral de clientes que se van, barras del trimestre) en vez de repetir una tarjeta."
+    },
+    {
+     "from": "challenger-night-city",
+     "raise": "La página tiene hora: arriba son las 23:47 y el dueño sigue con papeles; al final son las 8:00 y todo está en orden."
+    },
+    {
+     "from": "challenger-ascii",
+     "raise": "Una rejilla estricta de columnas para cifras y fechas, como las casillas impresas del talonario."
+    },
+    {
+     "from": "challenger-cloud-edge",
+     "raise": "El color solo aparece donde algo cambia de estado; el resto de la hoja es tinta y papel."
+    }
+   ],
+   "html": ".impeccable/decision/assigned.html"
+  },
+  {
+   "id": "model-pick",
+   "kind": "pick",
+   "label": "El panel de salidas",
+   "kicker": "IMPECCABLE’S PICK",
+   "lineage": "Paneles de paletas (Solari) de estaciones y aeropuertos",
+   "thesis": "Las paletas giran desordenadas y se paran formando el negocio en orden: cada proceso es una línea del panel con su estado.",
+   "palette": [
+    "#14162B",
+    "#1B1E3A",
+    "#F2F3FB",
+    "#F5C542",
+    "#8F9BFF"
+   ],
+   "materials": [
+    "paletas negras mate",
+    "letra amarilla de estación",
+    "carcasa índigo"
+   ],
+   "viewport": "Un panel a pantalla completa: las letras giran al cargar y se quedan en «TU NEGOCIO, EN ORDEN»; debajo, los 7 procesos como salidas con su estado (EN HORA, AVISADO, HECHO) y el botón de WhatsApp como «Embarque».",
+   "risk": "Es el más reconocible y por eso el más visto: muchas webs ya han usado el panel de paletas.",
+   "html": ".impeccable/decision/model-pick.html"
+  },
+  {
+   "id": "challenger-metro",
+   "kind": "challenger",
+   "catalogId": "digital-design-canon-metro-typographic-tiles",
+   "label": "Baldosas vivas",
+   "verdict": "competitive",
+   "lineage": "Interfaz Metro: baldosas planas y letra gigante en minúscula",
+   "thesis": "Cada proceso es una baldosa viva que se da la vuelta con datos frescos; la letra gigante cortada en el borde es la interfaz.",
+   "palette": [
+    "#0E0F1A",
+    "#3A43B8",
+    "#8F9BFF",
+    "#F2F3FB"
+   ],
+   "materials": [
+    "campos de color planos",
+    "letra ligera gigante"
+   ],
+   "viewport": "Panorámica de baldosas índigo y lavanda; «tu negocio, en orden» en minúscula gigante cortada a la derecha; las baldosas giran mostrando un aviso o una factura hecha.",
+   "case": "Gana en claridad (los procesos se ven trabajando) pero el dueño no se reconoce en una interfaz de sistema.",
+   "risk": "Puede leerse como una app de Windows antigua si el ritmo no es perfecto.",
+   "html": ".impeccable/decision/challenger-metro.html",
+   "hero": "https://impeccable.style/worlds/cards/digital-design-canon-metro-typographic-tiles-hero.webp"
+  },
+  {
+   "id": "challenger-select-rail",
+   "kind": "challenger",
+   "catalogId": "operate-a-cutting-bench-select-rail",
+   "label": "La mesa de montaje",
+   "verdict": "declined",
+   "lineage": "Mesa de corte de película con raíl perforado",
+   "thesis": "Los procesos como fotogramas en un raíl; lo apartado cuelga de alfileres.",
+   "palette": [
+    "#0A0A0A",
+    "#E8641E",
+    "#FFFFFF"
+   ],
+   "materials": [
+    "grano de película",
+    "cinta naranja"
+   ],
+   "viewport": "Raíl perforado cruzando la pantalla con fotogramas.",
+   "case": "El dueño no se ve en una sala de montaje; pierde en identificación y en claridad.",
+   "kept": "El estado como marca, no como color.",
+   "risk": "Mundo ajeno al dueño.",
+   "hero": "https://impeccable.style/worlds/cards/operate-a-cutting-bench-select-rail-hero.webp"
+  },
+  {
+   "id": "challenger-dubois",
+   "kind": "challenger",
+   "catalogId": "dubois-data-portraits",
+   "label": "Retratos de datos",
+   "verdict": "declined",
+   "lineage": "Gráficos dibujados a mano de Du Bois (1900)",
+   "thesis": "Cada cifra del negocio como un gráfico atrevido dibujado a mano.",
+   "palette": [
+    "#EFE6D2",
+    "#B0242B",
+    "#D9A520",
+    "#1D6B4F",
+    "#111111"
+   ],
+   "materials": [
+    "cartón envejecido",
+    "tinta plana"
+   ],
+   "viewport": "Una espiral carmesí con rótulos a mano.",
+   "case": "Bonito pero de museo: no se entiende qué vendemos.",
+   "kept": "Cada pregunta inventa su propio gráfico.",
+   "risk": "Lectura lenta.",
+   "hero": "https://impeccable.style/worlds/cards/dubois-data-portraits-hero.webp"
+  },
+  {
+   "id": "challenger-night-city",
+   "kind": "challenger",
+   "catalogId": "light-shadow-caustics-rain-night-cityscape",
+   "label": "Ciudad de noche",
+   "verdict": "declined",
+   "lineage": "Ciudad pasando de la hora azul a la noche con lluvia",
+   "thesis": "El negocio como una ciudad que se apaga y amanece en orden.",
+   "palette": [
+    "#1B2A6B",
+    "#050608",
+    "#F2A33A",
+    "#C9CED6"
+   ],
+   "materials": [
+    "cristal mojado",
+    "neón"
+   ],
+   "viewport": "Skyline nocturno con luces de tránsito.",
+   "case": "Atmósfera sin mensaje: el dueño no ve sus procesos.",
+   "kept": "La página tiene hora: de la noche a la mañana.",
+   "risk": "Decorado.",
+   "hero": "https://impeccable.style/worlds/cards/light-shadow-caustics-rain-night-cityscape-hero.webp"
+  },
+  {
+   "id": "challenger-ascii",
+   "kind": "challenger",
+   "catalogId": "medium-native-ascii-live-scene-render",
+   "label": "Escena en caracteres",
+   "verdict": "declined",
+   "lineage": "Render en vivo hecho con caracteres de máquina",
+   "thesis": "El negocio dibujado con letras de terminal.",
+   "palette": [
+    "#000000",
+    "#39FF6A"
+   ],
+   "materials": [
+    "fósforo verde",
+    "rejilla monoespaciada"
+   ],
+   "viewport": "Una escena 3D hecha de caracteres.",
+   "case": "Huele a técnico, justo lo que asusta al dueño.",
+   "kept": "Una rejilla estricta para cifras.",
+   "risk": "Frío y técnico.",
+   "hero": "https://impeccable.style/worlds/cards/medium-native-ascii-live-scene-render-hero.webp"
+  },
+  {
+   "id": "challenger-cloud-edge",
+   "kind": "challenger",
+   "catalogId": "clouds-storms-auroras-iridescent-cloud-edge",
+   "label": "Borde de nube iridiscente",
+   "verdict": "declined",
+   "lineage": "Nube que difracta la luz en su borde",
+   "thesis": "Calma blanca con un filo de color.",
+   "palette": [
+    "#FFFFFF",
+    "#5A6270",
+    "#9EE6C9",
+    "#F2A7C3",
+    "#9B8CF2"
+   ],
+   "materials": [
+    "blanco nube",
+    "filo espectral"
+   ],
+   "viewport": "Campo blanco con un borde de color.",
+   "case": "No dice nada del negocio ni del orden.",
+   "kept": "El color solo donde algo cambia.",
+   "risk": "Vacío.",
+   "hero": "https://impeccable.style/worlds/cards/clouds-storms-auroras-iridescent-cloud-edge-hero.webp"
+  }
+ ],
+ "reroll": {
+  "registers": [
+   "safer",
+   "bolder"
+  ]
+ },
+ "buildPath": {
+  "value": "code",
+  "toggle": false
+ },
+ "canon": true,
+ "canonCard": {
+  "kind": "canon",
+  "label": "Lo que hace todo el sector",
+  "thesis": "Titular, subtítulo, botón y una fila de tarjetas de servicios, bien hecho.",
+  "palette": [
+   "#FFFFFF",
+   "#1B1E3A",
+   "#8F9BFF"
+  ],
+  "materials": [
+   "rejilla limpia",
+   "iconos",
+   "capturas de panel"
+  ],
+  "viewport": "Titular a la izquierda, captura de un panel a la derecha, fila de tarjetas debajo.",
+  "risk": "Igual que la competencia por diseño: es la web que ya tienes, mejor pulida.",
+  "html": ".impeccable/decision/canon.html"
+ },
+ "steer": true
+}

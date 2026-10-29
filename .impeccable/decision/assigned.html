@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Talonario · boceto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Caveat:wght@500;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--papel:#F2F3FB;--tinta:#1B1E3A;--calco:#3A43B8;--rojo:#C8352B;--lav:#8F9BFF;--linea:#c9cce0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{width:1440px;height:900px;overflow:hidden;background:#1B1E3A;font-family:Archivo,sans-serif;color:var(--tinta);position:relative}
+/* carbon copy peeking below the sheet */
+.calco{position:absolute;left:150px;top:42px;width:1270px;height:860px;background:var(--calco);border-radius:3px;transform:rotate(-1.1deg);opacity:.95}
+.calco::after{content:"COPIA";position:absolute;right:40px;bottom:30px;color:#ffffff22;font:900 140px/1 Archivo;font-stretch:125%}
+.hoja{position:absolute;left:120px;top:24px;width:1280px;height:852px;background:var(--papel);display:grid;grid-template-columns:230px 1fr;box-shadow:0 30px 60px #0006}
+/* stub (matriz) = navigation */
+.matriz{border-right:2px dashed #9aa0c8;padding:34px 22px;position:relative;background:#e8eaf6}
+.matriz::before{content:"";position:absolute;right:-7px;top:0;bottom:0;width:12px;background:radial-gradient(circle,#1B1E3A 3px,transparent 3.5px) 0 0/12px 18px}
+.marca{font:800 22px/1 Archivo;font-stretch:80%;letter-spacing:.02em}
+.marca b{color:var(--calco)}
+.matriz ol{list-style:none;margin-top:44px;display:grid;gap:14px}
+.matriz li{font:600 15px/1.2 Archivo;font-stretch:75%;text-transform:uppercase;letter-spacing:.04em;display:grid;grid-template-columns:52px 1fr;align-items:baseline}
+.matriz li span{font:700 14px Courier Prime;color:var(--rojo)}
+.matriz li.on{color:var(--calco)}
+.matriz li.on::after{content:"";grid-column:2;height:3px;background:var(--calco);margin-top:6px;width:60%}
+.matriz .wa{position:absolute;left:22px;bottom:30px;font:700 13px Courier Prime;color:#555a85}
+/* sheet body */
+.cuerpo{padding:40px 70px 40px 64px;position:relative}
+.cab{display:grid;grid-template-columns:1fr auto;align-items:start;border-bottom:3px solid var(--tinta);padding-bottom:14px}
+.cab .tipo{font:800 16px/1 Archivo;font-stretch:70%;letter-spacing:.3em;text-transform:uppercase}
+.num{font:700 30px/1 Courier Prime;color:var(--rojo);letter-spacing:.06em}
+.num small{display:block;font-size:12px;color:#777;letter-spacing:.1em;text-align:right;margin-bottom:4px}
+.casillas{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--linea)}
+.casillas div{padding:10px 12px;border-right:1px solid var(--linea);font:600 11px Archivo;letter-spacing:.14em;text-transform:uppercase;color:#7a7fa6}
+.casillas div b{display:block;font:700 15px Courier Prime;letter-spacing:0;color:var(--tinta);text-transform:none;margin-top:4px}
+h1{font:900 168px/.86 Archivo;font-stretch:62%;letter-spacing:-.01em;margin-top:44px;text-transform:uppercase}
+h1 em{font-style:normal;color:var(--calco)}
+.sub{font:500 21px/1.45 Archivo;max-width:620px;margin-top:26px;color:#2b2f55}
+/* the messy notes being put in order */
+.lio{position:absolute;right:60px;top:440px;width:380px;height:300px}
+.nota{position:absolute;font:700 25px/1.15 Caveat;color:#2a2f6e}
+.nota s{text-decoration-thickness:3px;text-decoration-color:var(--rojo)}
+.n1{top:0;left:10px;transform:rotate(-4deg)}
+.n2{top:56px;left:110px;transform:rotate(3deg)}
+.n3{top:116px;left:0;transform:rotate(-2deg)}
+.n4{top:176px;left:40px;transform:rotate(4deg)}
+.sello{position:absolute;right:0;bottom:-10px;width:190px;height:190px;border:5px solid var(--rojo);border-radius:50%;display:grid;place-items:center;text-align:center;color:var(--rojo);transform:rotate(-12deg);font:900 30px/1 Archivo;font-stretch:70%;letter-spacing:.06em;mix-blend-mode:multiply}
+.sello small{display:block;font:700 13px Courier Prime;letter-spacing:.1em;margin-top:6px}
+.cta{position:absolute;left:64px;bottom:44px;display:flex;gap:26px;align-items:center}
+.btn{background:var(--tinta);color:var(--papel);font:800 20px/1 Archivo;font-stretch:85%;padding:22px 30px;border-radius:2px;letter-spacing:.02em;box-shadow:6px 6px 0 var(--calco)}
+.cta p{font:700 15px Courier Prime;color:#555a85}
+.hora{position:absolute;right:70px;bottom:50px;font:700 15px Courier Prime;color:#7a7fa6}
+</style></head><body>
+<div class="calco"></div>
+<div class="hoja">
+ <aside class="matriz">
+  <div class="marca">PADRÓN <b>IA</b></div>
+  <ol>
+   <li class="on"><span>0001</span>Clientes que se van</li>
+   <li><span>0002</span>Recuperar clientes</li>
+   <li><span>0003</span>Seguimiento</li>
+   <li><span>0004</span>Facturas y trimestre</li>
+   <li><span>0005</span>Redes sociales</li>
+   <li><span>0006</span>WhatsApp</li>
+   <li><span>0007</span>Cómo están tus clientes</li>
+  </ol>
+  <p class="wa">+34 624 66 49 07</p>
+ </aside>
+ <main class="cuerpo">
+  <div class="cab"><p class="tipo">Hoja de orden · Tu negocio</p><p class="num"><small>Nº</small>0001</p></div>
+  <div class="casillas"><div>Para<b>el dueño</b></div><div>Sector<b>el tuyo</b></div><div>Permanencia<b>ninguna</b></div><div>Tus datos<b>siempre tuyos</b></div></div>
+  <h1>Tu negocio,<br><em>en orden.</em></h1>
+  <p class="sub">Clientes que no se pierden, seguimiento al día, facturas y trimestre listos, un WhatsApp que contesta. Lo ponemos en marcha y nos quedamos para que siga funcionando.</p>
+  <div class="lio">
+   <p class="nota n1"><s>llamar a Marta (¿se fue?)</s></p>
+   <p class="nota n2"><s>facturas del trimestre!!</s></p>
+   <p class="nota n3"><s>contestar 14 whatsapps</s></p>
+   <p class="nota n4"><s>subir algo a Instagram</s></p>
+   <div class="sello"><div>EN ORDEN<small>LO HACEMOS</small></div></div>
+  </div>
+  <div class="cta"><a class="btn">Pide tu revisión gratis por WhatsApp</a><p>30 min · 3 arreglos por escrito en 48 h</p></div>
+  <p class="hora">23:47 → 08:00</p>
+ </main>
+</div>
+</body></html>

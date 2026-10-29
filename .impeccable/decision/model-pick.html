@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Panel de salidas · boceto</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Barlow:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--marco:#1B1E3A;--fondo:#14162B;--pal:#0d0e18;--amar:#F5C542;--bone:#F2F3FB;--lav:#8F9BFF}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:var(--fondo);color:var(--bone);font-family:Barlow,sans-serif}
+.top{display:flex;justify-content:space-between;align-items:center;padding:26px 56px;font:700 20px 'Barlow Condensed';letter-spacing:.12em;text-transform:uppercase}
+.top b{color:var(--lav)}
+.top .reloj{color:var(--amar);font-size:26px}
+.panel{margin:6px 56px;background:var(--marco);border-radius:6px;padding:30px 34px 34px;box-shadow:inset 0 0 0 2px #2b3060}
+.fila{display:flex;gap:6px}
+.p{width:84px;height:118px;background:var(--pal);border-radius:4px;position:relative;display:grid;place-items:center;font:800 88px/1 'Barlow Condensed';color:var(--amar)}
+.p::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:#000}
+.p.v{background:transparent}
+.fila+.fila{margin-top:10px}
+.sub{display:flex;justify-content:space-between;align-items:end;margin:26px 4px 0}
+.sub p{font:500 21px/1.45 Barlow;max-width:640px;color:#d9dcf3}
+.btn{background:var(--amar);color:#14162B;font:800 26px/1 'Barlow Condensed';letter-spacing:.08em;text-transform:uppercase;padding:22px 34px;border-radius:3px}
+.tabla{margin:22px 56px 0;display:grid}
+.cab,.lin{display:grid;grid-template-columns:120px 1fr 300px 200px;padding:12px 18px;align-items:center}
+.cab{font:700 15px 'Barlow Condensed';letter-spacing:.2em;color:#8a8fbf;text-transform:uppercase;border-bottom:2px solid #2b3060}
+.lin{font:700 26px 'Barlow Condensed';letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid #23284f}
+.lin .h{color:var(--amar)}
+.lin .e{color:#7CE3A1}
+.lin .e.av{color:var(--amar)}
+.lin .d{font:500 17px Barlow;text-transform:none;letter-spacing:0;color:#aeb2d6}
+</style></head><body>
+<div class="top"><span>PADRÓN <b>IA</b></span><span>Salidas · tu negocio hoy</span><span class="reloj">08:00</span></div>
+<section class="panel">
+ <div class="fila"><div class="p">T</div><div class="p">U</div><div class="p v"></div><div class="p">N</div><div class="p">E</div><div class="p">G</div><div class="p">O</div><div class="p">C</div><div class="p">I</div><div class="p">O</div><div class="p">,</div></div>
+ <div class="fila"><div class="p">E</div><div class="p">N</div><div class="p v"></div><div class="p">O</div><div class="p">R</div><div class="p">D</div><div class="p">E</div><div class="p">N</div><div class="p">.</div></div>
+ <div class="sub"><p>Clientes que no se pierden, seguimiento al día, facturas y trimestre listos, un WhatsApp que contesta. Lo ponemos en marcha y nos quedamos.</p><a class="btn">Revisión gratis · WhatsApp</a></div>
+</section>
+<div class="tabla">
+ <div class="cab"><span>Hora</span><span>Proceso</span><span>Qué pasa</span><span>Estado</span></div>
+ <div class="lin"><span class="h">07:12</span><span>Clientes que se van</span><span class="d">Lucía lleva 40 días sin venir</span><span class="e av">Avisado</span></div>
+ <div class="lin"><span class="h">07:30</span><span>Facturas y trimestre</span><span class="d">128 facturas, trimestre listo</span><span class="e">Hecho</span></div>
+ <div class="lin"><span class="h">07:58</span><span>WhatsApp</span><span class="d">14 mensajes contestados de noche</span><span class="e">En hora</span></div>
+</div>
+</body></html>
