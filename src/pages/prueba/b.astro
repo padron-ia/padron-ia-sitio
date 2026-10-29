@@ -1,5 +1,6 @@
 ---
-// Prototype B · «El panel de salidas»: Solari split-flap board, «del desorden al orden».
+// Prototype B · «El panel de salidas»: the story of a burnt-out owner who ends up in order.
+// Script: clients/_personal/padron-ia/projects/web-rework/2026-10-29-historia-del-autonomo.md (OS repo).
 import Prueba from "../../layouts/Prueba.astro";
 import "./_b.css";
 
@@ -13,32 +14,51 @@ const flap = (c: string) => {
   const e = esc(c);
   return `<span class="p" data-p data-ch="${e}" aria-hidden="true"><span class="p-h p-up"><span class="p-c">${e}</span></span><span class="p-h p-dn"><span class="p-c">${e}</span></span><span class="p-h p-up p-fl"><span class="p-c">${e}</span></span></span>`;
 };
-// Words wrap as whole groups, so rows break cleanly on phones.
 const fila = (t: string) =>
   t.split(" ").map((w) => `<span class="pw">${[...w].map(flap).join("")}</span>`).join("");
-// Fixed number of cells (status columns): spaces become blank flaps.
 const celdas = (t: string, n: number) => [...t.padEnd(n, " ")].map(flap).join("");
-// Button label split into flippable letters.
 const mini = (t: string) =>
   [...t].map((c) => (c === " " ? " " : `<span class="mini" data-c="${esc(c)}" aria-hidden="true">${esc(c)}</span>`)).join("");
+const LLAMA = `<span class="fuego" data-fuego><svg viewBox="0 0 16 22" aria-hidden="true"><path d="M8 1c1 4 6 7 6 13a6 6 0 0 1-12 0c0-3 2-5 3-7 0 2 1 3 2 3C6.6 7 6 4 8 1Z" fill="#E5484D"/><path d="M8 11c.6 2 3 3 3 6a3 3 0 0 1-6 0c0-1.6 1-2.6 1.6-3.4.2 1 .6 1.4 1.1 1.4C7.4 13.5 7.4 12.3 8 11Z" fill="#F5C542"/></svg></span><span class="humo" data-humo></span>`;
 
-const retrasos = [
-  ["FACTURAS", "las hago de noche"],
-  ["CLIENTES", "dejan de venir y no me entero"],
-  ["WHATSAPP", "contesto hasta en la cena"],
-  ["TRIMESTRE", "siempre me pilla"],
-  ["INSTAGRAM", "abandonado"],
-];
+// One character per sector. f = feminine plural (las clientas) for articles.
+const SECTORES = {
+  clinica: { boton: "Clínica", nombre: "Laura", negocio: "su clínica de fisioterapia", uno: "paciente", varios: "pacientes", f: false,
+    fuego: "Rosa, paciente de siempre, lleva 40 días sin venir. Nadie se ha dado cuenta." },
+  academia: { boton: "Academia", nombre: "Andrés", negocio: "su academia de inglés", uno: "alumno", varios: "alumnos", f: false,
+    fuego: "Dos alumnos llevan tres semanas faltando. El mes que viene se darán de baja." },
+  taller: { boton: "Taller", nombre: "Toni", negocio: "su taller mecánico", uno: "cliente", varios: "clientes", f: false,
+    fuego: "El coche de Juan no ha vuelto a la revisión. Se lo ha llevado a otro taller." },
+  comercio: { boton: "Comercio", nombre: "Carmen", negocio: "su tienda de ropa del centro", uno: "clienta", varios: "clientas", f: true,
+    fuego: "Lucía, que venía cada temporada, no pisa la tienda desde mayo." },
+  online: { boton: "Tienda online", nombre: "Marta", negocio: "su tienda online de cosmética", uno: "clienta", varios: "clientas", f: true,
+    fuego: "300 clientas compraron una vez y no han vuelto." },
+  alojamiento: { boton: "Alojamiento", nombre: "Pilar", negocio: "sus casas rurales", uno: "huésped", varios: "huéspedes", f: false,
+    fuego: "Los de Bilbao venían cada verano. Este año no han reservado." },
+};
+type Sector = (typeof SECTORES)["clinica"];
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const vars = (s: Sector): Record<string, string> => {
+  const los = `${s.f ? "las" : "los"} ${s.varios}`;
+  const un = `${s.f ? "una" : "un"} ${s.uno}`;
+  return { nombre: s.nombre, negocio: s.negocio, los, Los: cap(los), un, Un: cap(un), Cada: `Cada ${s.uno}`, fuego: s.fuego };
+};
+const fill = (t: string, v: Record<string, string>) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "");
+const V0 = vars(SECTORES.clinica);
 
-const lineas = [
-  { h: "07:12", p: "Clientes que se van", antes: "No sé quién ha dejado de venir", q: "Lucía lleva 40 días sin venir", e: "AVISADO", tono: "amar", x: "Te avisamos cuando un cliente deja de venir, antes de perderlo." },
-  { h: "07:20", p: "Recuperar clientes", antes: "Nadie les ha escrito", q: "Mensaje enviado a 6 clientes", e: "EN CAMINO", tono: "amar", x: "Le llega el mensaje en el momento justo, y vuelve." },
-  { h: "07:31", p: "Seguimiento", antes: "Mensajes sin contestar desde el lunes", q: "Nadie sin contestar", e: "EN HORA", tono: "verde", x: "Cada cliente con su siguiente paso." },
-  { h: "07:40", p: "Facturas y trimestre", antes: "Facturas en una caja, trimestre sin empezar", q: "128 facturas, trimestre listo", e: "HECHO", tono: "verde", x: "Las facturas salen solas y el trimestre llega preparado para la gestoría." },
-  { h: "07:46", p: "Redes sociales", antes: "Última publicación hace dos meses", q: "5 publicaciones programadas", e: "PROGRAMADO", tono: "verde", x: "Preparadas y programadas sin estar encima." },
-  { h: "07:52", p: "WhatsApp", antes: "23 mensajes sin leer", q: "14 mensajes contestados de noche", e: "EN HORA", tono: "verde", x: "Contesta al momento, a cualquier hora, y te pasa lo importante." },
-  { h: "07:58", p: "Cómo están tus clientes", antes: "Ni idea de quién debe", q: "3 se enfrían, 1 debe", e: "AVISADO", tono: "amar", x: "Un panel: quién está bien, quién se enfría, quién debe." },
+const PROLOGO = "{nombre} abrió {negocio} hace seis años. Le va bien. Por eso no para: son las 23:47 de un lunes y sigue contestando mensajes desde el sofá. Su día a día es apagar fuegos.";
+const EPILOGO = "{nombre} abre {negocio} con el café. El panel, en verde. Cierra a las siete y el domingo es domingo. {Los} que se iban, vuelven; el trimestre ya no le pilla.";
+
+const capitulos = [
+  { h: "MAR 09:10", dia: "martes", p: "Clientes que se van", antes: "{fuego}", despues: "Ahora el aviso le llega a tiempo, antes de perderlos.", e: "AVISADO", tono: "amar" },
+  { h: "MAR 13:30", dia: "martes", p: "Recuperar clientes", antes: "«Habría que escribir a {los} de antes…» Lleva meses pensándolo.", despues: "Les llega un mensaje en el momento justo. Esta semana han vuelto tres.", e: "EN CAMINO", tono: "amar" },
+  { h: "MIÉ 18:45", dia: "miércoles", p: "Seguimiento", antes: "{Un} preguntó el jueves y nadie le contestó.", despues: "{Cada} tiene su siguiente paso. Nadie se queda sin respuesta.", e: "EN HORA", tono: "verde" },
+  { h: "JUE 22:15", dia: "jueves", p: "Facturas y trimestre", antes: "Una caja de tickets para la gestoría y el día 20 encima.", despues: "Las facturas salen solas. El trimestre llega preparado.", e: "HECHO", tono: "verde" },
+  { h: "VIE 16:00", dia: "viernes", p: "Redes sociales", antes: "Última publicación: hace cinco semanas.", despues: "Las publicaciones del mes, preparadas y programadas.", e: "PROGRAMADO", tono: "verde" },
+  { h: "SÁB 00:40", dia: "sábado", p: "WhatsApp", antes: "14 mensajes sin leer. Tres son de ayer.", despues: "Contesta al momento, a cualquier hora, y le pasa lo importante.", e: "EN HORA", tono: "verde" },
+  { h: "DOM 20:00", dia: "domingo", p: "Cómo están tus clientes", antes: "Todo está en su cabeza. Y su cabeza no descansa.", despues: "Un panel: quién está bien, quién se enfría, quién debe.", e: "AL DÍA", tono: "verde" },
 ];
+const estadoTxt = (e: string) => cap(e.toLowerCase());
 
 const tramos = [
   { n: "Tramo 1", t: "Revisión del negocio", x: "30 minutos y tres arreglos por escrito en 48 horas.", pie: "Gratis" },
@@ -49,23 +69,24 @@ const tramos = [
 
 <Prueba titulo="Padrón IA · Tu negocio, en orden (prototipo B)" letra="b" fuentes={fuentes}>
   <script is:inline>
-    // Animation states only when JS runs and motion is welcome; dropped if the module never arrives.
+    // js: picker usable. anim: animation states; dropped if the module never arrives.
     (function () {
       var d = document.documentElement;
+      d.classList.add("js");
       if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       d.classList.add("anim");
       setTimeout(function () { if (!d.classList.contains("listo")) d.classList.remove("anim"); }, 4000);
     })();
   </script>
+  <script is:inline type="application/json" data-sectores set:html={JSON.stringify(SECTORES)} />
 
-  <!-- 1 · Loader -->
+  <!-- Loader -->
   <div class="carga" data-carga aria-hidden="true">
     <div class="carga-a" data-carga-a></div>
     <div class="carga-b" data-carga-b></div>
     <div class="fila"><span class="pw" set:html={celdas("EN ORDEN", 8)} /></div>
   </div>
 
-  <!-- 2 · Hero -->
   <header class="top">
     <span>PADRÓN <b>IA</b></span>
     <span class="top-mid">Salidas · tu negocio hoy</span>
@@ -73,6 +94,7 @@ const tramos = [
   </header>
 
   <main>
+    <!-- Hero + business picker -->
     <section class="hero wrap" data-hero>
       <div class="panel hero-panel">
         <div class="panel-cab" aria-hidden="true"><span>Destino</span><span>Vía 1</span></div>
@@ -87,52 +109,64 @@ const tramos = [
             <span class="cta-nota">30 min · 3 arreglos por escrito en 48 h</span>
           </div>
         </div>
+        <div class="elige" data-elige data-hero-sub>
+          <p class="elige-tit" id="elige-tit">Elige tu negocio</p>
+          <div class="chips" role="group" aria-labelledby="elige-tit">
+            {Object.entries(SECTORES).map(([k, s], i) => (
+              <button type="button" class="chip" data-sector={k} aria-pressed={i === 0 ? "true" : "false"}>{s.boton}</button>
+            ))}
+          </div>
+          <p class="elige-quien">
+            <span class="cond">Historia de ejemplo:</span>
+            <span class="nombre-flaps" data-nombre role="img" aria-label={V0.nombre} set:html={celdas(V0.nombre.toUpperCase(), 6)} />
+            <span data-tpl="{negocio}">{V0.negocio}</span>
+          </p>
+        </div>
       </div>
-      <p class="baja" data-hero-sub aria-hidden="true"><i></i>Baja y mira cómo se ordena</p>
+      <p class="baja" data-hero-sub aria-hidden="true"><i></i>Baja y mira su semana</p>
     </section>
 
-    <!-- 3 · ¿Te suena? -->
-    <section class="sec suena" data-suena>
-      <div class="wrap">
-        <p class="eyebrow" data-sube>Hoy, en muchos negocios</p>
-        <h2 data-sube>¿Te suena?</h2>
-        <div class="panel retrasos">
-          <div class="panel-cab" aria-hidden="true"><span class="punto">Retrasos</span><span>Hoy</span></div>
-          <ul>
-            {retrasos.map(([que, desc]) => (
-              <li class="r-lin" data-r>
-                <span class="sr">{que.charAt(0) + que.slice(1).toLowerCase()}: {desc}. Retrasado.</span>
-                <span class="r-que" aria-hidden="true" set:html={celdas(que, 9)} />
-                <span class="r-desc" aria-hidden="true" data-scr>{desc}</span>
-                <span class="r-est" aria-hidden="true" set:html={celdas("RETRASADO", 9)} />
-              </li>
-            ))}
-          </ul>
+    <!-- Prologue · LUN 23:47 -->
+    <section class="sec prologo" data-prologo>
+      <div class="wrap pro-grid">
+        <div>
+          <span class="ejemplo suelto" data-sube>Historia de ejemplo</span>
+          <p class="eyebrow" data-sube>Prólogo</p>
+          <div class="pro-reloj" data-pro-reloj role="img" aria-label="Lunes, 23:47" set:html={celdas("LUN 23:47", 9)} />
+        </div>
+        <div>
+          <p class="pro-txt" data-sube data-tpl={PROLOGO}>{fill(PROLOGO, V0)}</p>
+          <p class="fuegos" data-sube><span class="punto">Fuegos abiertos</span><span class="contador" aria-hidden="true" set:html={celdas("7", 1)} /><span class="sr">7</span></p>
         </div>
       </div>
     </section>
 
-    <!-- 4 · Signature piece: the departures board of your business -->
-    <section class="sec salidas" data-salidas>
-      <div class="wrap salidas-head">
-        <p class="eyebrow" data-sube>Panel de salidas</p>
-        <h2 data-sube>Así sale tu mañana</h2>
-        <p data-sube>Cada proceso del negocio es una línea del panel, con su hora y su estado. Baja y mira cómo se pone en orden.</p>
-      </div>
+    <!-- Seven chapters: pinned board, one fire out per chapter -->
+    <section class="salidas" data-salidas>
       <div class="sal-pin" data-pin>
         <div class="wrap sal-grid">
           <div class="panel sal-panel">
-            <span class="ejemplo">Ejemplo</span>
-            <div class="sal-cab" aria-hidden="true"><span>Hora</span><span>Proceso</span><span>Qué pasa</span><span>Estado</span></div>
+            <span class="ejemplo">Historia de ejemplo</span>
+            <div class="sal-top">
+              <span class="semana" data-semana aria-hidden="true" set:html={celdas("DOM 20:00", 9)} />
+              <span class="titular" aria-hidden="true">Titular <span class="nombre-flaps" data-nombre set:html={celdas(V0.nombre.toUpperCase(), 6)} /></span>
+              <span class="fuegos fuegos-txt" data-fuegos aria-hidden="true"><span class="punto">Fuegos abiertos</span><span class="contador" data-contador set:html={celdas("0", 1)} /></span>
+            </div>
+            <div class="sal-cab" aria-hidden="true"><span>Cuándo</span><span></span><span>Proceso</span><span>Qué pasa</span><span>Estado</span></div>
             <ol class="sal-lista">
-              {lineas.map((l) => (
-                <li class="sal-lin on" data-linea data-estado={l.e} data-tono={l.tono} data-antes={l.antes} data-despues={l.q}>
-                  <span class="sr">{l.h}, {l.p}: {l.q}. {l.e.charAt(0) + l.e.slice(1).toLowerCase()}. {l.x}</span>
-                  <span class="s-h" aria-hidden="true">{l.h}</span>
-                  <span class="s-p" aria-hidden="true">{l.p}</span>
-                  <span class="s-q" aria-hidden="true" data-q>{l.q}</span>
-                  <span class="s-e" aria-hidden="true" data-e set:html={celdas(l.e, 10)} />
-                  <span class="s-x" aria-hidden="true">{l.x}</span>
+              {capitulos.map((c, i) => (
+                <li class="sal-lin on" data-linea data-estado={c.e} data-tono={c.tono} data-antes={c.antes} data-despues={c.despues}>
+                  <span class="sr" data-tpl={`Capítulo ${i + 1}, ${c.dia} ${c.h.slice(4)}. ${c.p}. Antes: ${c.antes} Después: ${c.despues} ${estadoTxt(c.e)}.`}>
+                    {`Capítulo ${i + 1}, ${c.dia} ${c.h.slice(4)}. ${c.p}. Antes: ${fill(c.antes, V0)} Después: ${fill(c.despues, V0)} ${estadoTxt(c.e)}.`}
+                  </span>
+                  <span class="s-h" aria-hidden="true">{c.h}</span>
+                  <span class="llama" aria-hidden="true" set:html={LLAMA} />
+                  <span class="s-p" aria-hidden="true">{c.p}</span>
+                  <span class="s-t" aria-hidden="true">
+                    <span class="s-a" data-tpl={c.antes}>{fill(c.antes, V0)}</span>
+                    <span class="s-q" data-q>{fill(c.despues, V0)}</span>
+                  </span>
+                  <span class="s-e" aria-hidden="true" data-e set:html={celdas(c.e, 10)} />
                 </li>
               ))}
             </ol>
@@ -144,21 +178,22 @@ const tramos = [
 
           <aside class="billetes" aria-hidden="true">
             <article class="billete vis" data-billete>
-              <div class="b-cab"><span>Billete</span><span>06:59</span></div>
-              <p class="b-proc">Todo retrasado</p>
-              <p class="b-que">Así empieza la mañana de muchos negocios.</p>
+              <div class="b-cab"><span>Prólogo</span><span>Vía 1</span></div>
+              <p class="b-hora">LUN 23:47</p>
+              <p class="b-proc">7 fuegos abiertos</p>
               <div class="b-corte"></div>
-              <p class="b-txt">Baja despacio: cada línea se pone en orden y aquí te contamos qué hacemos en ella.</p>
-              <div class="b-cod"></div>
+              <p class="b-desp">Una semana de <span data-tpl="{nombre}">{V0.nombre}</span>. Cada capítulo apaga un fuego.</p>
+              <span class="b-est rojo">Retrasado</span>
             </article>
-            {lineas.map((l) => (
+            {capitulos.map((c, i) => (
               <article class="billete" data-billete>
-                <div class="b-cab"><span>Salida {l.h}</span><span>Vía 1</span></div>
-                <p class="b-proc">{l.p}</p>
-                <p class="b-que">{l.q}</p>
+                <div class="b-cab"><span>Capítulo {i + 1}</span><span>Vía 1</span></div>
+                <p class="b-hora">{c.h}</p>
+                <p class="b-proc">{c.p}</p>
+                <p class="b-antes" data-tpl={c.antes}>{fill(c.antes, V0)}</p>
                 <div class="b-corte"></div>
-                <p class="b-txt">{l.x}</p>
-                <span class={`b-est${l.tono === "verde" ? " verde" : ""}`}>{l.e}</span>
+                <p class="b-desp" data-tpl={c.despues}>{fill(c.despues, V0)}</p>
+                <span class={`b-est${c.tono === "verde" ? " verde" : ""}`}>{estadoTxt(c.e)}</span>
               </article>
             ))}
           </aside>
@@ -166,7 +201,38 @@ const tramos = [
       </div>
     </section>
 
-    <!-- 5 · Cómo trabajamos -->
+    <!-- Epilogue · LUN 08:00, three months later -->
+    <section class="sec epilogo" data-epilogo>
+      <div class="wrap epi-grid">
+        <div class="panel epi-panel verde" data-epi-panel>
+          <span class="ejemplo">Historia de ejemplo</span>
+          <div class="epi-top">
+            <span class="epi-reloj" data-epi-reloj role="img" aria-label="Lunes, 08:00" set:html={celdas("LUN 08:00", 9)} />
+            <span class="fuegos cero"><span class="punto">Fuegos abiertos</span><span class="contador" aria-hidden="true" set:html={celdas("0", 1)} /><span class="sr">0</span></span>
+          </div>
+          <ol>
+            {capitulos.map((c) => (
+              <li class="epi-lin">
+                <span class="s-p">{c.p}</span>
+                <span class="sr">{estadoTxt(c.e)}</span>
+                <span class="s-e" aria-hidden="true" data-e set:html={celdas(c.e, 10)} />
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div class="epi-txt">
+          <p class="eyebrow" data-sube>Epílogo · tres meses después</p>
+          <p class="epi-p" data-sube data-tpl={EPILOGO}>{fill(EPILOGO, V0)}</p>
+          <h2 data-sube>¿Y el tuyo?</h2>
+          <div class="cta" data-sube>
+            <a class="btn" data-mini href={WA} target="_blank" rel="noopener" aria-label="Pide tu revisión gratis por WhatsApp" set:html={mini("Pide tu revisión gratis por WhatsApp")} />
+            <span class="cta-nota">30 min · 3 arreglos por escrito en 48 h</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cómo trabajamos -->
     <section class="sec trabajo" data-trabajo>
       <div class="wrap">
         <p class="eyebrow" data-sube>Cómo trabajamos</p>
@@ -194,7 +260,7 @@ const tramos = [
       </div>
     </section>
 
-    <!-- 6 · Quién -->
+    <!-- Quién -->
     <section class="sec quien">
       <div class="wrap quien-grid">
         <div class="foto" data-sube>Foto de Jesús</div>
@@ -212,7 +278,7 @@ const tramos = [
       </div>
     </section>
 
-    <!-- 7 · Cierre -->
+    <!-- Cierre -->
     <section class="sec final" data-final>
       <div class="wrap">
         <div class="panel final-panel">
@@ -247,21 +313,25 @@ const tramos = [
   gsap.registerPlugin(ScrollTrigger);
 
   const root = document.documentElement;
+  const ANIM = root.classList.contains("anim");
   const STEP = 0.045; // seconds per character
   const POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const LOW = "abcdefghijklmnopqrstuvwxyz";
   const rnd = () => POOL[(Math.random() * POOL.length) | 0];
   const rint = (a: number, b: number) => a + ((Math.random() * (b - a + 1)) | 0);
   const $$ = (s: string, c: ParentNode = document) => Array.from(c.querySelectorAll<HTMLElement>(s));
+  const $ = (s: string, c: ParentNode = document) => c.querySelector<HTMLElement>(s)!;
   const ch = (p: HTMLElement) => p.getAttribute("data-ch") ?? " ";
 
+  // ---------- Split-flap engine ----------
   type Faces = { up: HTMLElement; dn: HTMLElement; fl: HTMLElement; flap: HTMLElement };
   type Flap = HTMLElement & { _f?: Faces; _c?: string; _tl?: gsap.core.Timeline };
+  const flaps = (s: string, c: ParentNode = document) => $$(s, c) as Flap[];
 
   function faces(p: Flap): Faces {
     if (!p._f) {
       const c = $$(".p-c", p);
-      p._f = { up: c[0], dn: c[1], fl: c[2], flap: p.querySelector(".p-fl") as HTMLElement };
+      p._f = { up: c[0], dn: c[1], fl: c[2], flap: $(".p-fl", p) };
       p._c = c[1].textContent ?? " ";
     }
     return p._f;
@@ -273,9 +343,11 @@ const tramos = [
     p._c = c;
     gsap.set(f.flap, { rotateX: 0 });
   }
-  // Flip through n characters (n-1 random + final). Top half falls 0 → -90 revealing the next one.
+  // Flip through n characters (n-1 random + final). The top half falls 0 → -90 revealing the next one.
   function spin(p: Flap, final: string, n: number, delay = 0) {
+    if (!ANIM) return setChar(p, final);
     const f = faces(p);
+    if (p._c === final && !p._tl?.isActive()) return;
     p._tl?.kill();
     const tl = gsap.timeline({ delay });
     let cur = p._c ?? " ";
@@ -297,11 +369,16 @@ const tramos = [
     }
     tl.call(() => { f.fl.textContent = final; gsap.set(f.flap, { rotateX: 0 }); });
     p._tl = tl;
-    return tl;
+  }
+  // Spin a row of flaps to a text (padded to the row length).
+  function spinText(cells: Flap[], text: string, min = 4, max = 8, stagger = 0.04) {
+    const t = text.padEnd(cells.length, " ");
+    cells.forEach((p, i) => spin(p, t[i], rint(min, max), i * stagger));
   }
   // Text "flip": reveals the target left to right through random letters.
   function scramble(el: HTMLElement & { _t?: gsap.core.Tween }, to: string, dur = 0.6, delay = 0) {
     el._t?.kill();
+    if (!ANIM) { el.textContent = to; return; }
     const from = el.textContent ?? "";
     const o = { p: 0 };
     el._t = gsap.to(o, {
@@ -316,21 +393,64 @@ const tramos = [
       onComplete() { el.textContent = to; },
     });
   }
-  const garble = (s: string) => s.replace(/\S/g, () => LOW[(Math.random() * LOW.length) | 0]);
+
+  // ---------- Story data (single source: the JSON the page renders from) ----------
+  type Sector = { boton: string; nombre: string; negocio: string; uno: string; varios: string; f: boolean; fuego: string };
+  const SECT = JSON.parse($("[data-sectores]").textContent || "{}") as Record<string, Sector>;
+  const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  const vars = (s: Sector): Record<string, string> => {
+    const los = `${s.f ? "las" : "los"} ${s.varios}`;
+    const un = `${s.f ? "una" : "un"} ${s.uno}`;
+    return { nombre: s.nombre, negocio: s.negocio, los, Los: cap(los), un, Un: cap(un), Cada: `Cada ${s.uno}`, fuego: s.fuego };
+  };
+  const fill = (t: string, v: Record<string, string>) => t.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? "");
+  const KEY = "padron-b-sector";
+  let sector = "clinica";
+  try { const g = localStorage.getItem(KEY); if (g && SECT[g]) sector = g; } catch { /* storage blocked */ }
+  let V = vars(SECT[sector]);
+
+  // ---------- Chapters board state ----------
+  const sal = $("[data-salidas]");
+  const lineas = $$("[data-linea]", sal);
+  const billetes = $$("[data-billete]", sal);
+  const orden = lineas.map(() => !ANIM); // static page = everything already in order
+  const textoQ = (i: number) => fill((orden[i] ? lineas[i].dataset.despues : lineas[i].dataset.antes) ?? "", V);
+
+  function aplicar(key: string, animar: boolean) {
+    sector = key;
+    V = vars(SECT[key]);
+    $$("[data-tpl]").forEach((el) => { el.textContent = fill(el.dataset.tpl ?? "", V); });
+    lineas.forEach((l, i) => {
+      const q = $("[data-q]", l) as HTMLElement & { _t?: gsap.core.Tween };
+      if (animar) scramble(q, textoQ(i), 0.5); else { q._t?.kill(); q.textContent = textoQ(i); }
+    });
+    const nombre = V.nombre.toUpperCase();
+    $$("[data-nombre]").forEach((row) => {
+      if (row.hasAttribute("role")) row.setAttribute("aria-label", V.nombre);
+      const cells = flaps("[data-p]", row);
+      if (animar) spinText(cells, nombre, 5, 9); else nombre.padEnd(6, " ").split("").forEach((c, i) => setChar(cells[i], c));
+    });
+    $$("[data-sector]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sector === key)));
+  }
+  aplicar(sector, false);
+  $$("[data-sector]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const k = b.dataset.sector ?? "clinica";
+      if (k === sector) return;
+      try { localStorage.setItem(KEY, k); } catch { /* storage blocked */ }
+      aplicar(k, true);
+    }),
+  );
 
   // Real clock of the visitor (HH:MM); flips the cells that change.
-  function startClock(animated: boolean) {
-    const cells = $$("[data-reloj] [data-p]") as Flap[];
+  function startClock() {
+    const cells = flaps("[data-reloj] [data-p]");
     let last = "";
     const tick = () => {
       const d = new Date();
       const h = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
       if (h === last) return;
-      [...h].forEach((c, i) => {
-        if (last[i] === c) return;
-        if (animated) spin(cells[i], c, last ? rint(2, 4) : rint(5, 8), last ? 0 : i * 0.04);
-        else setChar(cells[i], c);
-      });
+      [...h].forEach((c, i) => { if (last[i] !== c) spin(cells[i], c, last ? rint(2, 4) : rint(5, 8), last ? 0 : i * 0.04); });
       last = h;
     };
     tick();
@@ -338,15 +458,15 @@ const tramos = [
   }
 
   function main() {
-    if (!root.classList.contains("anim")) {
-      startClock(false); // reduced motion or JS too late: static, ordered page
+    if (!ANIM) {
+      startClock(); // reduced motion or JS too late: static, ordered page
       return;
     }
 
-    // 1 · Loader: 8 flaps settle on «EN ORDEN», then the board opens (≈1.15 s)
-    const carga = document.querySelector<HTMLElement>("[data-carga]")!;
+    // Loader: 8 flaps settle on «EN ORDEN», then the board opens (≈1.15 s)
+    const carga = $("[data-carga]");
     let fin = 0;
-    ($$("[data-p]", carga) as Flap[]).forEach((p, i) => {
+    flaps("[data-p]", carga).forEach((p, i) => {
       setChar(p, rnd());
       const n = rint(6, 9), d = 0.04 + i * 0.04;
       spin(p, ch(p), n, d);
@@ -359,19 +479,15 @@ const tramos = [
       .to("[data-carga-b]", { yPercent: 100, duration: 0.36, ease: "power3.inOut" }, 0.04)
       .set(carga, { display: "none" });
 
-    // 2 · Hero: two rows flip in, 40 ms stagger left to right
-    const heroRows = $$("[data-hero] [data-fila]");
-    let heroFin = 0;
-    heroRows.forEach((row, r) => {
-      ($$("[data-p]", row) as Flap[]).forEach((p, i) => {
+    // Hero: two rows flip in, 40 ms stagger left to right
+    $$("[data-hero] [data-fila]").forEach((row, r) => {
+      flaps("[data-p]", row).forEach((p, i) => {
         setChar(p, rnd());
-        const n = rint(6, 12), d = abre + 0.1 + r * 0.14 + i * 0.04;
-        spin(p, ch(p), n, d);
-        heroFin = Math.max(heroFin, d + n * STEP);
+        spin(p, ch(p), rint(6, 12), abre + 0.1 + r * 0.14 + i * 0.04);
       });
     });
     gsap.fromTo("[data-hero-sub]", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.1, delay: abre + 0.35 });
-    startClock(true);
+    startClock();
 
     // Button micro-interaction: the label does a short flap flip on hover/focus
     $$("[data-mini]").forEach((btn) => {
@@ -385,7 +501,7 @@ const tramos = [
         letters.forEach((s, i) => {
           const c = s.dataset.c ?? "";
           if (!/[A-Za-zÁÉÍÓÚÑáéíóúñ]/.test(c)) return;
-          const t = i * 0.022;
+          const t = i * 0.02;
           tl.to(s, { rotateX: -90, duration: 0.07, ease: "power1.in" }, t)
             .call(() => { s.textContent = rnd(); }, undefined, t + 0.07)
             .fromTo(s, { rotateX: 90 }, { rotateX: 0, duration: 0.07, ease: "power3.out", immediateRender: false }, t + 0.07)
@@ -403,67 +519,77 @@ const tramos = [
       gsap.to(el, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 88%", once: true } }),
     );
 
-    // 3 · ¿Te suena?: blank board, lines flip in when the panel reaches 75 %
-    const suena = document.querySelector<HTMLElement>("[data-suena]")!;
-    const rl = $$("[data-r]", suena);
-    rl.forEach((l) => {
-      ($$("[data-p]", l) as Flap[]).forEach((p) => setChar(p, " "));
-      const d = l.querySelector<HTMLElement>("[data-scr]")!;
-      d.dataset.fin = d.textContent ?? "";
-      d.textContent = garble(d.dataset.fin);
-    });
+    // Prologue: the clock lands on LUN 23:47 and the fire counter on 7
+    const pro = $("[data-prologo]");
+    const proCells = flaps("[data-pro-reloj] [data-p]", pro);
+    const proCont = flaps(".contador [data-p]", pro);
+    proCells.forEach((p) => setChar(p, " "));
+    proCont.forEach((p) => setChar(p, " "));
     ScrollTrigger.create({
-      trigger: suena.querySelector(".retrasos"),
-      start: "top 75%",
-      once: true,
+      trigger: pro, start: "top 75%", once: true,
       onEnter() {
-        rl.forEach((l, li) => {
-          const base = li * 0.2;
-          ($$("[data-p]", l) as Flap[]).forEach((p, i) => spin(p, ch(p), rint(6, 12), base + i * 0.03));
-          const d = l.querySelector<HTMLElement>("[data-scr]")!;
-          scramble(d, d.dataset.fin ?? "", 0.7, base + 0.15);
-        });
+        proCells.forEach((p, i) => spin(p, ch(p), rint(6, 12), i * 0.04));
+        spin(proCont[0], "7", 8, 0.5);
       },
     });
 
-    // 4 · Departures board: pinned, each line flips from RETRASADO to its ordered state
-    const sal = document.querySelector<HTMLElement>("[data-salidas]")!;
-    const lineas = $$("[data-linea]", sal);
-    const billetes = $$("[data-billete]", sal);
-    const RET = "RETRASADO".padEnd(10, " ");
-    const orden = lineas.map(() => false);
-    lineas.forEach((l) => {
+    // Chapters: every line starts RETRASADO with a fire; scroll puts them in order one by one
+    const RET = "RETRASADO";
+    const semana = flaps("[data-semana] [data-p]", sal);
+    const contador = flaps("[data-contador] [data-p]", sal)[0];
+    const fuegosBox = $("[data-fuegos]", sal);
+    const horas = ["LUN 23:47", ...lineas.map((l) => $(".s-h", l).textContent ?? "")];
+    semana.forEach((p, i) => setChar(p, horas[0][i] ?? " "));
+    setChar(contador, "7");
+    lineas.forEach((l, i) => {
       l.classList.remove("on");
-      l.querySelector<HTMLElement>("[data-q]")!.textContent = l.dataset.antes ?? "";
-      ($$("[data-p]", l.querySelector("[data-e]")!) as Flap[]).forEach((p, i) => setChar(p, RET[i]));
+      $("[data-q]", l).textContent = textoQ(i);
+      flaps("[data-p]", $("[data-e]", l)).forEach((p, k) => setChar(p, RET.padEnd(10, " ")[k]));
     });
     const ordenar = (i: number, on: boolean) => {
       if (orden[i] === on) return;
       orden[i] = on;
       const l = lineas[i];
       l.classList.toggle("on", on);
-      const fin = (on ? l.dataset.estado ?? "" : "RETRASADO").padEnd(10, " ");
-      ($$("[data-p]", l.querySelector("[data-e]")!) as Flap[]).forEach((p, k) => spin(p, fin[k], rint(6, 10), k * 0.04));
-      scramble(l.querySelector<HTMLElement>("[data-q]")!, (on ? l.dataset.despues : l.dataset.antes) ?? "", 0.55);
+      spinText(flaps("[data-p]", $("[data-e]", l)), on ? l.dataset.estado ?? "" : RET, 6, 10);
+      scramble($("[data-q]", l), textoQ(i), 0.55);
+      const fuego = $("[data-fuego]", l), humo = $("[data-humo]", l);
+      gsap.killTweensOf([fuego, humo]);
+      if (on) {
+        // Fire out: flame shrinks, a thread of smoke rises and fades (0.6 s)
+        gsap.to(fuego, { scale: 0, duration: 0.3, ease: "power1.in" });
+        gsap.timeline()
+          .fromTo(humo, { opacity: 0, y: 0, scaleY: 0.4 }, { opacity: 0.85, y: -8, scaleY: 1, duration: 0.25, ease: "power3.out" }, 0.15)
+          .to(humo, { opacity: 0, y: -26, scaleY: 1.4, duration: 0.35, ease: "power1.in" });
+      } else {
+        gsap.set(humo, { opacity: 0 });
+        gsap.to(fuego, { scale: 1, duration: 0.35, ease: "power3.out" });
+      }
     };
     let activa = -2;
-    const activar = (i: number) => {
-      if (i === activa) return;
-      activa = i;
-      lineas.forEach((l, k) => l.classList.toggle("activa", k === i));
+    const activar = (k: number) => {
+      if (k === activa) return;
+      activa = k;
+      lineas.forEach((l, j) => l.classList.toggle("activa", j === k));
       billetes.forEach((b) => b.classList.remove("vis"));
-      const b = billetes[i + 1];
+      const b = billetes[k + 1];
       b.classList.add("vis");
-      gsap.fromTo(b, { opacity: 0, y: 18, rotate: i % 2 ? 1.2 : -1.2 }, { opacity: 1, y: 0, rotate: 0, duration: 0.5, ease: "power3.out" });
+      gsap.fromTo(b, { opacity: 0, y: 18, rotate: k % 2 ? 1.2 : -1.2 }, { opacity: 1, y: 0, rotate: 0, duration: 0.5, ease: "power3.out" });
+      // The week clock walks to the chapter time, the counter goes down 7 → 0
+      const h = horas[k + 1];
+      semana.forEach((p, i) => spin(p, h[i] ?? " ", rint(3, 6), i * 0.03));
+      const quedan = 6 - k;
+      spin(contador, String(quedan), 4);
+      fuegosBox.classList.toggle("cero", quedan === 0);
     };
 
     const mm = gsap.matchMedia();
     mm.add({ mob: "(max-width: 760px)", desk: "(min-width: 761px)" }, (ctx) => {
       const { mob } = ctx.conditions as { mob: boolean };
-      const tramo = mob ? 0.6 : 0.8; // viewport heights per line
+      const tramo = mob ? 0.6 : 0.8; // viewport heights per chapter
       const tl = gsap.timeline().fromTo("[data-barra]", { scaleX: 0 }, { scaleX: 1, ease: "none" });
       ScrollTrigger.create({
-        trigger: sal.querySelector("[data-pin]"),
+        trigger: $("[data-pin]", sal),
         pin: true,
         start: "top top",
         end: () => `+=${7 * innerHeight * tramo}`,
@@ -471,9 +597,8 @@ const tramos = [
         animation: tl,
         invalidateOnRefresh: true,
         onUpdate(self) {
-          const p = self.progress;
           let k = -1;
-          for (let i = 0; i < 7; i++) if (p >= (i + 0.3) / 7.3) k = i;
+          for (let i = 0; i < 7; i++) if (self.progress >= (i + 0.3) / 7.3) k = i;
           lineas.forEach((_, i) => ordenar(i, i <= k));
           activar(k);
         },
@@ -481,12 +606,29 @@ const tramos = [
     });
     activar(-1);
 
-    // 5 · Route line draws with the scroll; each stop lights up as the line reaches it
-    const trabajo = document.querySelector<HTMLElement>("[data-trabajo]")!;
+    // Epilogue: the whole board turns green, clock at LUN 08:00
+    const epi = $("[data-epilogo]");
+    const epiPanel = $("[data-epi-panel]", epi);
+    const epiReloj = flaps("[data-epi-reloj] [data-p]", epi);
+    epiPanel.classList.remove("verde");
+    epiReloj.forEach((p) => setChar(p, " "));
+    const epiLin = $$(".epi-lin", epi);
+    epiLin.forEach((l) => flaps("[data-p]", l).forEach((p, k) => setChar(p, RET.padEnd(10, " ")[k])));
+    ScrollTrigger.create({
+      trigger: epiPanel, start: "top 72%", once: true,
+      onEnter() {
+        epiReloj.forEach((p, i) => spin(p, ch(p), rint(6, 10), i * 0.04));
+        epiLin.forEach((l, li) => flaps("[data-p]", l).forEach((p, i) => spin(p, ch(p), rint(6, 10), 0.2 + li * 0.08 + i * 0.03)));
+        gsap.delayedCall(0.45, () => epiPanel.classList.add("verde"));
+      },
+    });
+
+    // Cómo trabajamos: route line draws with the scroll; each stop lights up as the line reaches it
+    const trabajo = $("[data-trabajo]");
     const tramos = $$("[data-tramo]", trabajo);
     gsap.timeline({
       scrollTrigger: {
-        trigger: trabajo.querySelector(".billete-largo"),
+        trigger: $(".billete-largo", trabajo),
         start: "top 72%",
         end: "bottom 50%",
         scrub: 0.6,
@@ -496,16 +638,16 @@ const tramos = [
       },
     }).fromTo($$("[data-ruta]", trabajo), { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: "none" });
 
-    // 7 · Closing board flips to «¿LO PONEMOS EN ORDEN?»
-    const final = document.querySelector<HTMLElement>("[data-final]")!;
-    ($$("[data-p]", final) as Flap[]).forEach((p) => setChar(p, " "));
+    // Closing board flips to «¿LO PONEMOS EN ORDEN?»
+    const final = $("[data-final]");
+    flaps("[data-fila] [data-p]", final).forEach((p) => setChar(p, " "));
     ScrollTrigger.create({
-      trigger: final.querySelector(".final-panel"),
+      trigger: $(".final-panel", final),
       start: "top 70%",
       once: true,
       onEnter() {
         $$("[data-fila]", final).forEach((row, r) =>
-          ($$("[data-p]", row) as Flap[]).forEach((p, i) => spin(p, ch(p), rint(6, 12), r * 0.15 + i * 0.04)),
+          flaps("[data-p]", row).forEach((p, i) => spin(p, ch(p), rint(6, 12), r * 0.15 + i * 0.04)),
         );
       },
     });
