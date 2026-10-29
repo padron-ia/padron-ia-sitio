@@ -90,11 +90,13 @@
 
   // Preguntas. `v` = valor numérico que entra en la cifra. La clave es la columna `pregunta`.
   const PREGUNTAS = [
-    { k: 'tiempo', tipo: 'varias', max: 3, t: '¿Qué te quita más tiempo en la semana?', a: 'Elige hasta tres.', o: [
-      ['papeleo', 'Papeleo y facturas'], ['mensajes', 'Contestar mensajes y llamadas'], ['agenda', 'Agenda, citas y reservas'],
-      ['cobros', 'Perseguir cobros'], ['presupuestos', 'Hacer presupuestos'], ['pedidos', 'Pedidos, proveedores y stock'],
-      ['equipo', 'Organizar al equipo y turnos'], ['redes', 'Redes sociales y publicidad']] },
-    { k: 'horas', tipo: 'una', t: 'Todo eso junto, ¿cuántas horas a la semana te lleva?', o: [
+    // The key stays «tiempo» (answers already stored under it); since 29-oct it asks for the biggest daily problems.
+    { k: 'tiempo', tipo: 'varias', max: 3, t: '¿Cuáles son los mayores problemas de tu negocio en el día a día?', a: 'Elige hasta tres.', o: [
+      ['captar', 'Conseguir clientes nuevos'], ['mensajes', 'Contestar mensajes y llamadas a todas horas'],
+      ['cobros', 'Cobrar a tiempo'], ['papeleo', 'Papeleo, facturas e impuestos'], ['personal', 'Encontrar o gestionar personal'],
+      ['agenda', 'Agenda, citas y reservas'], ['presupuestos', 'Presupuestos que no se cierran'],
+      ['pedidos', 'Proveedores, pedidos y stock'], ['precios', 'Todo sube y el margen no llega'], ['redes', 'Redes sociales y publicidad']] },
+    { k: 'horas', tipo: 'una', t: 'Entre todo, ¿cuántas horas a la semana te llevan esos problemas?', o: [
       ['2', 'Menos de 2 horas', 1.5], ['5', 'Entre 2 y 5', 3.5], ['10', 'Entre 5 y 10', 7.5], ['15', 'Más de 10', 12]] },
     { k: 'clientes', tipo: 'una', t: '¿Se te escapan clientes porque no llegas a contestar o a hacer seguimiento?', o: [
       ['nunca', 'Casi nunca'], ['a_veces', 'A veces'], ['a_menudo', 'A menudo']] },
@@ -193,7 +195,7 @@
       <h1>Hola, ${esc(D.nombre)}. Esto es lo que ve un cliente antes de llegar a ti.</h1>
       ${bloquePublico()}
       <h2 style="margin-top:22px">Ahora, lo que no se ve desde fuera</h2>
-      <p class="suave">Son ${visibles().length} preguntas de tocar, unos 5 minutos. Al terminar verás al momento cuántas horas te llevan al mes las tareas que se repiten y lo que te cuestan, y en 48 horas te llega tu radiografía completa con tres cosas que puedes cambiar mañana.</p>
+      <p class="suave">Son ${visibles().length} preguntas de tocar, unos 5 minutos. Al terminar verás al momento lo que te cuestan al mes los mayores problemas de tu día a día, y en 48 horas te llega tu radiografía completa con tres cosas que puedes cambiar mañana.</p>
       <p class="tenue">Se guarda solo: si lo dejas a medias, vuelve por el mismo enlace y sigues donde estabas.</p>`;
     pie.hidden = false; atras.hidden = true; sig.disabled = false;
     sig.textContent = pendiente() > 0 ? 'Seguir donde lo dejé' : 'Empezar';
@@ -311,10 +313,10 @@
     const c = D.cifra || cifra(); pos = visibles().length; progreso(); pie.hidden = true;
     const tareas = (R.tiempo || '').split(',').filter(Boolean).map(x => (PREGUNTAS[0].o.find(o => o[0] === x) || [, x])[1].toLowerCase());
     app.innerHTML = `<div class="eti">Tu cifra · ${esc(D.negocio)}</div>
-      <h1>Gracias, ${esc(D.nombre)}. Esto es lo que te cuestan cada mes las tareas que se repiten.</h1>
+      <h1>Gracias, ${esc(D.nombre)}. Esto es lo que te cuestan cada mes tus mayores problemas.</h1>
       <div class="cifra">
         <div class="grande">${String(c.horas_semana).replace('.', ',')} h <small>a la semana</small></div>
-        <p>en ${tareas.length ? esc(tareas.join(', ')) : 'tareas que se repiten'}.</p>
+        <p>${tareas.length ? 'con lo que más te complica: ' + esc(tareas.length > 1 ? tareas.slice(0, -1).join(', ') + ' y ' + tareas.at(-1) : tareas[0]) : 'con los problemas del día a día'}.</p>
         <hr>
         <div class="grande">${euros(c.euros_mes)} € <small>al mes</small></div>
         <p>es lo que valen esas horas, con tu hora a ${c.valor_hora} €.</p>
@@ -322,7 +324,7 @@
         <p>que la ley te permite cobrar por las facturas que te pagan tarde: 40 € por factura como costes de cobro (Ley 3/2004, art. 8), más los intereses de demora (art. 5), sin necesidad de avisar antes. Solo entre empresas y autónomos.</p>` : ''}
       </div>
       <h2>¿Y ahora?</h2>
-      <p>En 48 horas te llega por ${D.canal === 'correo' ? 'correo' : 'WhatsApp'} tu radiografía completa: tus tres fugas principales, cómo estás frente a negocios como el tuyo y tres cosas que puedes cambiar mañana sin gastar nada.</p>
+      <p>En 48 horas te llega por ${D.canal === 'correo' ? 'correo' : 'WhatsApp'} tu radiografía completa: tus problemas principales y lo que te cuestan, cómo estás frente a negocios como el tuyo y tres cosas que puedes cambiar mañana sin gastar nada.</p>
       <p class="tenue">La cifra sale de tus respuestas: es una estimación, no una auditoría. Puedes volver a este enlace cuando quieras.</p>`;
   }
 
