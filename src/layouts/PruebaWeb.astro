@@ -1,0 +1,118 @@
+---
+// Layout for the product website prototype (/prueba/web/): noindex, shared header, footer, mobile sticky CTA,
+// page switcher and the reveal-on-scroll motion. Foundation: OS repo,
+// clients/_personal/padron-ia/projects/web-rework/2026-11-02-web-de-producto/fundacion.md
+import "../pages/prueba/web/_web.css";
+
+interface Props {
+  titulo: string;
+  descripcion: string;
+  pagina: "portada" | "autonomos" | "peluqueria";
+  wa: string;
+}
+const { titulo, descripcion, pagina, wa } = Astro.props;
+const fuentes = "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap";
+const paginas = [
+  { id: "portada", t: "Portada", href: "/prueba/web/" },
+  { id: "autonomos", t: "Autónomos", href: "/prueba/web/autonomos/" },
+  { id: "peluqueria", t: "Peluquería", href: "/prueba/web/peluqueria/" },
+];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={fuentes} />
+    <script is:inline>
+      // Reveal states only when JS runs and motion is welcome; dropped if the module has not started in 4 s.
+      (function () {
+        var d = document.documentElement;
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        d.classList.add("anim");
+        setTimeout(function () { if (!d.classList.contains("listo")) d.classList.remove("anim"); }, 4000);
+      })();
+    </script>
+  </head>
+  <body class="w">
+    <a class="w-saltar" href="#contenido">Saltar al contenido</a>
+    <header class="w-cabecera">
+      <div class="w-wrap w-cabecera__fila">
+        <a class="w-logo" href="/prueba/web/" aria-label="Padrón IA, portada">PADRÓN<span>·IA</span></a>
+        <nav class="w-menu" aria-label="Menú principal">
+          <a href="/prueba/web/autonomos/" aria-current={pagina === "autonomos" ? "page" : undefined}>Autónomos</a>
+          <a href="/prueba/web/#empresas">Empresas</a>
+          <a href="/prueba/web/#sectores">Sectores</a>
+          <a href="/prueba/web/#como">Cómo funciona</a>
+          <a href="/prueba/web/#preguntas">Preguntas</a>
+        </nav>
+        <a class="w-boton w-boton--peq" href={wa}>Solicita la revisión</a>
+      </div>
+    </header>
+
+    <main id="contenido">
+      <slot />
+    </main>
+
+    <footer class="w-pie">
+      <div class="w-wrap w-pie__fila">
+        <span>© 2026 Padrón IA</span>
+        <span class="w-pie__enlaces">
+          <a href="/legal/">Aviso legal</a>
+          <a href="/privacidad/">Privacidad</a>
+          <a href="/cookies/">Cookies</a>
+        </span>
+      </div>
+    </footer>
+
+    <a class="w-fijo" href={wa} data-fijo>Solicita la revisión de tu caso</a>
+
+    <nav class="w-selector" aria-label="Cambiar de página del prototipo">
+      <span>Prototipo</span>
+      {paginas.map((p) => (
+        <a href={p.href} aria-current={p.id === pagina ? "page" : undefined}>{p.t}</a>
+      ))}
+    </nav>
+
+    <script>
+      import Lenis from "lenis";
+      import { gsap } from "gsap";
+      import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+      const html = document.documentElement;
+      // Mobile sticky button: shown once the hero's own button has scrolled away.
+      const fijo = document.querySelector<HTMLElement>("[data-fijo]");
+      const heroBoton = document.querySelector("[data-hero-boton]");
+      if (fijo && heroBoton) {
+        new IntersectionObserver(([e]) => fijo.classList.toggle("w-fijo--visible", !e.isIntersecting)).observe(heroBoton);
+      }
+
+      if (html.classList.contains("anim")) {
+        gsap.registerPlugin(ScrollTrigger);
+        const lenis = new Lenis({ lerp: 0.1 });
+        lenis.on("scroll", ScrollTrigger.update);
+        gsap.ticker.add((t) => lenis.raf(t * 1000));
+        gsap.ticker.lagSmoothing(0);
+        // One easing for the whole site; elements rise 24 px and fade in, siblings 80 ms apart.
+        gsap.utils.toArray<HTMLElement>("[data-aparece]").forEach((el) => {
+          gsap.fromTo(el, { autoAlpha: 0, y: 24 }, {
+            autoAlpha: 1, y: 0, duration: 0.6, ease: "expo.out",
+            delay: Number(el.dataset.retardo || 0) * 0.08,
+            scrollTrigger: { trigger: el, start: "top 88%", once: true },
+          });
+        });
+        html.classList.add("listo");
+      }
+    </script>
+  </body>
+</html>

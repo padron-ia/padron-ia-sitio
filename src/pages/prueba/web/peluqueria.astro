@@ -1,0 +1,135 @@
+---
+// Product website prototype · hair and beauty page. Copy: fundacion.md §2.3. Figures: sector demand study (OS repo,
+// servicio/2026-11-02-estudio-de-demanda-sectores/fuentes/03-donde-se-escapa-el-dinero.md), each with its source.
+import PruebaWeb from "../../../layouts/PruebaWeb.astro";
+import PanelClientes from "../../../components/PanelClientes.astro";
+
+const WA = "https://wa.me/34624664907?text=Hola%2C%20tengo%20una%20peluquer%C3%ADa%20y%20quiero%20que%20revisemos%20mi%20caso";
+const LIA = "Te atiende Lía, nuestra asistente, y Jesús ve la conversación. Si encaja, te deja la llamada en su agenda. Sin compromiso.";
+const datos = [
+  { cifra: "~20 %", t: "de pérdidas al año en un salón por los plantones, según el gremio de peluquerías y estética de Mallorca.",
+    fuente: "Fuente: Última Hora, 3-dic-2025",
+    href: "https://www.ultimahora.es/noticias/local/2025/12/03/2523639/peluquerias-centros-estetica-mallorca-explotan-contra-plantones-cobran-por-adelantado-parte-del-servicio.html" },
+  { cifra: "25 %", t: "de la primera reserva de cada clienta nueva es lo que se quedan algunas apps de reservas.",
+    fuente: "Fuente: página de precios de una app de reservas, 2-nov-2026", href: "https://www.treatwell.es/partners/precios/" },
+  { cifra: "54 %", t: "reserva el centro de belleza por teléfono, en España.",
+    fuente: "Fuente: Square, Radiografía del consumo 2024", href: "https://squareup.com/es/es/press/radiografia-consumo-espana-2024" },
+];
+const preguntas = [
+  ["¿Mis clientas pueden seguir reservando como siempre?", "Sí. Por WhatsApp, por teléfono o desde tu página. Todo acaba en la misma agenda."],
+  ["¿Y los bonos?", "Cada bono, con sus sesiones, y un aviso cuando se le acaba."],
+  ["¿Tengo que dejar la app que uso?", "Lo vemos en la revisión de tu caso."],
+];
+---
+
+<PruebaWeb
+  titulo="Padrón IA · Peluquería y estética (prototipo)"
+  descripcion="Tu agenda, tus clientas y tus cobros en un sitio, con avisos por WhatsApp desde tu número. Y sin pagar comisión por las clientas que ya son tuyas."
+  pagina="peluqueria"
+  wa={WA}
+>
+  <section class="w-seccion">
+    <div class="w-wrap w-pila" style="max-width:62rem;margin-left:auto;margin-right:auto">
+      <p class="w-rotulo" data-aparece>Peluquería y estética</p>
+      <h1 class="w-h1" data-aparece data-retardo="1">Que tus clientas <span class="w-acento">vuelvan.</span></h1>
+      <p class="w-sub" data-aparece data-retardo="2">Tu agenda, tus clientas y tus cobros en un sitio, con avisos por WhatsApp desde tu número. Y sin pagar comisión por las clientas que ya son tuyas.</p>
+      <div class="w-accion" data-aparece data-retardo="3">
+        <a class="w-boton" href={WA} data-hero-boton>Solicita la revisión de tu caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-oscura">
+    <div class="w-wrap w-pila" style="gap:2.25rem">
+      <p class="w-rotulo">Lo que se escapa</p>
+      <div class="w-g3">
+        {datos.map((d, i) => (
+          <div class="w-pila w-pila--peq" style="border-top:1px solid var(--ink-line);padding-top:1.25rem" data-aparece data-retardo={i}>
+            <span class="w-cifra-grande">{d.cifra}</span>
+            <p style="margin:0">{d.t}</p>
+            <a class="w-fuente" href={d.href} rel="noopener">{d.fuente}</a>
+          </div>
+        ))}
+      </div>
+      <p style="margin:0;font-size:clamp(1.4rem,1rem + 1.5vw,2rem);line-height:1.25;font-weight:700" data-aparece>La clienta que no vuelve no avisa. Simplemente, deja de venir.</p>
+    </div>
+  </section>
+
+  <section class="w-seccion">
+    <div class="w-wrap w-pila">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Tu panel</p>
+        <h2 class="w-h2" data-aparece>Así ves a tus clientas</h2>
+        <p class="w-p">Toca una clienta para ver su ficha. Es un ejemplo: así se ve con las tuyas.</p>
+      </div>
+      <div data-aparece><PanelClientes modo="ficha" titulo="Tus clientas" /></div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-seccion--sin-arriba">
+    <div class="w-wrap w-pila">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Tu día</p>
+        <h2 class="w-h2" data-aparece>Tres cosas que pasan solas</h2>
+      </div>
+      <div class="w-g3">
+        <div class="w-pantalla" data-aparece>
+          <span class="w-etiqueta">La agenda</span>
+          <div class="w-pila" style="gap:.4rem;font-size:.8125rem">
+            <div style="display:flex;gap:.6rem;border-left:3px solid var(--iris);background:var(--bone);padding:.5rem"><span class="w-cifra-mono">10:00</span><span>Ana · Corte y color</span></div>
+            <div style="display:flex;gap:.6rem;border-left:3px solid var(--lavender);background:var(--bone);padding:.5rem"><span class="w-cifra-mono">11:30</span><span>Pilar · Mechas</span></div>
+            <div style="display:flex;gap:.6rem;border-left:3px solid var(--pearl);background:var(--bone);padding:.5rem"><span class="w-cifra-mono">13:00</span><span>Hueco libre</span></div>
+          </div>
+          <p class="w-p" style="font-size:.9375rem">Reservan desde tu página o te escriben, y les llega el recordatorio el día antes.</p>
+        </div>
+        <div class="w-pantalla" data-aparece data-retardo="1">
+          <span class="w-etiqueta">El aviso</span>
+          <div class="w-aviso">Hace 7 semanas que no vemos a Marta. ¿Le mando un mensaje?</div>
+          <div class="w-burbuja">Hola, Marta. Te echamos de menos. Esta semana tengo huecos el martes y el jueves, ¿te guardo uno?</div>
+          <p class="w-p" style="font-size:.9375rem">Le llega un mensaje tuyo, en tu tono.</p>
+        </div>
+        <div class="w-pantalla" data-aparece data-retardo="2">
+          <span class="w-etiqueta">La factura</span>
+          <div style="border:1px solid var(--linea);border-radius:4px;padding:.75rem">
+            <div class="w-renglon"><span>Corte y color</span><span class="w-cifra-mono">[importe]</span></div>
+            <div class="w-renglon" style="color:var(--texto-tenue)"><span>IVA 21 %</span><span class="w-cifra-mono">[IVA]</span></div>
+            <div class="w-renglon" style="font-weight:700"><span>Total</span><span class="w-cifra-mono">[total]</span></div>
+          </div>
+          <p class="w-p" style="font-size:.9375rem">Sale con tus datos, y el trimestre llega ordenado a tu gestoría.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-oscura">
+    <div class="w-wrap w-pila">
+      <p class="w-rotulo">Lo que dejas de pagar o de hacer</p>
+      <ul class="w-hechos">
+        <li data-aparece>La comisión por las clientas que ya son tuyas.</li>
+        <li data-aparece data-retardo="1">Los programas sueltos para la agenda, las facturas y los mensajes.</li>
+        <li data-aparece data-retardo="2">Las noches contestando WhatsApps.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="w-seccion">
+    <div class="w-wrap w-estrecho w-pila w-pila--peq w-preguntas" style="margin-left:auto;margin-right:auto">
+      <p class="w-rotulo">Preguntas</p>
+      {preguntas.map(([q, a]) => (
+        <details><summary>{q}</summary><p>{a}</p></details>
+      ))}
+    </div>
+  </section>
+
+  <section class="w-seccion w-iris">
+    <div class="w-wrap w-pila" style="align-items:flex-start">
+      <h2 class="w-h2" data-aparece>Te lo enseñamos con tu salón</h2>
+      <div class="w-accion">
+        <a class="w-boton" href={WA}>Solicita la revisión de tu caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+      <p class="w-nota">Los nombres y los datos del panel son de ejemplo.</p>
+    </div>
+  </section>
+</PruebaWeb>

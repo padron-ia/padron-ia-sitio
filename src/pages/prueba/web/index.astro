@@ -1,0 +1,226 @@
+---
+// Product website prototype · home. Copy: fundacion.md §2.1 (OS repo, web-rework/2026-11-02-web-de-producto).
+import PruebaWeb from "../../../layouts/PruebaWeb.astro";
+import PanelClientes from "../../../components/PanelClientes.astro";
+
+const WA = "https://wa.me/34624664907?text=Hola%2C%20quiero%20que%20revisemos%20mi%20caso";
+const LIA = "Te atiende Lía, nuestra asistente, y Jesús ve la conversación. Si encaja, te deja la llamada en su agenda. Sin compromiso.";
+
+// Live pulse: same endpoint as PanelVivo. Painted at build time and refreshed in the browser; no figure is invented.
+const PULSO = "https://recados-sandy.vercel.app/api/panel";
+let pulso: { vivos: number; total: number } | null = null;
+try {
+  const r = await fetch(PULSO, { signal: AbortSignal.timeout(8000) });
+  if (r.ok) pulso = (await r.json()).resumen;
+} catch { /* the pill then says it is checking */ }
+
+const icono = (d: string) => `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5A67E8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const sectores = [
+  { t: "Peluquería y estética", p: "Que tus clientas vuelvan, y que no pagues comisión por las que ya son tuyas.", href: "/prueba/web/peluqueria/", mas: "Ver cómo queda",
+    i: '<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/>' },
+  { t: "Consulta de salud", p: "Fisio, psicología, nutrición. Que nadie deje el tratamiento a medias sin que te enteres.", href: WA, mas: "Pregúntanos por la tuya",
+    i: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>' },
+  { t: "Oficios", p: "Reformas, electricistas, fontaneros, instaladores. Que ningún presupuesto se quede sin respuesta y que el material no se te escape.", href: WA, mas: "Pregúntanos por el tuyo",
+    i: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>' },
+  { t: "Taller y lavadero", p: "Cada coche con su ficha, su cita y el aviso de la ITV o la revisión.", href: WA, mas: "Pregúntanos por el tuyo",
+    i: '<path d="M5 17h14M6 17l1.5-6h9L18 17M7 17v3M17 17v3"/><circle cx="8" cy="14.5" r=".6"/><circle cx="16" cy="14.5" r=".6"/>' },
+];
+const preguntas = [
+  ["¿Tengo que saber de tecnología?", "No. Te lo dejamos montado y te enseñamos con tu trabajo de verdad, no con un curso."],
+  ["¿Tengo que cambiar de gestoría?", "No. Cada trimestre le mandamos a la tuya todo ordenado."],
+  ["¿Puedo seguir con el programa que uso?", "Lo vemos en la revisión. A veces conviene quedarse con lo que ya tienes y ordenarlo alrededor."],
+  ["¿Qué pasa con mis datos?", "Son tuyos. Si te vas, te los llevas."],
+  ["¿Cuánto cuesta?", "Depende de lo que haya que montar en tu negocio. Te lo decimos después de revisar tu caso, por escrito y sin compromiso."],
+  ["¿Hay permanencia?", "No."],
+];
+---
+
+<PruebaWeb
+  titulo="Padrón IA · Tu negocio, en orden (prototipo)"
+  descripcion="Tus clientes, tus citas, tus presupuestos y tus facturas en un solo sitio, montado para tu sector. Con un asistente y una persona que te responde en el día."
+  pagina="portada"
+  wa={WA}
+>
+  <section class="w-seccion">
+    <div class="w-wrap w-hero">
+      <div class="w-pila">
+        <p class="w-rotulo" data-aparece>Para autónomos y empresas pequeñas</p>
+        <h1 class="w-h1" data-aparece data-retardo="1">Tu negocio,<br /><span class="w-acento">en orden.</span></h1>
+        <p class="w-sub" data-aparece data-retardo="2">Tus clientes, tus citas, tus presupuestos y tus facturas en un solo sitio, montado para tu sector. Con un asistente que lo lleva contigo y una persona que te responde en el día.</p>
+        <div class="w-fila-botones" data-aparece data-retardo="3">
+          <a class="w-contorno" href="/prueba/web/autonomos/">Soy autónomo</a>
+          <a class="w-contorno" href="#empresas">Tengo una empresa</a>
+        </div>
+        <div class="w-accion" data-aparece data-retardo="4">
+          <a class="w-boton" href={WA} data-hero-boton>Solicita la revisión de tu caso</a>
+          <p class="w-nota">{LIA}</p>
+        </div>
+        <p class="w-confianza">Sin permanencia · Tus datos, siempre tuyos · Te lo dejamos montado</p>
+      </div>
+      <div data-aparece data-retardo="2"><PanelClientes modo="vivo" /></div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-oscura">
+    <div class="w-wrap w-pila">
+      <p class="w-rotulo">¿Te suena?</p>
+      <ul class="w-frases">
+        <li data-aparece>«Las facturas las hago cuando puedo, casi siempre de noche.»</li>
+        <li data-aparece data-retardo="1">«Hay clientes que dejan de venir y ni me entero.»</li>
+        <li data-aparece data-retardo="2">«Contesto WhatsApps hasta en la cena.»</li>
+        <li data-aparece data-retardo="3">«Mandé el presupuesto y no sé si lo ha visto.»</li>
+        <li data-aparece data-retardo="4">«El trimestre siempre me pilla.»</li>
+      </ul>
+      <p class="w-sub" data-aparece>No es que lo hagas mal. Es que lo llevas todo tú, y todo en tu cabeza.</p>
+    </div>
+  </section>
+
+  <section class="w-seccion" id="sectores">
+    <div class="w-wrap w-pila">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Sectores</p>
+        <h2 class="w-h2" data-aparece>Montado para lo tuyo</h2>
+      </div>
+      <div class="w-g2">
+        {sectores.map((s, i) => (
+          <a class="w-tarjeta" href={s.href} data-aparece data-retardo={i}>
+            <Fragment set:html={icono(s.i)} />
+            <span class="w-h3">{s.t}</span>
+            <span class="w-p">{s.p}</span>
+            <span class="w-tarjeta__mas">{s.mas} →</span>
+          </a>
+        ))}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between;border-top:1px solid var(--linea);padding-top:1.5rem">
+        <span class="w-p">¿Otro negocio? Si tienes clientes que vuelven o haces presupuestos, también es para ti.</span>
+        <a class="w-contorno" href={WA}>Cuéntanos el tuyo</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-seccion--sin-arriba">
+    <div class="w-wrap w-pila" style="gap:3.5rem">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Lo que te llevas</p>
+        <h2 class="w-h2" data-aparece>Lo que te dejamos montado</h2>
+      </div>
+
+      <div class="w-fila">
+        <div class="w-pila w-pila--peq" data-aparece><h3 class="w-h3">Todo en un sitio</h3><p class="w-p">Clientes, citas, presupuestos y facturas. Ves quién está bien, quién se enfría y quién te debe.</p></div>
+        <div class="w-pantalla" data-aparece data-retardo="1">
+          <span class="w-etiqueta">Ejemplo · Hoy</span>
+          <div class="w-g3" style="gap:.6rem">
+            <div class="w-dato"><strong>6</strong><span>citas hoy</span></div>
+            <div class="w-dato"><strong>3</strong><span>se enfrían</span></div>
+            <div class="w-dato"><strong>2</strong><span>te deben</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-fila w-fila--al-reves">
+        <div class="w-pila w-pila--peq" data-aparece><h3 class="w-h3">Avisos que salen solos</h3><p class="w-p">El recordatorio de la cita, el cliente que hace tiempo que no viene, el presupuesto sin respuesta. Por WhatsApp, desde tu número.</p></div>
+        <div class="w-pantalla" data-aparece data-retardo="1">
+          <span class="w-etiqueta">Ejemplo · WhatsApp</span>
+          <div class="w-burbuja">Hola, Marta. Mañana a las 10:30 te esperamos. Si no puedes, contesta a este mensaje y te buscamos otro hueco.</div>
+          <div class="w-burbuja w-burbuja--mia">¡Allí estaré!</div>
+        </div>
+      </div>
+
+      <div class="w-fila">
+        <div class="w-pila w-pila--peq" data-aparece><h3 class="w-h3">El trimestre, listo</h3><p class="w-p">Cada trimestre, tu gestoría recibe todo ordenado. La tuya, la que ya tienes.</p></div>
+        <div class="w-pantalla" data-aparece data-retardo="1">
+          <span class="w-etiqueta">Ejemplo · Para tu gestoría · 3T</span>
+          <div>
+            <div class="w-renglon"><span>Facturas emitidas</span><span class="w-cifra-mono">48</span></div>
+            <div class="w-renglon"><span>Gastos con su ticket</span><span class="w-cifra-mono">31</span></div>
+            <div class="w-renglon"><span>Libros de IVA en formato Hacienda</span><span style="color:var(--iris);font-weight:600">Enviado ✓</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-fila w-fila--al-reves">
+        <div class="w-pila w-pila--peq" data-aparece><h3 class="w-h3">Tu asistente</h3><p class="w-p">Le preguntas «¿a quién no he visto en dos meses?» o «¿quién me debe?», y te lo dice.</p></div>
+        <div class="w-pantalla" data-aparece data-retardo="1">
+          <span class="w-etiqueta">Ejemplo · Tu asistente</span>
+          <div class="w-burbuja w-burbuja--mia" style="background:var(--bone);color:var(--ink)">¿A quién no he visto en dos meses?</div>
+          <div class="w-burbuja" style="background:var(--ink);color:var(--bone)">A tres clientas: Marta, Inés y Carmen. Te dejo preparado un mensaje para cada una, ¿se lo mando?</div>
+        </div>
+      </div>
+
+      <div class="w-fila">
+        <div class="w-pila w-pila--peq" data-aparece><h3 class="w-h3">Una persona</h3><p class="w-p">Te responde en el día. Con nombre y sin tickets.</p></div>
+        <div class="w-pantalla" data-aparece data-retardo="1" style="flex-direction:row;align-items:center;gap:1rem">
+          <div style="width:3.5rem;height:3.5rem;border-radius:999px;background:var(--linea);display:flex;align-items:center;justify-content:center;font-size:.625rem;color:var(--texto-suave)">Foto</div>
+          <div><strong>Jesús</strong><div class="w-p" style="font-size:.875rem">«Lo miro hoy y te digo.»</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-oscura" id="como">
+    <div class="w-wrap w-pila" style="gap:2.5rem">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Cómo funciona</p>
+        <h2 class="w-h2" data-aparece>Tres pasos, y nos quedamos</h2>
+      </div>
+      <div class="w-g3">
+        <div class="w-paso" data-aparece><span>01</span><h3 class="w-h3">Revisamos tu caso</h3><p class="w-p">Hablamos 30 minutos y te decimos por escrito qué arreglaríamos primero.</p></div>
+        <div class="w-paso" data-aparece data-retardo="1"><span>02</span><h3 class="w-h3">Te lo montamos</h3><p class="w-p">Con tus datos, tus precios y tu forma de trabajar. Plazo y precio cerrados antes de empezar.</p></div>
+        <div class="w-paso" data-aparece data-retardo="2"><span>03</span><h3 class="w-h3">Nos quedamos</h3><p class="w-p">Lo vigilamos, lo mejoramos y te respondemos. Cuota mensual, sin permanencia.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion" id="empresas">
+    <div class="w-wrap w-pila w-pila--peq">
+      <p class="w-rotulo">Empresas</p>
+      <h2 class="w-h2" data-aparece>¿Tienes equipo?</h2>
+      <p class="w-sub" data-aparece>Lo mismo, para que el negocio funcione sin que estés en todo: cada persona sabe qué le toca, tú lo ves todo de un vistazo y nada depende de una sola cabeza. Su página llega en la siguiente tanda.</p>
+    </div>
+  </section>
+
+  <section class="w-seccion w-seccion--sin-arriba">
+    <div class="w-wrap w-fila">
+      <div class="w-foto" data-aparece>Foto de Jesús</div>
+      <div class="w-pila">
+        <p class="w-rotulo">Quién</p>
+        <h2 class="w-h2" data-aparece>Jesús Martínez Padrón</h2>
+        <p class="w-sub" data-aparece>Lo monto yo y lo sigo yo. Si me escribes, te contesto yo o Lía, mi asistente, y yo veo la conversación. Si un día te vas, te llevas tus datos.</p>
+        <span class="w-pulso" data-pulso={PULSO}><i></i><span data-pulso-texto>{pulso ? `Ahora mismo, ${pulso.vivos} de ${pulso.total} sistemas respondiendo` : "Comprobando los sistemas…"}</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-seccion--sin-arriba" id="preguntas">
+    <div class="w-wrap w-estrecho w-pila w-pila--peq w-preguntas">
+      <p class="w-rotulo">Preguntas</p>
+      {preguntas.map(([q, a]) => (
+        <details><summary>{q}</summary><p>{a}</p></details>
+      ))}
+    </div>
+  </section>
+
+  <section class="w-seccion w-iris">
+    <div class="w-wrap w-pila" style="align-items:flex-start">
+      <h2 class="w-h2" data-aparece>¿Lo vemos con tu negocio?</h2>
+      <p class="w-sub" style="color:#fff">Cuéntanos tu caso. Si encaja, hablamos 30 minutos y te decimos qué arreglaríamos primero.</p>
+      <div class="w-accion">
+        <a class="w-boton" href={WA}>Solicita la revisión de tu caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+    </div>
+  </section>
+</PruebaWeb>
+
+<script>
+  // Refresh the live pulse with the figure of the moment.
+  const el = document.querySelector<HTMLElement>("[data-pulso]");
+  if (el) {
+    fetch(el.dataset.pulso!, { signal: AbortSignal.timeout(8000) })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.resumen) el.querySelector("[data-pulso-texto]")!.textContent = `Ahora mismo, ${d.resumen.vivos} de ${d.resumen.total} sistemas respondiendo`;
+      })
+      .catch(() => {});
+  }
+</script>

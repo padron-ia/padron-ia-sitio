@@ -1,0 +1,110 @@
+---
+// Product website prototype · self-employed page. Copy: fundacion.md §2.2. Illustrations: prototype C (FAL, declared).
+import PruebaWeb from "../../../layouts/PruebaWeb.astro";
+
+const WA = "https://wa.me/34624664907?text=Hola%2C%20soy%20aut%C3%B3nomo%20y%20quiero%20que%20revisemos%20mi%20caso";
+const LIA = "Te atiende Lía, nuestra asistente, y Jesús ve la conversación. Si encaja, te deja la llamada en su agenda. Sin compromiso.";
+const escenas = [
+  { img: "01-noche", hora: "23:47", t: "Sigues contestando mensajes.", alt: "Ilustración: de noche, Laura en el sofá contestando mensajes en el móvil." },
+  { img: "03-silla", hora: "12:40", t: "Ese cliente de siempre ya no viene, y nadie se ha dado cuenta.", alt: "Ilustración: Laura mira una silla vacía en su local." },
+  { img: "04-papeles", hora: "Día 20", t: "El trimestre, otra vez encima, con la caja de tickets.", alt: "Ilustración: Laura con una caja de tickets para la gestoría." },
+];
+const piezas = [
+  ["Tu negocio, montado para tu sector", "Clientes, citas, presupuestos y facturas en un sitio, con tus precios y tu forma de trabajar."],
+  ["Tu asistente", "Lleva lo de tu semana contigo: los mensajes, los presupuestos, quién te debe y a quién hace tiempo que no ves."],
+  ["El trimestre a tu gestoría", "Cada trimestre le llega todo ordenado. Tú no tocas la caja de tickets."],
+  ["Una persona que te responde", "En el día. Y te enseñamos con tu trabajo de verdad hasta que lo uses solo."],
+];
+---
+
+<PruebaWeb
+  titulo="Padrón IA · Para autónomos (prototipo)"
+  descripcion="Si lo llevas todo tú solo, te lo dejamos montado para que deje de estar en tu cabeza. Y te acompañamos hasta que lo lleves sin pensar."
+  pagina="autonomos"
+  wa={WA}
+>
+  <section class="w-oscura" style="padding-top:clamp(3rem,2rem + 3vw,4.5rem);overflow:hidden">
+    <div class="w-wrap w-hero w-hero--laura">
+      <div class="w-pila" style="padding-bottom:clamp(3rem,2rem + 3vw,4.5rem)">
+        <span class="w-reloj" data-aparece>LUN 23:47</span>
+        <p class="w-rotulo" data-aparece data-retardo="1">Para autónomos</p>
+        <h1 class="w-h1" data-aparece data-retardo="2">Tu negocio funciona.<br /><span class="w-acento">Por eso no paras.</span></h1>
+        <p class="w-sub" data-aparece data-retardo="3">Si lo llevas todo tú solo, te lo dejamos montado para que deje de estar en tu cabeza. Y te acompañamos hasta que lo lleves sin pensar.</p>
+        <div class="w-accion" data-aparece data-retardo="4">
+          <a class="w-boton" href={WA} data-hero-boton>Solicita la revisión de tu caso</a>
+          <p class="w-nota">{LIA}</p>
+        </div>
+      </div>
+      <img src="/prueba/c/laura-de-pie.webp" alt="Laura, autónoma, ilustrada, de pie con el móvil en la mano" width="821" height="1100"
+        style="width:100%;max-height:34rem;object-fit:contain;object-position:bottom;border-radius:20px 20px 0 0" data-aparece data-retardo="2" />
+    </div>
+  </section>
+
+  <section class="w-seccion">
+    <div class="w-wrap w-pila">
+      <p class="w-rotulo">Tu semana, sin nosotros</p>
+      <div class="w-g3">
+        {escenas.map((e, i) => (
+          <figure class="w-escena" data-aparece data-retardo={i}>
+            <picture>
+              <source media="(max-width: 860px)" srcset={`/prueba/c/${e.img}-m.webp`} />
+              <img src={`/prueba/c/${e.img}.webp`} alt={e.alt} loading="lazy" width="1600" height="893" />
+            </picture>
+            <figcaption><small>{e.hora}</small><b>{e.t}</b></figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-seccion--sin-arriba">
+    <div class="w-wrap w-pila">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Lo que te llevas</p>
+        <h2 class="w-h2" data-aparece>Cuatro cosas, y ya no lo llevas tú solo</h2>
+      </div>
+      <div class="w-g2">
+        {piezas.map(([t, p], i) => (
+          <div class="w-tarjeta" data-aparece data-retardo={i % 2}>
+            <span class="w-cifra-mono" style="color:var(--iris)">0{i + 1}</span>
+            <h3 class="w-h3">{t}</h3>
+            <p class="w-p">{p}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-oscura">
+    <div class="w-wrap w-pila">
+      <p class="w-rotulo">Lo que dejas de hacer</p>
+      <ul class="w-hechos">
+        <li data-aparece>Contestar lo mismo diez veces al día.</li>
+        <li data-aparece data-retardo="1">Apuntar en una libreta a quién tienes que llamar.</li>
+        <li data-aparece data-retardo="2">Perseguir cobros.</li>
+        <li data-aparece data-retardo="3">Pelearte con varios programas que no se hablan entre sí.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="w-seccion">
+    <div class="w-wrap">
+      <div class="w-cobro w-pila w-pila--peq" data-aparece>
+        <p class="w-rotulo">Cómo se paga</p>
+        <h2 class="w-h2" style="font-size:clamp(1.8rem,1.3rem + 1.8vw,2.5rem)">Un arranque y una cuota, sin permanencia</h2>
+        <p class="w-p">Un arranque, que se paga una vez y es cuando te lo montamos, y una cuota mensual, sin permanencia. El precio te lo damos por escrito después de revisar tu caso. Si te vas, te llevas tus datos y lo que hemos montado a tu nombre.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-iris">
+    <div class="w-wrap w-pila" style="align-items:flex-start">
+      <h2 class="w-h2" data-aparece>¿Y tu semana?</h2>
+      <div class="w-accion">
+        <a class="w-boton" href={WA}>Solicita la revisión de tu caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+      <p class="w-nota">Laura es una historia de ejemplo, ilustrada.</p>
+    </div>
+  </section>
+</PruebaWeb>

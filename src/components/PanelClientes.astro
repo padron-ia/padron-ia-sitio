@@ -1,0 +1,123 @@
+---
+// Example client board for the product website prototype. Two modes:
+// - "vivo": the home hero; every 4 s Marta moves from «Se enfría» to «Recuperada» and the notice changes.
+// - "ficha": the sector page; touching a client opens her card on the side.
+// All names and data are examples and are labelled as such on screen.
+interface Props { modo: "vivo" | "ficha"; titulo?: string }
+const { modo, titulo = "Tus clientes" } = Astro.props;
+
+const columnas = ["Nueva", "Primera visita", "Habitual", "Se enfría", "Recuperada"];
+const clientas = [
+  { n: "Sara", col: "Nueva", dato: "Pidió cita por WhatsApp", ultima: "aún no ha venido", ritmo: "—", servicio: "Corte", bono: "no",
+    aviso: "Confirmada para el jueves a las 17:00. Le llega el recordatorio el miércoles.", accion: "Ver la cita" },
+  { n: "Elena", col: "Primera visita", dato: "Vino el sábado", ultima: "hace 5 días", ritmo: "por ver", servicio: "Color", bono: "no",
+    aviso: "Primera visita hace 5 días. A las 3 semanas le llegará un mensaje para la segunda.", accion: "Ver el mensaje" },
+  { n: "Ana", col: "Habitual", dato: "Cada 4 semanas", ultima: "hace 2 semanas", ritmo: "cada 4 semanas", servicio: "Corte y color", bono: "no",
+    aviso: "Va a su ritmo. Próxima cita: el martes a las 10:00.", accion: "Ver la cita" },
+  { n: "Pilar", col: "Habitual", dato: "Bono: le quedan 2 de 5", ultima: "hace 1 semana", ritmo: "cada 2 semanas", servicio: "Tratamiento", bono: "le quedan 2 de 5",
+    aviso: "Le quedan 2 sesiones del bono. Cuando use la última, le llega la oferta de renovarlo.", accion: "Ver el bono" },
+  { n: "Marta", col: "Se enfría", dato: "Hace 7 semanas", ultima: "hace 7 semanas", ritmo: "cada 5 semanas", servicio: "Corte y color", bono: "no",
+    aviso: "Hace 7 semanas que no viene y suele venir cada 5.", accion: "Mandarle un mensaje" },
+  { n: "Inés", col: "Se enfría", dato: "Hace 9 semanas", ultima: "hace 9 semanas", ritmo: "cada 6 semanas", servicio: "Mechas", bono: "no",
+    aviso: "Lleva 3 semanas más de lo normal sin venir.", accion: "Mandarle un mensaje" },
+  { n: "Lucía", col: "Recuperada", dato: "Volvió el lunes", ultima: "el lunes", ritmo: "cada 6 semanas", servicio: "Corte", bono: "no",
+    aviso: "Volvió tras el mensaje del 14 de octubre.", accion: "Ver la conversación" },
+];
+const marta = clientas.find((c) => c.n === "Marta")!;
+const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8F9BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+---
+
+{modo === "vivo" && (
+  <div class="w-pantalla" data-panel-vivo>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong style="font-size:.9375rem">{titulo}</strong>
+      <span class="w-etiqueta">Ejemplo</span>
+    </div>
+    <div class="w-panel__scroll">
+      <div class="w-panel__cols">
+        {columnas.map((c) => (
+          <div class="w-panel__col" data-col={c}>
+            <div class="w-panel__titulo">{c} · <span data-cuenta>{clientas.filter((x) => x.col === c).length}</span></div>
+            {clientas.filter((x) => x.col === c).map((x) => (
+              <div class={`w-ficha${x.n === "Marta" ? " w-ficha--marca" : ""}`} data-nombre={x.n}>
+                <b>{x.n}</b><small data-dato>{x.dato}</small>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="w-aviso" aria-live="polite"><Fragment set:html={icono} /><span data-aviso>Hace 7 semanas que no vemos a Marta. ¿Le mando un mensaje?</span></div>
+  </div>
+)}
+
+{modo === "ficha" && (
+  <div class="w-panel-ficha" data-panel-ficha data-clientas={JSON.stringify(clientas)}>
+    <div class="w-pantalla">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong style="font-size:.9375rem">{titulo}</strong>
+        <span class="w-etiqueta">Ejemplo</span>
+      </div>
+      <div class="w-panel__scroll">
+        <div class="w-panel__cols">
+          {columnas.map((c) => (
+            <div class="w-panel__col">
+              <div class="w-panel__titulo">{c} · {clientas.filter((x) => x.col === c).length}</div>
+              {clientas.filter((x) => x.col === c).map((x) => (
+                <button type="button" class="w-ficha" data-elige={x.n} aria-pressed={x.n === "Marta" ? "true" : "false"}>
+                  <b>{x.n}</b><small>{x.dato}</small>
+                </button>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <aside class="w-detalle" aria-live="polite">
+      <span class="w-etiqueta" style="color:#8F9BFF">Ficha · ejemplo</span>
+      <strong style="font-size:1.6rem" data-f="n">{marta.n}</strong>
+      <dl>
+        <dt>Última visita</dt><dd data-f="ultima">{marta.ultima}</dd>
+        <dt>Suele venir</dt><dd data-f="ritmo">{marta.ritmo}</dd>
+        <dt>Servicio habitual</dt><dd data-f="servicio">{marta.servicio}</dd>
+        <dt>Bono</dt><dd data-f="bono">{marta.bono}</dd>
+      </dl>
+      <div class="w-detalle__aviso" data-f="aviso">{marta.aviso}</div>
+      <span class="w-detalle__accion" data-f="accion">{marta.accion}</span>
+    </aside>
+  </div>
+)}
+
+<script>
+  // Home hero: Marta goes back and forth between «Se enfría» and «Recuperada» every 4 s (paused with reduced motion).
+  document.querySelectorAll<HTMLElement>("[data-panel-vivo]").forEach((panel) => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ficha = panel.querySelector<HTMLElement>('[data-nombre="Marta"]');
+    const aviso = panel.querySelector<HTMLElement>("[data-aviso]");
+    const enfria = panel.querySelector<HTMLElement>('[data-col="Se enfría"]');
+    const recupera = panel.querySelector<HTMLElement>('[data-col="Recuperada"]');
+    if (!ficha || !aviso || !enfria || !recupera) return;
+    const cuenta = (col: HTMLElement) => { col.querySelector("[data-cuenta]")!.textContent = String(col.querySelectorAll(".w-ficha").length); };
+    let vuelta = false;
+    setInterval(() => {
+      vuelta = !vuelta;
+      const destino = vuelta ? recupera : enfria;
+      destino.insertBefore(ficha, destino.children[1] || null);
+      ficha.classList.remove("w-ficha--entra"); void ficha.offsetWidth; ficha.classList.add("w-ficha--entra");
+      ficha.querySelector("[data-dato]")!.textContent = vuelta ? "Ha reservado · martes 10:30" : "Hace 7 semanas";
+      aviso.textContent = vuelta ? "Marta ha reservado para el martes a las 10:30." : "Hace 7 semanas que no vemos a Marta. ¿Le mando un mensaje?";
+      cuenta(enfria); cuenta(recupera);
+    }, 4000);
+  });
+
+  // Sector page: touching a client fills her card.
+  document.querySelectorAll<HTMLElement>("[data-panel-ficha]").forEach((panel) => {
+    const datos: Record<string, string>[] = JSON.parse(panel.dataset.clientas || "[]");
+    panel.querySelectorAll<HTMLButtonElement>("[data-elige]").forEach((b) => b.addEventListener("click", () => {
+      const c = datos.find((x) => x.n === b.dataset.elige);
+      if (!c) return;
+      panel.querySelectorAll("[data-elige]").forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+      panel.querySelectorAll<HTMLElement>("[data-f]").forEach((el) => { el.textContent = c[el.dataset.f!] ?? ""; });
+    }));
+  });
+</script>

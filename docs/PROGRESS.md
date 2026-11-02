@@ -10,7 +10,15 @@
 ## Controles aprobados
 - ninguno todavía
 
-## Última sesión (2026-10-29)
+## Última sesión (2026-11-02)
+- Hecho: prototipo de la **web de producto** en `/prueba/web/` (portada, `/autonomos/`, `/peluqueria/`), con noindex y fuera del sitemap.
+  Fundación en el OS: `clients/_personal/padron-ia/projects/web-rework/2026-11-02-web-de-producto/fundacion.md`. Piezas nuevas:
+  `src/layouts/PruebaWeb.astro`, `src/components/PanelClientes.astro` (panel de ejemplo: animado en la portada y con ficha al tocar
+  en peluquería) y `src/pages/prueba/web/_web.css`. Sin precio; todos los botones abren WhatsApp con Lía.
+- Probado en local a 1440 y a 375 px: sin scroll horizontal, consola limpia, la ficha cambia al tocar otra clienta, el botón fijo del
+  móvil se ve también sobre las secciones oscuras.
+
+## Sesión anterior (2026-10-29)
 - Hecho: kit de repo; página `public/radiografia/index.html` (11 preguntas, audio, cifra), `seguridad-radiografia.conf`,
   bloque `location ^~ /radiografia/` en nginx, `Disallow: /radiografia` en robots.
 - Probado en local (http-server, móvil 375 px y escritorio): recorrido completo, guardado en orden con toques rápidos,
