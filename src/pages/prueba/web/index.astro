@@ -20,9 +20,9 @@ const sectores = [
     i: '<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/>' },
   { t: "Consulta de salud", p: "Fisio, psicología, nutrición. Que nadie deje el tratamiento a medias sin que te enteres.", href: "/prueba/web/consulta/", mas: "Ver cómo queda",
     i: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>' },
-  { t: "Oficios", p: "Reformas, electricistas, fontaneros, instaladores. Que ningún presupuesto se quede sin respuesta y que el material no se te escape.", href: WA, mas: "Pregúntanos por el tuyo",
+  { t: "Oficios", p: "Reformas, electricistas, fontaneros, instaladores. Que ningún presupuesto se quede sin respuesta y que el material no se te escape.", href: "/prueba/web/oficios/", mas: "Ver cómo queda",
     i: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>' },
-  { t: "Taller y lavadero", p: "Cada coche con su ficha, su cita y el aviso de la ITV o la revisión.", href: WA, mas: "Pregúntanos por el tuyo",
+  { t: "Taller y lavadero", p: "Cada coche con su ficha, su cita y el aviso de la ITV o la revisión.", href: "/prueba/web/vehiculo/", mas: "Ver cómo queda",
     i: '<path d="M5 17h14M6 17l1.5-6h9L18 17M7 17v3M17 17v3"/><circle cx="8" cy="14.5" r=".6"/><circle cx="16" cy="14.5" r=".6"/>' },
 ];
 const preguntas = [
@@ -49,7 +49,7 @@ const preguntas = [
         <p class="w-sub" data-aparece data-retardo="2">Tus clientes, tus citas, tus presupuestos y tus facturas en un solo sitio, montado para tu sector. Con un asistente que lo lleva contigo y una persona que te responde en el día.</p>
         <div class="w-fila-botones" data-aparece data-retardo="3">
           <a class="w-contorno" href="/prueba/web/autonomos/">Soy autónomo</a>
-          <a class="w-contorno" href="#empresas">Tengo una empresa</a>
+          <a class="w-contorno" href="/prueba/web/empresas/">Tengo una empresa</a>
         </div>
         <div class="w-accion" data-aparece data-retardo="4">
           <a class="w-boton" href={WA} data-hero-boton>Solicita la revisión de tu caso</a>
@@ -103,6 +103,7 @@ const preguntas = [
       <div class="w-pila w-pila--peq">
         <p class="w-rotulo">Lo que te llevas</p>
         <h2 class="w-h2" data-aparece>Lo que te dejamos montado</h2>
+        <a href="/prueba/web/que-incluye/" style="font-weight:600">Ver todo lo que incluye →</a>
       </div>
 
       <div class="w-fila">
@@ -168,6 +169,7 @@ const preguntas = [
         <div class="w-paso" data-aparece data-retardo="1"><span>02</span><h3 class="w-h3">Te lo montamos</h3><p class="w-p">Con tus datos, tus precios y tu forma de trabajar. Plazo y precio cerrados antes de empezar.</p></div>
         <div class="w-paso" data-aparece data-retardo="2"><span>03</span><h3 class="w-h3">Nos quedamos</h3><p class="w-p">Lo vigilamos, lo mejoramos y te respondemos. Cuota mensual, sin permanencia.</p></div>
       </div>
+      <a href="/prueba/web/como-funciona/" style="color:var(--lavender);font-weight:600">Ver cómo funciona, paso a paso →</a>
     </div>
   </section>
 
@@ -175,7 +177,8 @@ const preguntas = [
     <div class="w-wrap w-pila w-pila--peq">
       <p class="w-rotulo">Empresas</p>
       <h2 class="w-h2" data-aparece>¿Tienes equipo?</h2>
-      <p class="w-sub" data-aparece>Lo mismo, para que el negocio funcione sin que estés en todo: cada persona sabe qué le toca, tú lo ves todo de un vistazo y nada depende de una sola cabeza. Su página llega en la siguiente tanda.</p>
+      <p class="w-sub" data-aparece>Lo mismo, para que el negocio funcione sin que estés en todo: cada persona sabe qué le toca, tú lo ves todo de un vistazo y nada depende de una sola cabeza.</p>
+      <a class="w-contorno" href="/prueba/web/empresas/" style="align-self:flex-start">Ver la página de empresas</a>
     </div>
   </section>
 
@@ -197,6 +200,7 @@ const preguntas = [
       {preguntas.map(([q, a]) => (
         <details><summary>{q}</summary><p>{a}</p></details>
       ))}
+      <a href="/prueba/web/preguntas/" style="font-weight:600;margin-top:.75rem">Ver todas las preguntas →</a>
     </div>
   </section>
 

@@ -21,6 +21,11 @@
 - 2-nov (2.ª tanda): página **Consulta de salud** (`/prueba/web/consulta/`). `PanelClientes` acepta ya columnas, personas y campos de
   cada sector (peluquería sigue siendo el de por defecto). Probado a 1440 y a 375 px; Peluquería y la portada siguen funcionando.
 
+- 2-nov (3.ª tanda, «monta todo»): páginas **Oficios** (con la sección del material), **Taller y lavadero**, **Empresas**, **Qué incluye**,
+  **Cómo funciona** y **Preguntas**. Plantilla común `src/components/PaginaSector.astro`. En el móvil, el panel va por pestañas. El menú
+  enlaza a las páginas, el pie a los sectores y el selector del prototipo pasa a desplegable. Probado: 10 páginas con 200, un solo H1,
+  con noindex, sin enlaces internos rotos y sin scroll horizontal a 375 px; las pestañas cambian de columna.
+
 ## Sesión anterior (2026-10-29)
 - Hecho: kit de repo; página `public/radiografia/index.html` (11 preguntas, audio, cifra), `seguridad-radiografia.conf`,
   bloque `location ^~ /radiografia/` en nginx, `Disallow: /radiografia` en robots.

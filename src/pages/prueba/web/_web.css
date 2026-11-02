@@ -106,6 +106,7 @@ a.w-tarjeta:hover { border-color: var(--iris); transform: translateY(-2px); }
 
 /* Client board */
 .w-panel__scroll { overflow-x: auto; }
+.w-panel__pestanas { display: none; }
 .w-panel__cols { display: grid; grid-template-columns: repeat(5, minmax(4.9rem, 1fr)); gap: .4rem; min-width: 26rem; }
 .w-panel__col { background: var(--bone); border-radius: 4px; padding: .6rem .5rem; display: flex; flex-direction: column; gap: .5rem; min-height: 15.5rem; }
 .w-panel__titulo { font-family: var(--mono); font-size: .625rem; letter-spacing: .08em; text-transform: uppercase; color: var(--texto-suave); }
@@ -126,6 +127,23 @@ button.w-ficha { cursor: pointer; }
 .w-detalle dd { margin: 0 0 .25rem; color: var(--bone); font-weight: 600; }
 .w-detalle__aviso { background: var(--ink-2); border-radius: 4px; padding: .75rem; font-size: .875rem; line-height: 1.45; }
 .w-detalle__accion { align-self: flex-start; display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 1.1rem; border-radius: 999px; background: var(--pearl); color: var(--ink); font-weight: 600; font-size: .875rem; }
+
+/* «What is included»: one sheet per module, before and after (from prototype A). */
+.w-pieza { display: grid; grid-template-columns: 3rem minmax(0, 14rem) minmax(0, 1fr) minmax(0, 1.3fr); gap: 1.25rem; align-items: start;
+  background: #fff; border: 1px solid var(--linea); border-radius: 4px; padding: 1.5rem; }
+.w-pieza__n { color: var(--iris); padding-top: .2rem; }
+.w-pieza__antes p, .w-pieza__ahora p { margin: .35rem 0 0; font-size: .9375rem; line-height: 1.55; }
+.w-pieza__antes p { color: var(--texto-tenue); font-style: italic; }
+.w-pieza__ahora { border-left: 2px solid var(--iris); padding-left: 1rem; }
+@media (max-width: 860px) { .w-pieza { grid-template-columns: minmax(0, 1fr); gap: .6rem; } }
+
+/* «How it works»: numbered steps on a line. */
+.w-linea { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.w-linea li { display: grid; grid-template-columns: 4rem minmax(0, 1fr) auto; gap: 1.5rem; align-items: start; padding: 1.75rem 0; border-top: 1px solid var(--linea); }
+.w-linea li:last-child { border-bottom: 1px solid var(--linea); }
+.w-linea__n { font-family: var(--mono); font-size: 1.75rem; font-weight: 700; color: var(--iris); line-height: 1; }
+.w-linea__c { font-family: var(--mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--texto-tenue); border: 1px solid var(--linea); border-radius: 999px; padding: .35rem .8rem; white-space: nowrap; }
+@media (max-width: 860px) { .w-linea li { grid-template-columns: 3rem minmax(0, 1fr); } .w-linea__c { grid-column: 2; justify-self: start; } }
 
 /* Lists and Q&A */
 .w-frases { display: flex; flex-direction: column; gap: 1.1rem; margin: 0; padding: 0; list-style: none; }
@@ -159,11 +177,17 @@ button.w-ficha { cursor: pointer; }
 .w-pie__enlaces { display: flex; gap: 1.1rem; }
 .w-pie a { color: var(--sobre-oscuro-suave); }
 .w-fijo { display: none; }
-.w-selector { position: fixed; right: .875rem; bottom: .875rem; z-index: 30; display: flex; align-items: center; gap: .25rem; padding: .375rem;
-  background: #111326ee; border: 1px solid #ffffff22; border-radius: 999px; font: 600 .75rem/1 system-ui, sans-serif; backdrop-filter: blur(8px); }
-.w-selector span { padding: 0 .5rem; letter-spacing: .08em; text-transform: uppercase; font-size: .625rem; color: #c9cce8; }
-.w-selector a { padding: .5rem .75rem; border-radius: 999px; color: var(--bone); text-decoration: none; }
-.w-selector a[aria-current] { background: var(--lavender); color: #111326; }
+.w-selector { position: fixed; right: .875rem; bottom: .875rem; z-index: 30; font: 600 .8125rem/1.2 system-ui, sans-serif; }
+.w-selector summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: .5rem; min-height: 2.75rem; padding: 0 1rem;
+  background: #111326ee; color: var(--bone); border: 1px solid #ffffff22; border-radius: 999px; backdrop-filter: blur(8px); }
+.w-selector summary::-webkit-details-marker { display: none; }
+.w-selector summary span { font-size: .625rem; letter-spacing: .08em; text-transform: uppercase; color: #c9cce8; }
+.w-selector nav { position: absolute; right: 0; bottom: calc(100% + .5rem); display: flex; flex-direction: column; gap: .15rem; min-width: 13rem;
+  padding: .4rem; background: #111326f2; border: 1px solid #ffffff22; border-radius: 14px; }
+.w-selector nav a { padding: .55rem .75rem; border-radius: 8px; color: var(--bone); text-decoration: none; }
+.w-selector nav a:hover { background: #ffffff14; }
+.w-selector nav a[aria-current] { background: var(--lavender); color: #111326; }
+.w-pie__sectores { display: flex; flex-wrap: wrap; gap: .5rem 1.1rem; padding-bottom: 1.1rem; margin-bottom: 1.1rem; border-bottom: 1px solid var(--ink-line); }
 
 @media (max-width: 860px) {
   .w-menu { display: none; }
@@ -175,8 +199,20 @@ button.w-ficha { cursor: pointer; }
     box-shadow: 0 0 0 2px var(--bone), 0 6px 24px rgba(27, 30, 58, .25); transform: translateY(160%); transition: transform .4s var(--ease); }
   .w-fijo--visible { transform: none; }
   .w-cabecera .w-boton--peq { display: none; }
-  .w-selector { right: 50%; transform: translateX(50%); bottom: 5.25rem; }
-  .w-selector span { display: none; }
+  /* Board on a phone: tabs, one column at a time, cards at full width. */
+  .w-panel__pestanas { display: flex; gap: .35rem; overflow-x: auto; padding-bottom: .25rem; }
+  .w-panel__pestanas button { all: unset; flex: none; cursor: pointer; min-height: 2.75rem; padding: 0 .85rem; border-radius: 999px;
+    border: 1px solid var(--linea); font: 600 .8125rem Inter, sans-serif; color: var(--texto-suave); display: inline-flex; align-items: center; gap: .35rem; }
+  .w-panel__pestanas button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--bone); }
+  .w-panel__pestanas button:focus-visible { outline: 2px solid var(--iris); outline-offset: 2px; }
+  .w-panel__pestanas span { font-family: var(--mono); font-size: .75rem; opacity: .75; }
+  .w-panel__cols { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+  .w-panel__col { display: none; min-height: 0; }
+  .w-panel__col--activa { display: flex; }
+  .w-panel__titulo { display: none; }
+  .w-selector { right: auto; left: 1rem; bottom: 5.25rem; }
+  .w-selector nav { right: auto; left: 0; }
+  .w-selector summary { min-height: 2.25rem; padding: 0 .8rem; font-size: .75rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   .w-boton, .w-contorno, a.w-tarjeta, .w-ficha, .w-fijo { transition: none; }

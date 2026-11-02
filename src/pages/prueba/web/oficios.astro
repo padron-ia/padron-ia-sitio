@@ -1,0 +1,112 @@
+---
+// Product website prototype · trades page (renovations, electricians, plumbers, installers), with the materials
+// module of the plan (servicio/2026-11-02-plan-base-con-sectores.md §2.6). Copy: fundacion.md §2.5.
+// Figures: sector demand study (servicio/2026-11-02-estudio-de-demanda-sectores/fuentes/03 and 02), each with its source.
+import PruebaWeb from "../../../layouts/PruebaWeb.astro";
+import PaginaSector from "../../../components/PaginaSector.astro";
+
+const WA = "https://wa.me/34624664907?text=Hola%2C%20tengo%20un%20oficio%20y%20quiero%20que%20revisemos%20mi%20caso";
+const datos = [
+  { cifra: "40 %", t: "de las empresas de servicios del hogar nunca contestó a una petición de un cliente. Es un estudio de fuera de España: en España nadie lo ha medido.",
+    fuente: "Fuente: Foundation Finance, 466 empresas, 2018", href: "https://foundationfinance.com/?p=4553" },
+  { cifra: "3 de 10", t: "hogares hizo alguna reforma el último año. Lo que más les frena: no saber cuánto les va a costar al final.",
+    fuente: "Fuente: Andimac, 4.400 encuestas, 2026", href: "https://www.interempresas.net/Construccion/627083-Andimac-senala-tres-cada-diez-hogares-Espana-realizaron-reformas-vivienda-durante-ultimo.html" },
+  { cifra: "25 €/mes", t: "cuesta aparte el control de material en algún programa de facturación conocido, además de su cuota.",
+    fuente: "Fuente: página de precios de un programa de facturación, 2-nov-2026", href: "https://www.holded.com/es/precios?audience=freelancers" },
+];
+const columnas = ["Contacto", "Visita", "Presupuesto enviado", "Aceptado", "Cobrado"];
+const obras = [
+  { n: "Cocina · Martínez", col: "Contacto", dato: "Escribió por WhatsApp ayer", obra: "reforma de cocina", presupuesto: "—", material: "—", visto: "—",
+    aviso: "Escribió ayer. Le llega un mensaje con dos huecos para la visita.", accion: "Ver el mensaje" },
+  { n: "Baño · Ruiz", col: "Visita", dato: "Visita el jueves 10:00", obra: "cambio de bañera por plato", presupuesto: "se hace tras la visita", material: "—", visto: "—",
+    aviso: "Visita el jueves a las 10:00. Al salir, dictas lo que has visto y sale el borrador del presupuesto.", accion: "Ver la visita" },
+  { n: "Cuadro eléctrico · López", col: "Presupuesto enviado", dato: "Visto, sin respuesta · 4 días", obra: "cambio de cuadro y tomas", presupuesto: "enviado el lunes", material: "cuadro, 2 diferenciales, cable", visto: "sí, el martes",
+    aviso: "Lo vio el martes y no ha contestado. Toca llamarle hoy.", accion: "Recordárselo" },
+  { n: "Caldera · Pérez", col: "Presupuesto enviado", dato: "Sin abrir · 2 días", obra: "sustitución de caldera", presupuesto: "enviado el miércoles", material: "caldera, kit de salida de humos", visto: "todavía no",
+    aviso: "Aún no lo ha abierto. Si mañana sigue igual, le llega un recordatorio.", accion: "Ver el presupuesto" },
+  { n: "Local · Sánchez", col: "Aceptado", dato: "Empieza el lunes", obra: "instalación eléctrica del local", presupuesto: "aceptado y firmado", material: "pedido al almacén, llega el viernes", visto: "sí",
+    aviso: "Aceptado y firmado. El material está pedido; llega el viernes.", accion: "Ver el parte" },
+  { n: "Terraza · Gómez", col: "Cobrado", dato: "Cobrado · te dejó 1.240 €", obra: "impermeabilización de terraza", presupuesto: "facturado", material: "todo el usado, en la factura", visto: "sí",
+    aviso: "Cobrado. Lo que te ha dejado esta obra, después del material: 1.240 € (ejemplo).", accion: "Ver lo que dejó" },
+];
+const campos: [string, string][] = [["obra", "Trabajo"], ["presupuesto", "Presupuesto"], ["visto", "¿Lo ha visto?"], ["material", "Material"]];
+---
+
+<PruebaWeb
+  titulo="Padrón IA · Oficios (prototipo)"
+  descripcion="Reformas, electricistas, fontaneros e instaladores. Que ningún presupuesto se quede sin respuesta y que el material no se te escape."
+  pagina="oficios"
+  wa={WA}
+>
+  <PaginaSector
+    wa={WA}
+    rotulo="Reformas · Electricistas · Fontaneros · Instaladores"
+    titular="Que ningún presupuesto se quede"
+    acento="sin respuesta."
+    sub="Tus clientes, tus presupuestos, tu material y tus facturas en un sitio. Sabes quién ha visto el presupuesto, a quién llamar hoy y cuánto te deja cada obra."
+    datos={datos}
+    frase="El cliente pide tres presupuestos. Gana el que contesta antes y el que vuelve a llamar."
+    panelTitulo="Así ves tus trabajos"
+    panelTexto="Toca un trabajo para ver su ficha: el presupuesto, si lo ha visto y el material. Es un ejemplo."
+    columnas={columnas}
+    personas={obras}
+    campos={campos}
+    elegida="Cuadro eléctrico · López"
+    dejas={[
+      "Pasar a limpio los presupuestos por la noche.",
+      "Llamar a ciegas sin saber si el cliente lo ha visto.",
+      "Ir al almacén por algo que se acabó a mitad de obra.",
+      "Terminar una obra sin saber si te ha compensado.",
+    ]}
+    preguntas={[
+      ["¿Puedo hacer el presupuesto desde la obra?", "Sí. Lo cuentas escrito o dictado, con fotos si quieres, y sale el presupuesto con tu tarifa. Lo revisas y lo mandas."],
+      ["¿El cliente puede aceptarlo y firmarlo?", "Sí, desde el móvil. Queda guardado con la fecha y pasa solo a «Aceptado»."],
+      ["¿Y el material?", "Cada material con lo que te cuesta y lo que cobras. Apuntas en el parte lo que pones en cada obra y pasa a la factura."],
+      ["¿Tengo que dejar el programa que uso?", "Lo vemos en la revisión de tu caso."],
+    ]}
+    cierre="Te lo enseñamos con tus obras"
+  >
+    <Fragment slot="dia">
+      <div class="w-pantalla" data-aparece>
+        <span class="w-etiqueta">El presupuesto</span>
+        <div class="w-burbuja w-burbuja--mia" style="background:var(--bone);color:var(--ink)">Cambio de cuadro en casa de López: cuadro nuevo, dos diferenciales y seis tomas. Un día de trabajo.</div>
+        <div style="border:1px solid var(--linea);border-radius:4px;padding:.75rem">
+          <div class="w-renglon"><span>Material</span><span class="w-cifra-mono">[importe]</span></div>
+          <div class="w-renglon"><span>Mano de obra · 1 día</span><span class="w-cifra-mono">[importe]</span></div>
+          <div class="w-renglon" style="font-weight:700"><span>Total</span><span class="w-cifra-mono">[total]</span></div>
+        </div>
+        <p class="w-p" style="font-size:.9375rem">Lo cuentas al salir de la visita y sale el presupuesto con tu tarifa.</p>
+      </div>
+      <div class="w-pantalla" data-aparece data-retardo="1">
+        <span class="w-etiqueta">El aviso</span>
+        <div class="w-aviso">López vio el presupuesto el martes y no ha contestado. Toca llamarle hoy.</div>
+        <div class="w-burbuja">Hola, López. ¿Pudiste ver el presupuesto del cuadro? Si te va bien, la semana que viene tengo hueco el martes.</div>
+        <p class="w-p" style="font-size:.9375rem">Sabes quién lo ha visto y a quién toca llamar.</p>
+      </div>
+      <div class="w-pantalla" data-aparece data-retardo="2">
+        <span class="w-etiqueta">La obra</span>
+        <div>
+          <div class="w-renglon"><span>Presupuestado</span><span class="w-cifra-mono">[importe]</span></div>
+          <div class="w-renglon"><span>Material usado</span><span class="w-cifra-mono">[importe]</span></div>
+          <div class="w-renglon" style="font-weight:700"><span>Lo que te deja</span><span class="w-cifra-mono" style="color:var(--iris)">[importe]</span></div>
+        </div>
+        <p class="w-p" style="font-size:.9375rem">Al cobrar, ves lo que te ha dejado cada obra después del material.</p>
+      </div>
+    </Fragment>
+
+    <section class="w-seccion w-seccion--sin-arriba">
+      <div class="w-wrap w-pila">
+        <div class="w-pila w-pila--peq">
+          <p class="w-rotulo">Tu material</p>
+          <h2 class="w-h2" data-aparece>El material, que no se te escape</h2>
+        </div>
+        <div class="w-g2">
+          <div class="w-tarjeta" data-aparece><h3 class="w-h3">Lo que te cuesta y lo que cobras</h3><p class="w-p">Cada material con su precio de compra, su precio de venta y su proveedor. Si el proveedor sube un precio, te avisa de los presupuestos abiertos que lo llevan.</p></div>
+          <div class="w-tarjeta" data-aparece data-retardo="1"><h3 class="w-h3">Lo que pones en cada obra</h3><p class="w-p">Lo apuntas en el parte, desde el móvil, y pasa a la factura de esa obra con un toque.</p></div>
+          <div class="w-tarjeta" data-aparece><h3 class="w-h3">Lo que te queda en la furgoneta</h3><p class="w-p">Lo que hay en el almacén y en cada furgoneta, con aviso cuando algo se acaba y la lista para pedir.</p></div>
+          <div class="w-tarjeta" data-aparece data-retardo="1"><h3 class="w-h3">Las compras, a su obra</h3><p class="w-p">Le haces una foto al albarán o a la factura del proveedor y entra solo, como gasto de esa obra.</p></div>
+        </div>
+      </div>
+    </section>
+  </PaginaSector>
+</PruebaWeb>

@@ -1,0 +1,75 @@
+---
+// Product website prototype · what is included, module by module, with the «before / after» of prototype A.
+// Copy: fundacion.md §2.8. Modules: servicio/2026-11-02-plan-base-con-sectores.md §2.
+import PruebaWeb from "../../../layouts/PruebaWeb.astro";
+
+const WA = "https://wa.me/34624664907?text=Hola%2C%20quiero%20que%20revisemos%20mi%20caso";
+const LIA = "Te atiende Lía, nuestra asistente, y Jesús ve la conversación. Si encaja, te deja la llamada en su agenda. Sin compromiso.";
+const piezas = [
+  { t: "Tus clientes, en un panel", antes: "«¿Marta hace cuánto que no viene? ¿Ana me debía algo?»", ahora: "Cada cliente en su columna: nuevo, habitual, se enfría, recuperado. Ves quién está bien, quién se enfría y quién te debe." },
+  { t: "Agenda y reservas", antes: "«Te llamo y lo miramos.» Citas en una libreta y huecos que nadie ve.", ahora: "Reservan desde tu página o te escriben, en tu consulta, en tu local o por videollamada, y todo acaba en la misma agenda." },
+  { t: "Avisos por WhatsApp", antes: "Catorce mensajes sin leer, tres de ayer, y el recordatorio de mañana sin mandar.", ahora: "El recordatorio de la cita, el cliente que hace tiempo que no viene y el presupuesto sin respuesta salen solos, desde tu número." },
+  { t: "Presupuestos", antes: "Pasarlos a limpio por la noche y no saber si el cliente los ha visto.", ahora: "Lo cuentas al salir de la visita y sale con tu tarifa. Sabes si lo ha visto, a quién llamar hoy y lo aceptan firmando desde el móvil." },
+  { t: "Facturas y trimestre", antes: "Una caja de tickets para la gestoría y el día 20 en rojo.", ahora: "Facturas con tus datos en un momento, los gastos con una foto y, cada trimestre, tu gestoría recibe todo ordenado." },
+  { t: "Material y stock", antes: "Ir al almacén por algo que se acabó a mitad de obra.", ahora: "Lo que te cuesta cada material y lo que cobras, lo que pones en cada obra y lo que te queda, con aviso antes de que se acabe." },
+  { t: "Tu asistente", antes: "Todo en tu cabeza, a todas horas.", ahora: "Le preguntas «¿a quién no he visto en dos meses?» o «¿quién me debe?» y te lo dice, con el mensaje preparado." },
+  { t: "Una persona", antes: "Un soporte que no contesta o que contesta pagando aparte.", ahora: "Jesús te responde en el día. Y cada mes revisamos qué usas y qué mejoramos." },
+];
+---
+
+<PruebaWeb
+  titulo="Padrón IA · Qué incluye (prototipo)"
+  descripcion="Lo que te dejamos montado, pieza a pieza: tus clientes, la agenda, los avisos por WhatsApp, los presupuestos, las facturas y el trimestre, el material, tu asistente y una persona."
+  pagina="que-incluye"
+  wa={WA}
+>
+  <section class="w-seccion">
+    <div class="w-wrap w-pila" style="max-width:62rem;margin-left:auto;margin-right:auto">
+      <p class="w-rotulo" data-aparece>Qué incluye</p>
+      <h1 class="w-h1" data-aparece data-retardo="1">Lo que te dejamos <span class="w-acento">montado.</span></h1>
+      <p class="w-sub" data-aparece data-retardo="2">Pieza a pieza, cómo estaba y cómo queda. Se enciende lo que tu negocio necesita, montado para tu sector y con tus datos.</p>
+      <div class="w-accion" data-aparece data-retardo="3">
+        <a class="w-boton" href={WA} data-hero-boton>Solicita la revisión de tu caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-seccion--sin-arriba">
+    <div class="w-wrap w-pila" style="gap:1.25rem">
+      {piezas.map((p, i) => (
+        <article class="w-pieza" data-aparece>
+          <span class="w-cifra-mono w-pieza__n">{String(i + 1).padStart(2, "0")}</span>
+          <h2 class="w-h3 w-pieza__t">{p.t}</h2>
+          <div class="w-pieza__antes"><span class="w-etiqueta">Así estaba</span><p>{p.antes}</p></div>
+          <div class="w-pieza__ahora"><span class="w-etiqueta">Así queda</span><p>{p.ahora}</p></div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="w-seccion w-oscura">
+    <div class="w-wrap w-fila">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Lo que no hace</p>
+        <h2 class="w-h2" data-aparece>Lo que no te vendemos</h2>
+      </div>
+      <ul class="w-hechos" style="font-size:1rem">
+        <li data-aparece>Un programa que te montas tú solo.</li>
+        <li data-aparece data-retardo="1">Extras de pago por cada pieza que necesitas.</li>
+        <li data-aparece data-retardo="2">Cambiar de gestoría: la tuya recibe todo ordenado.</li>
+        <li data-aparece data-retardo="3">Quedarte atado: sin permanencia, y tus datos son tuyos.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="w-seccion w-iris">
+    <div class="w-wrap w-pila" style="align-items:flex-start">
+      <h2 class="w-h2" data-aparece>¿Qué necesitaría tu negocio?</h2>
+      <div class="w-accion">
+        <a class="w-boton" href={WA}>Solicita la revisión de tu caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+    </div>
+  </section>
+</PruebaWeb>

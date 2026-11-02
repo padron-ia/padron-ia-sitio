@@ -42,19 +42,26 @@ const {
   elegida = "Marta",
 } = Astro.props;
 const inicial = personas.find((p) => p.n === elegida) ?? personas[0];
+const colInicial = inicial.col;
+const cuenta = (c: string) => personas.filter((x) => x.col === c).length;
 const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8F9BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
 ---
 
 {modo === "vivo" && (
-  <div class="w-pantalla" data-panel-vivo>
+  <div class="w-pantalla" data-panel-vivo data-panel>
     <div style="display:flex;justify-content:space-between;align-items:center">
       <strong style="font-size:.9375rem">{titulo}</strong>
       <span class="w-etiqueta">Ejemplo</span>
     </div>
+    <div class="w-panel__pestanas" role="tablist" aria-label="Columnas del panel">
+      {columnas.map((c) => (
+        <button type="button" role="tab" data-pestana={c} aria-selected={c === colInicial ? "true" : "false"}>{c} <span data-cuenta-pestana>{cuenta(c)}</span></button>
+      ))}
+    </div>
     <div class="w-panel__scroll">
       <div class="w-panel__cols">
         {columnas.map((c) => (
-          <div class="w-panel__col" data-col={c}>
+          <div class={`w-panel__col${c === colInicial ? " w-panel__col--activa" : ""}`} data-col={c}>
             <div class="w-panel__titulo">{c} · <span data-cuenta>{personas.filter((x) => x.col === c).length}</span></div>
             {personas.filter((x) => x.col === c).map((x) => (
               <div class={`w-ficha${x.n === elegida ? " w-ficha--marca" : ""}`} data-nombre={x.n}>
@@ -70,17 +77,22 @@ const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" strok
 )}
 
 {modo === "ficha" && (
-  <div class="w-panel-ficha" data-panel-ficha data-personas={JSON.stringify(personas)}>
+  <div class="w-panel-ficha" data-panel-ficha data-panel data-personas={JSON.stringify(personas)}>
     <div class="w-pantalla">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <strong style="font-size:.9375rem">{titulo}</strong>
         <span class="w-etiqueta">Ejemplo</span>
       </div>
+      <div class="w-panel__pestanas" role="tablist" aria-label="Columnas del panel">
+      {columnas.map((c) => (
+        <button type="button" role="tab" data-pestana={c} aria-selected={c === colInicial ? "true" : "false"}>{c} <span data-cuenta-pestana>{cuenta(c)}</span></button>
+      ))}
+    </div>
       <div class="w-panel__scroll">
         <div class="w-panel__cols">
           {columnas.map((c) => (
-            <div class="w-panel__col">
-              <div class="w-panel__titulo">{c} · {personas.filter((x) => x.col === c).length}</div>
+            <div class={`w-panel__col${c === colInicial ? " w-panel__col--activa" : ""}`} data-col={c}>
+              <div class="w-panel__titulo">{c} · {cuenta(c)}</div>
               {personas.filter((x) => x.col === c).map((x) => (
                 <button type="button" class="w-ficha" data-elige={x.n} aria-pressed={x.n === inicial.n ? "true" : "false"}>
                   <b>{x.n}</b><small>{x.dato}</small>
@@ -108,6 +120,15 @@ const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" strok
 )}
 
 <script>
+  // On a phone the board shows one column at a time, chosen with the tabs above it.
+  const activar = (panel: HTMLElement, col: string) => {
+    panel.querySelectorAll<HTMLElement>("[data-pestana]").forEach((t) => t.setAttribute("aria-selected", String(t.dataset.pestana === col)));
+    panel.querySelectorAll<HTMLElement>("[data-col]").forEach((c) => c.classList.toggle("w-panel__col--activa", c.dataset.col === col));
+  };
+  document.querySelectorAll<HTMLElement>("[data-panel]").forEach((panel) => {
+    panel.querySelectorAll<HTMLElement>("[data-pestana]").forEach((t) => t.addEventListener("click", () => activar(panel, t.dataset.pestana!)));
+  });
+
   // Home hero: Marta goes back and forth between «Se enfría» and «Recuperada» every 4 s (paused with reduced motion).
   document.querySelectorAll<HTMLElement>("[data-panel-vivo]").forEach((panel) => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -116,7 +137,12 @@ const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" strok
     const enfria = panel.querySelector<HTMLElement>('[data-col="Se enfría"]');
     const recupera = panel.querySelector<HTMLElement>('[data-col="Recuperada"]');
     if (!ficha || !aviso || !enfria || !recupera) return;
-    const cuenta = (col: HTMLElement) => { col.querySelector("[data-cuenta]")!.textContent = String(col.querySelectorAll(".w-ficha").length); };
+    const cuenta = (col: HTMLElement) => {
+      const n = String(col.querySelectorAll(".w-ficha").length);
+      col.querySelector("[data-cuenta]")!.textContent = n;
+      const t = panel.querySelector(`[data-pestana="${col.dataset.col}"] [data-cuenta-pestana]`);
+      if (t) t.textContent = n;
+    };
     let vuelta = false;
     setInterval(() => {
       vuelta = !vuelta;
@@ -126,6 +152,10 @@ const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" strok
       ficha.querySelector("[data-dato]")!.textContent = vuelta ? "Ha reservado · martes 10:30" : "Hace 7 semanas";
       aviso.textContent = vuelta ? "Marta ha reservado para el martes a las 10:30." : "Hace 7 semanas que no vemos a Marta. ¿Le mando un mensaje?";
       cuenta(enfria); cuenta(recupera);
+      // The phone view follows Marta to her new column.
+      if (panel.querySelector('[data-pestana][aria-selected="true"]')?.getAttribute("data-pestana") === (vuelta ? "Se enfría" : "Recuperada")) {
+        activar(panel, destino.dataset.col!);
+      }
     }, 4000);
   });
 

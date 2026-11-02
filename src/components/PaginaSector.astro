@@ -1,0 +1,110 @@
+---
+// Shared body of a sector page in the product website prototype: hero, what slips away (each figure with its
+// source), the example board, the day in three screens (slot "dia"), extra sections (default slot), what you stop
+// doing, questions and the closing call. Copy for each sector: fundacion.md (OS repo, web-rework/2026-11-02-web-de-producto).
+import PanelClientes from "./PanelClientes.astro";
+
+interface Dato { cifra: string; t: string; fuente: string; href: string }
+interface Props {
+  wa: string;
+  rotulo: string;
+  titular: string;
+  acento: string;
+  sub: string;
+  datos: Dato[];
+  frase: string;
+  panelTitulo: string;
+  panelTexto: string;
+  columnas: string[];
+  personas: any[];
+  campos: [string, string][];
+  elegida: string;
+  dejas: string[];
+  dejasTitulo?: string;
+  preguntas: [string, string][];
+  cierre: string;
+  pie?: string;
+}
+const p = Astro.props;
+const LIA = "Te atiende Lía, nuestra asistente, y Jesús ve la conversación. Si encaja, te deja la llamada en su agenda. Sin compromiso.";
+---
+
+<section class="w-seccion">
+  <div class="w-wrap w-pila" style="max-width:62rem;margin-left:auto;margin-right:auto">
+    <p class="w-rotulo" data-aparece>{p.rotulo}</p>
+    <h1 class="w-h1" data-aparece data-retardo="1">{p.titular} <span class="w-acento">{p.acento}</span></h1>
+    <p class="w-sub" data-aparece data-retardo="2">{p.sub}</p>
+    <div class="w-accion" data-aparece data-retardo="3">
+      <a class="w-boton" href={p.wa} data-hero-boton>Solicita la revisión de tu caso</a>
+      <p class="w-nota">{LIA}</p>
+    </div>
+  </div>
+</section>
+
+<section class="w-seccion w-oscura">
+  <div class="w-wrap w-pila" style="gap:2.25rem">
+    <p class="w-rotulo">Lo que se escapa</p>
+    <div class={p.datos.length === 2 ? "w-g2" : "w-g3"}>
+      {p.datos.map((d, i) => (
+        <div class="w-pila w-pila--peq" style="border-top:1px solid var(--ink-line);padding-top:1.25rem" data-aparece data-retardo={i}>
+          <span class="w-cifra-grande">{d.cifra}</span>
+          <p style="margin:0">{d.t}</p>
+          <a class="w-fuente" href={d.href} rel="noopener">{d.fuente}</a>
+        </div>
+      ))}
+    </div>
+    <p style="margin:0;font-size:clamp(1.4rem,1rem + 1.5vw,2rem);line-height:1.25;font-weight:700" data-aparece>{p.frase}</p>
+  </div>
+</section>
+
+<section class="w-seccion">
+  <div class="w-wrap w-pila">
+    <div class="w-pila w-pila--peq">
+      <p class="w-rotulo">Tu panel</p>
+      <h2 class="w-h2" data-aparece>{p.panelTitulo}</h2>
+      <p class="w-p">{p.panelTexto}</p>
+    </div>
+    <div data-aparece><PanelClientes modo="ficha" titulo={p.panelTitulo} columnas={p.columnas} personas={p.personas} campos={p.campos} elegida={p.elegida} /></div>
+  </div>
+</section>
+
+<section class="w-seccion w-seccion--sin-arriba">
+  <div class="w-wrap w-pila">
+    <div class="w-pila w-pila--peq">
+      <p class="w-rotulo">Tu día</p>
+      <h2 class="w-h2" data-aparece>Tres cosas que pasan solas</h2>
+    </div>
+    <div class="w-g3"><slot name="dia" /></div>
+  </div>
+</section>
+
+<slot />
+
+<section class="w-seccion w-oscura">
+  <div class="w-wrap w-pila">
+    <p class="w-rotulo">{p.dejasTitulo ?? "Lo que dejas de hacer"}</p>
+    <ul class="w-hechos">
+      {p.dejas.map((d, i) => <li data-aparece data-retardo={i}>{d}</li>)}
+    </ul>
+  </div>
+</section>
+
+<section class="w-seccion">
+  <div class="w-wrap w-estrecho w-pila w-pila--peq w-preguntas" style="margin-left:auto;margin-right:auto">
+    <p class="w-rotulo">Preguntas</p>
+    {p.preguntas.map(([q, a]) => (
+      <details><summary>{q}</summary><p>{a}</p></details>
+    ))}
+  </div>
+</section>
+
+<section class="w-seccion w-iris">
+  <div class="w-wrap w-pila" style="align-items:flex-start">
+    <h2 class="w-h2" data-aparece>{p.cierre}</h2>
+    <div class="w-accion">
+      <a class="w-boton" href={p.wa}>Solicita la revisión de tu caso</a>
+      <p class="w-nota">{LIA}</p>
+    </div>
+    <p class="w-nota">{p.pie ?? "Los nombres y los datos del panel son de ejemplo."}</p>
+  </div>
+</section>

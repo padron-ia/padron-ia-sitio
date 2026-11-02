@@ -1,0 +1,77 @@
+---
+// Product website prototype · all questions in one page, by topic. Copy: fundacion.md §2.10.
+// Veri*factu: legal date from RD 1007/2023 as amended by RDL 15/2025 (1-jul-2027 for the self-employed); see
+// servicio/2026-11-02-herramientas-del-autonomo.md §2.13 in the OS repo.
+import PruebaWeb from "../../../layouts/PruebaWeb.astro";
+
+const WA = "https://wa.me/34624664907?text=Hola%2C%20tengo%20una%20pregunta%20sobre%20mi%20caso";
+const LIA = "Te atiende Lía, nuestra asistente, y Jesús ve la conversación. Si encaja, te deja la llamada en su agenda. Sin compromiso.";
+const temas: { t: string; qs: [string, string][] }[] = [
+  { t: "Antes de empezar", qs: [
+    ["¿Tengo que saber de tecnología?", "No. Te lo dejamos montado y te enseñamos con tu trabajo de verdad, no con un curso."],
+    ["¿Sirve para mi negocio?", "Si tienes clientes que vuelven, citas o presupuestos, casi seguro. Lo vemos en la revisión de tu caso y, si no encaja, te lo decimos."],
+    ["¿Puedo seguir con el programa que uso?", "Lo vemos en la revisión. A veces conviene quedarse con lo que ya tienes y ordenar alrededor; otras, cambiar te ahorra dinero y tiempo."],
+    ["¿Qué es eso del asistente?", "Un asistente a tu nombre que conoce tu negocio: tus clientes, tus precios y tu forma de hablar. Le preguntas y te contesta, y te deja preparado lo que toca. No manda nada sin que tú lo veas."],
+  ] },
+  { t: "Dinero", qs: [
+    ["¿Cuánto cuesta?", "Depende de lo que haya que montar en tu negocio. Te lo decimos después de revisar tu caso, por escrito y sin compromiso."],
+    ["¿Cómo se paga?", "Un arranque, que se paga una vez cuando te lo montamos, y una cuota mensual para que siga funcionando y mejorando."],
+    ["¿Hay permanencia?", "No. Si te vas, te llevas tus datos y lo que hemos montado a tu nombre."],
+    ["¿Hay extras de pago?", "No hay piezas sueltas que se paguen aparte. Lo que entra en tu caso, va dicho por escrito antes de empezar."],
+  ] },
+  { t: "Facturas y gestoría", qs: [
+    ["¿Tengo que cambiar de gestoría?", "No. Cada trimestre le mandamos a la tuya todo ordenado, sin que tenga que darse de alta en nada."],
+    ["¿Y Veri*factu?", "Es el sistema de Hacienda que obliga a los programas de facturación a no dejar alterar las facturas. Para los autónomos es obligatorio desde el 1 de julio de 2027. Lo tendremos listo antes de esa fecha."],
+    ["¿Y los gastos?", "Les haces una foto y entran solos, con aviso si alguno está repetido."],
+  ] },
+  { t: "Tus datos", qs: [
+    ["¿De quién son los datos?", "Tuyos. Cada negocio tiene su propia base de datos, separada de las demás."],
+    ["¿Y los datos de salud de mis pacientes?", "Van aparte, con permisos por persona: quien te ayuda con las facturas no ve las historias. Cada consentimiento queda guardado con su fecha."],
+    ["¿Los avisos de WhatsApp salen de mi número?", "Sí, de tu número y por la vía oficial de WhatsApp para empresas, para que no te lo bloqueen."],
+  ] },
+  { t: "Después", qs: [
+    ["¿Quién me responde si algo falla?", "Jesús, en el día. Con nombre y sin tickets."],
+    ["¿Y si mi negocio cambia?", "Cada mes revisamos qué usas y qué no, y lo ajustamos. Lo que no usas, se quita."],
+  ] },
+];
+---
+
+<PruebaWeb
+  titulo="Padrón IA · Preguntas (prototipo)"
+  descripcion="Las preguntas de siempre: si hace falta saber de tecnología, cuánto cuesta y cómo se paga, la gestoría, Veri*factu y tus datos."
+  pagina="preguntas"
+  wa={WA}
+>
+  <section class="w-seccion">
+    <div class="w-wrap w-pila" style="max-width:62rem;margin-left:auto;margin-right:auto">
+      <p class="w-rotulo" data-aparece>Preguntas</p>
+      <h1 class="w-h1" data-aparece data-retardo="1">Antes de que <span class="w-acento">lo preguntes.</span></h1>
+      <p class="w-sub" data-aparece data-retardo="2">Y si tu pregunta no está, escríbela: te contesta Lía al momento y Jesús ve la conversación.</p>
+      <div class="w-accion" data-aparece data-retardo="3">
+        <a class="w-boton" href={WA} data-hero-boton>Pregúntanos lo tuyo</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+    </div>
+  </section>
+
+  {temas.map((tema) => (
+    <section class="w-seccion w-seccion--sin-arriba">
+      <div class="w-wrap w-estrecho w-pila w-pila--peq w-preguntas" style="margin-left:auto;margin-right:auto">
+        <h2 class="w-rotulo" style="font-weight:400">{tema.t}</h2>
+        {tema.qs.map(([q, a]) => (
+          <details><summary>{q}</summary><p>{a}</p></details>
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <section class="w-seccion w-iris">
+    <div class="w-wrap w-pila" style="align-items:flex-start">
+      <h2 class="w-h2" data-aparece>¿Lo vemos con tu negocio?</h2>
+      <div class="w-accion">
+        <a class="w-boton" href="https://wa.me/34624664907?text=Hola%2C%20quiero%20que%20revisemos%20mi%20caso">Solicita la revisión de tu caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+    </div>
+  </section>
+</PruebaWeb>

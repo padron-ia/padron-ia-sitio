@@ -7,7 +7,7 @@ import "../pages/prueba/web/_web.css";
 interface Props {
   titulo: string;
   descripcion: string;
-  pagina: "portada" | "autonomos" | "peluqueria" | "consulta";
+  pagina: string;
   wa: string;
 }
 const { titulo, descripcion, pagina, wa } = Astro.props;
@@ -15,9 +15,18 @@ const fuentes = "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800
 const paginas = [
   { id: "portada", t: "Portada", href: "/prueba/web/" },
   { id: "autonomos", t: "Autónomos", href: "/prueba/web/autonomos/" },
-  { id: "peluqueria", t: "Peluquería", href: "/prueba/web/peluqueria/" },
-  { id: "consulta", t: "Consulta", href: "/prueba/web/consulta/" },
+  { id: "empresas", t: "Empresas", href: "/prueba/web/empresas/" },
+  { id: "peluqueria", t: "Peluquería y estética", href: "/prueba/web/peluqueria/" },
+  { id: "consulta", t: "Consulta de salud", href: "/prueba/web/consulta/" },
+  { id: "oficios", t: "Oficios", href: "/prueba/web/oficios/" },
+  { id: "vehiculo", t: "Taller y lavadero", href: "/prueba/web/vehiculo/" },
+  { id: "que-incluye", t: "Qué incluye", href: "/prueba/web/que-incluye/" },
+  { id: "como-funciona", t: "Cómo funciona", href: "/prueba/web/como-funciona/" },
+  { id: "preguntas", t: "Preguntas", href: "/prueba/web/preguntas/" },
 ];
+const menu = ["autonomos", "empresas", "que-incluye", "como-funciona", "preguntas"].map((id) => paginas.find((p) => p.id === id)!);
+const sectores = ["peluqueria", "consulta", "oficios", "vehiculo"].map((id) => paginas.find((p) => p.id === id)!);
+const actual = paginas.find((p) => p.id === pagina)?.t ?? "Portada";
 ---
 
 <!doctype html>
@@ -51,11 +60,10 @@ const paginas = [
       <div class="w-wrap w-cabecera__fila">
         <a class="w-logo" href="/prueba/web/" aria-label="Padrón IA, portada">PADRÓN<span>·IA</span></a>
         <nav class="w-menu" aria-label="Menú principal">
-          <a href="/prueba/web/autonomos/" aria-current={pagina === "autonomos" ? "page" : undefined}>Autónomos</a>
-          <a href="/prueba/web/#empresas">Empresas</a>
-          <a href="/prueba/web/#sectores">Sectores</a>
-          <a href="/prueba/web/#como">Cómo funciona</a>
-          <a href="/prueba/web/#preguntas">Preguntas</a>
+          <a href={menu[0].href} aria-current={pagina === menu[0].id ? "page" : undefined}>{menu[0].t}</a>
+          <a href={menu[1].href} aria-current={pagina === menu[1].id ? "page" : undefined}>{menu[1].t}</a>
+          <a href="/prueba/web/#sectores" aria-current={sectores.some((x) => x.id === pagina) ? "page" : undefined}>Sectores</a>
+          {menu.slice(2).map((m) => <a href={m.href} aria-current={pagina === m.id ? "page" : undefined}>{m.t}</a>)}
         </nav>
         <a class="w-boton w-boton--peq" href={wa}>Solicita la revisión</a>
       </div>
@@ -66,6 +74,10 @@ const paginas = [
     </main>
 
     <footer class="w-pie">
+      <div class="w-wrap w-pie__sectores">
+        <span>Sectores:</span>
+        {sectores.map((x) => <a href={x.href}>{x.t}</a>)}
+      </div>
       <div class="w-wrap w-pie__fila">
         <span>© 2026 Padrón IA</span>
         <span class="w-pie__enlaces">
@@ -78,12 +90,14 @@ const paginas = [
 
     <a class="w-fijo" href={wa} data-fijo>Solicita la revisión de tu caso</a>
 
-    <nav class="w-selector" aria-label="Cambiar de página del prototipo">
-      <span>Prototipo</span>
-      {paginas.map((p) => (
-        <a href={p.href} aria-current={p.id === pagina ? "page" : undefined}>{p.t}</a>
-      ))}
-    </nav>
+    <details class="w-selector">
+      <summary><span>Prototipo</span> {actual} ▾</summary>
+      <nav aria-label="Páginas del prototipo">
+        {paginas.map((p) => (
+          <a href={p.href} aria-current={p.id === pagina ? "page" : undefined}>{p.t}</a>
+        ))}
+      </nav>
+    </details>
 
     <script>
       import Lenis from "lenis";

@@ -1,0 +1,91 @@
+---
+// Product website prototype · garage and car wash page (vehicle variant of the trades package). Built on the car wash
+// demo from July (clients/car-wash-arroyo in the OS repo). Copy: fundacion.md §2.6.
+// Figures: sector demand study (servicio/2026-11-02-estudio-de-demanda-sectores/fuentes/03), each with its source.
+import PruebaWeb from "../../../layouts/PruebaWeb.astro";
+import PaginaSector from "../../../components/PaginaSector.astro";
+
+const WA = "https://wa.me/34624664907?text=Hola%2C%20tengo%20un%20taller%20y%20quiero%20que%20revisemos%20mi%20caso";
+const datos = [
+  { cifra: "+30 %", t: "de los vehículos obligados no pasó la ITV en 2025. Cada uno es un cliente al que nadie le avisó a tiempo.",
+    fuente: "Fuente: AECA-ITV con datos de la DGT, 2025", href: "https://www.dgt.es/comunicacion/eventos/20250917-aeca-itv-analiza-el-estado-del-parque-de-vehiculos-en-espana" },
+  { cifra: "200-249 €", t: "cuesta de media una revisión anual. La que no se avisa, se la lleva otro taller.",
+    fuente: "Fuente: OCU, 28-abr-2026", href: "https://www.ocu.org/organizacion/prensa/notas-de-prensa/2026/tallerescoches280426" },
+];
+const columnas = ["Cita", "En el taller", "Presupuesto", "Listo", "Revisión e ITV"];
+const coches = [
+  { n: "1234 KLM · Ibiza", col: "Cita", dato: "Mañana 9:00 · lavado completo", matricula: "1234 KLM", coche: "Seat Ibiza", km: "84.200", proxima: "ITV en marzo",
+    aviso: "Reservó desde la web. Le llega el recordatorio esta tarde.", accion: "Ver la cita" },
+  { n: "5678 HJK · Golf", col: "En el taller", dato: "Cambio de aceite y filtros", matricula: "5678 HJK", coche: "VW Golf", km: "121.900", proxima: "revisión en 15.000 km",
+    aviso: "En el elevador desde las 10:00. Cuando esté, le avisas con un toque.", accion: "Avisar de que está listo" },
+  { n: "9012 BCD · Clio", col: "Presupuesto", dato: "Frenos · sin respuesta 1 día", matricula: "9012 BCD", coche: "Renault Clio", km: "97.400", proxima: "ITV en junio",
+    aviso: "El presupuesto de frenos lleva un día sin respuesta y el coche ocupa sitio. Toca llamarle.", accion: "Recordárselo" },
+  { n: "3456 FGH · Corolla", col: "Listo", dato: "Listo · avisado a las 13:10", matricula: "3456 FGH", coche: "Toyota Corolla", km: "64.000", proxima: "revisión en enero",
+    aviso: "Listo y avisado a las 13:10. La factura sale al recogerlo.", accion: "Ver la factura" },
+  { n: "7890 LMN · Focus", col: "Revisión e ITV", dato: "ITV el mes que viene", matricula: "7890 LMN", coche: "Ford Focus", km: "142.300", proxima: "ITV el día 14 del mes que viene",
+    aviso: "Le toca la ITV el mes que viene. Le llega un mensaje para pasar antes la revisión.", accion: "Ver el mensaje" },
+];
+const campos: [string, string][] = [["matricula", "Matrícula"], ["coche", "Coche"], ["km", "Kilómetros"], ["proxima", "Lo próximo"]];
+---
+
+<PruebaWeb
+  titulo="Padrón IA · Taller y lavadero (prototipo)"
+  descripcion="Cada coche con su ficha, su cita y el aviso de la ITV o la revisión. Presupuestos que no se quedan parados y el cliente avisado cuando su coche está listo."
+  pagina="vehiculo"
+  wa={WA}
+>
+  <PaginaSector
+    wa={WA}
+    rotulo="Taller · Lavadero · Chapa y pintura"
+    titular="Cada coche, con su ficha y"
+    acento="su próxima visita."
+    sub="Por la matrícula ves todo: lo que se le hizo, lo que le toca y cuándo vence su ITV. Tus clientes reservan, les avisas cuando su coche está listo y vuelven a la revisión."
+    datos={datos}
+    frase="El cliente no lleva la cuenta de su ITV. Si se lo recuerdas tú, vuelve a tu taller."
+    panelTitulo="Así ves tus coches"
+    panelTexto="Toca un coche para ver su ficha: matrícula, kilómetros y lo que le toca. Es un ejemplo."
+    columnas={columnas}
+    personas={coches}
+    campos={campos}
+    elegida="9012 BCD · Clio"
+    dejas={[
+      "Buscar en una libreta lo que se le hizo a un coche.",
+      "Llamar a ver si aceptan el presupuesto con el coche en el elevador.",
+      "Perder al cliente de la revisión porque nadie se lo recordó.",
+    ]}
+    preguntas={[
+      ["¿Mis clientes pueden reservar online?", "Sí, desde tu página, por huecos según tu horario y lo que dura cada servicio. Y te siguen pudiendo llamar o escribir."],
+      ["¿Pongo la matrícula y el modelo en la factura?", "Sí, de serie. Sin pagar un plan más caro por ello."],
+      ["¿Sirve para un lavadero?", "Sí: reservas por huecos, ficha por matrícula, aviso al terminar y factura por WhatsApp."],
+      ["¿Tengo que dejar el programa que uso?", "Lo vemos en la revisión de tu caso."],
+    ]}
+    cierre="Te lo enseñamos con tu taller"
+  >
+    <Fragment slot="dia">
+      <div class="w-pantalla" data-aparece>
+        <span class="w-etiqueta">La reserva</span>
+        <div class="w-pila" style="gap:.4rem;font-size:.8125rem">
+          <div style="display:flex;gap:.6rem;border-left:3px solid var(--iris);background:var(--bone);padding:.5rem"><span class="w-cifra-mono">09:00</span><span>1234 KLM · Lavado completo</span></div>
+          <div style="display:flex;gap:.6rem;border-left:3px solid var(--lavender);background:var(--bone);padding:.5rem"><span class="w-cifra-mono">10:30</span><span>5678 HJK · Aceite y filtros</span></div>
+          <div style="display:flex;gap:.6rem;border-left:3px solid var(--pearl);background:var(--bone);padding:.5rem"><span class="w-cifra-mono">12:00</span><span>Hueco libre</span></div>
+        </div>
+        <p class="w-p" style="font-size:.9375rem">Reservan desde tu página por huecos, según lo que dura cada servicio.</p>
+      </div>
+      <div class="w-pantalla" data-aparece data-retardo="1">
+        <span class="w-etiqueta">El aviso</span>
+        <div class="w-burbuja">Hola. Tu Corolla ya está listo. Puedes pasar a recogerlo hasta las 19:00.</div>
+        <div class="w-aviso">7890 LMN: le toca la ITV el mes que viene.</div>
+        <p class="w-p" style="font-size:.9375rem">Coche listo, presupuesto parado e ITV que se acerca, avisados a tiempo.</p>
+      </div>
+      <div class="w-pantalla" data-aparece data-retardo="2">
+        <span class="w-etiqueta">La factura</span>
+        <div style="border:1px solid var(--linea);border-radius:4px;padding:.75rem">
+          <div class="w-renglon" style="color:var(--texto-tenue)"><span>3456 FGH · Toyota Corolla · 64.000 km</span></div>
+          <div class="w-renglon"><span>Revisión y filtros</span><span class="w-cifra-mono">[importe]</span></div>
+          <div class="w-renglon" style="font-weight:700"><span>Total</span><span class="w-cifra-mono">[total]</span></div>
+        </div>
+        <p class="w-p" style="font-size:.9375rem">Con la matrícula y los kilómetros, y se la mandas por WhatsApp.</p>
+      </div>
+    </Fragment>
+  </PaginaSector>
+</PruebaWeb>

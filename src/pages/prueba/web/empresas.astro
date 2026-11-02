@@ -1,0 +1,121 @@
+---
+// Product website prototype · small companies page. Offer: servicio/2026-11-02-oferta-autonomos-y-empresas.md §3
+// (review → named improvement → retainer; what a company has that the self-employed do not). Copy: fundacion.md §2.7.
+import PruebaWeb from "../../../layouts/PruebaWeb.astro";
+
+const WA = "https://wa.me/34624664907?text=Hola%2C%20tengo%20una%20empresa%20y%20quiero%20que%20revisemos%20nuestro%20caso";
+const LIA = "Te atiende Lía, nuestra asistente, y Jesús ve la conversación. Si encaja, te deja la llamada en su agenda. Sin compromiso.";
+const propio = [
+  ["Cada uno sabe qué le toca", "Las tareas de cada persona, con su fecha y su responsable. Nadie pregunta «¿esto quién lo lleva?»."],
+  ["Lo ves todo de un vistazo", "Lo que entró, lo que se ha torcido y lo que vence esta semana, en una pantalla. Sin perseguir a nadie para saberlo."],
+  ["Que no dependa de una cabeza", "Los pasos de cada trabajo, escritos y en un sitio. Si alguien falta, el trabajo sigue."],
+  ["Stock y márgenes, al día", "Lo que tienes, lo que se acaba y lo que te deja cada cliente o cada producto."],
+];
+const escalera = [
+  ["Revisamos vuestro caso", "Hablamos y os decimos por escrito qué mejoraríamos primero, qué ganáis y en cuánto tiempo."],
+  ["Una mejora cada vez", "Con alcance, plazo y precio cerrados antes de empezar. Se paga por hitos, según la veis funcionando."],
+  ["Nos quedamos", "Lo vigilamos, os respondemos en el día y cada mes os proponemos la siguiente mejora. Sin permanencia."],
+];
+---
+
+<PruebaWeb
+  titulo="Padrón IA · Para empresas pequeñas (prototipo)"
+  descripcion="Para empresas de 2 a 30 personas: que el negocio funcione sin que estés en todo. Cada uno sabe qué le toca, tú lo ves todo y nada depende de una sola cabeza."
+  pagina="empresas"
+  wa={WA}
+>
+  <section class="w-seccion">
+    <div class="w-wrap w-hero">
+      <div class="w-pila">
+        <p class="w-rotulo" data-aparece>Para empresas de 2 a 30 personas</p>
+        <h1 class="w-h1" data-aparece data-retardo="1">Que el negocio funcione <span class="w-acento">sin que estés en todo.</span></h1>
+        <p class="w-sub" data-aparece data-retardo="2">Cada persona sabe qué le toca, tú lo ves todo de un vistazo y nada depende de una sola cabeza. Lo montamos con lo que ya usáis y nos quedamos.</p>
+        <div class="w-accion" data-aparece data-retardo="3">
+          <a class="w-boton" href={WA} data-hero-boton>Solicita la revisión de vuestro caso</a>
+          <p class="w-nota">{LIA}</p>
+        </div>
+      </div>
+      <div class="w-pantalla" data-aparece data-retardo="2">
+        <div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:.9375rem">Esta semana</strong><span class="w-etiqueta">Ejemplo</span></div>
+        <div class="w-g3" style="gap:.6rem">
+          <div class="w-dato"><strong>14</strong><span>tareas en marcha</span></div>
+          <div class="w-dato"><strong>2</strong><span>vencen hoy</span></div>
+          <div class="w-dato"><strong>3</strong><span>clientes esperan respuesta</span></div>
+        </div>
+        <div>
+          <div class="w-renglon"><span>Presupuesto Hotel Sol · <b>Ana</b></span><span style="color:var(--iris);font-weight:600">hoy</span></div>
+          <div class="w-renglon"><span>Pedido al proveedor · <b>Luis</b></span><span class="w-cifra-mono">jueves</span></div>
+          <div class="w-renglon"><span>Revisar cobros pendientes · <b>tú</b></span><span class="w-cifra-mono">viernes</span></div>
+        </div>
+        <div class="w-aviso">El presupuesto del Hotel Sol vence hoy y aún no ha salido.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-oscura">
+    <div class="w-wrap w-pila">
+      <p class="w-rotulo">¿Os suena?</p>
+      <ul class="w-frases">
+        <li data-aparece>«Todo pasa por mí, y si me voy una semana, se para.»</li>
+        <li data-aparece data-retardo="1">«Cada uno lo apunta en un sitio distinto.»</li>
+        <li data-aparece data-retardo="2">«No sé quién contestó a ese cliente, ni si lo hizo.»</li>
+        <li data-aparece data-retardo="3">«Me entero de que algo falla cuando ya ha fallado.»</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="w-seccion">
+    <div class="w-wrap w-pila">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Lo que ganáis</p>
+        <h2 class="w-h2" data-aparece>Lo propio de una empresa con equipo</h2>
+      </div>
+      <div class="w-g2">
+        {propio.map(([t, p], i) => (
+          <div class="w-tarjeta" data-aparece data-retardo={i % 2}><h3 class="w-h3">{t}</h3><p class="w-p">{p}</p></div>
+        ))}
+      </div>
+      <p class="w-p">Y todo lo de los autónomos también: clientes, citas, presupuestos, facturas y el trimestre a vuestra gestoría. <a href="/prueba/web/que-incluye/">Ver qué incluye</a>.</p>
+    </div>
+  </section>
+
+  <section class="w-seccion w-oscura">
+    <div class="w-wrap w-pila" style="gap:2.5rem">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Cómo trabajamos</p>
+        <h2 class="w-h2" data-aparece>Una mejora cada vez, y nos quedamos</h2>
+      </div>
+      <div class="w-g3">
+        {escalera.map(([t, p], i) => (
+          <div class="w-paso" data-aparece data-retardo={i}><span>0{i + 1}</span><h3 class="w-h3">{t}</h3><p class="w-p">{p}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion">
+    <div class="w-wrap w-fila">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Vuestro asistente</p>
+        <h2 class="w-h2" data-aparece>Un asistente para todo el equipo</h2>
+        <p class="w-sub" data-aparece>Conoce vuestras normas, vuestros clientes y vuestros precios. Cada persona le pregunta lo suyo y lo que no puede tocar, no lo toca.</p>
+      </div>
+      <div class="w-pantalla" data-aparece data-retardo="1">
+        <span class="w-etiqueta">Ejemplo · Vuestro asistente</span>
+        <div class="w-burbuja w-burbuja--mia" style="background:var(--bone);color:var(--ink)">¿Qué presupuestos tenemos sin respuesta de más de una semana?</div>
+        <div class="w-burbuja" style="background:var(--ink);color:var(--bone)">Tres: Hotel Sol (Ana), Bar Plaza (Luis) y Gimnasio Norte (tú). ¿Os preparo el recordatorio para cada uno?</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-iris">
+    <div class="w-wrap w-pila" style="align-items:flex-start">
+      <h2 class="w-h2" data-aparece>¿Lo vemos con vuestro negocio?</h2>
+      <div class="w-accion">
+        <a class="w-boton" href={WA}>Solicita la revisión de vuestro caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+      <p class="w-nota">Los nombres y los datos de las pantallas son de ejemplo.</p>
+    </div>
+  </section>
+</PruebaWeb>

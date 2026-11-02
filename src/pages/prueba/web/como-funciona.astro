@@ -1,0 +1,82 @@
+---
+// Product website prototype · how it works and how it is paid, without figures (Jesús, 2-nov: no prices on the site).
+// Copy: fundacion.md §2.9. Offer: servicio/2026-11-02-oferta-autonomos-y-empresas.md §2.
+import PruebaWeb from "../../../layouts/PruebaWeb.astro";
+
+const WA = "https://wa.me/34624664907?text=Hola%2C%20quiero%20que%20revisemos%20mi%20caso";
+const LIA = "Te atiende Lía, nuestra asistente, y Jesús ve la conversación. Si encaja, te deja la llamada en su agenda. Sin compromiso.";
+const pasos = [
+  { t: "Nos escribes", p: "Por WhatsApp. Te atiende Lía, nuestra asistente, te pregunta lo justo para entender tu caso y, si encaja, te deja la llamada en la agenda de Jesús.", c: "Hoy mismo" },
+  { t: "Revisamos tu caso", p: "Hablamos 30 minutos. En 48 horas te mandamos por escrito qué arreglaríamos primero, qué ganas y cuánto cuesta.", c: "Sin compromiso" },
+  { t: "Te lo montamos", p: "Con tus datos, tus precios y tu forma de trabajar, montado para tu sector. Plazo y precio cerrados antes de empezar.", c: "Arranque" },
+  { t: "Te enseñamos con tu trabajo", p: "Dos o tres sesiones con tu trabajo de verdad, no un curso, hasta que lo lleves sin pensar.", c: "Incluido" },
+  { t: "Nos quedamos", p: "Lo vigilamos, te respondemos en el día y cada mes revisamos qué usas y qué mejoramos.", c: "Cuota mensual" },
+];
+---
+
+<PruebaWeb
+  titulo="Padrón IA · Cómo funciona (prototipo)"
+  descripcion="Nos escribes, revisamos tu caso, te lo montamos, te enseñamos con tu trabajo y nos quedamos. Un arranque y una cuota mensual, sin permanencia."
+  pagina="como-funciona"
+  wa={WA}
+>
+  <section class="w-seccion">
+    <div class="w-wrap w-pila" style="max-width:62rem;margin-left:auto;margin-right:auto">
+      <p class="w-rotulo" data-aparece>Cómo funciona</p>
+      <h1 class="w-h1" data-aparece data-retardo="1">De tu primer mensaje <span class="w-acento">a tenerlo en orden.</span></h1>
+      <p class="w-sub" data-aparece data-retardo="2">Cinco pasos, con fecha y por escrito. Sabes en cada momento qué toca y cuánto cuesta antes de empezar.</p>
+      <div class="w-accion" data-aparece data-retardo="3">
+        <a class="w-boton" href={WA} data-hero-boton>Solicita la revisión de tu caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-seccion--sin-arriba">
+    <div class="w-wrap">
+      <ol class="w-linea">
+        {pasos.map((s, i) => (
+          <li data-aparece>
+            <span class="w-linea__n">{String(i + 1).padStart(2, "0")}</span>
+            <div class="w-pila w-pila--peq">
+              <h2 class="w-h3">{s.t}</h2>
+              <p class="w-p">{s.p}</p>
+            </div>
+            <span class="w-linea__c">{s.c}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="w-seccion w-oscura">
+    <div class="w-wrap w-fila">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Cómo se paga</p>
+        <h2 class="w-h2" data-aparece>Un arranque y una cuota, sin permanencia</h2>
+      </div>
+      <div class="w-pila w-pila--peq">
+        <p class="w-sub" data-aparece>El <b style="color:var(--bone)">arranque</b> se paga una vez: es cuando te lo montamos y te enseñamos. La <b style="color:var(--bone)">cuota mensual</b> cubre que siga funcionando, las mejoras y que alguien te responda.</p>
+        <p class="w-sub" data-aparece>El precio depende de lo que haya que montar en tu negocio. Te lo damos por escrito después de revisar tu caso, antes de que decidas nada.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion">
+    <div class="w-wrap w-g3">
+      <div class="w-tarjeta" data-aparece><h3 class="w-h3">Si te vas</h3><p class="w-p">Te llevas tus datos y lo que hemos montado a tu nombre. Sin permanencia y sin tener que borrar nada para dejar de pagar.</p></div>
+      <div class="w-tarjeta" data-aparece data-retardo="1"><h3 class="w-h3">Tus datos</h3><p class="w-p">Son tuyos. Cada negocio tiene su propia base de datos, separada de las demás. Los de salud, con más cuidado todavía.</p></div>
+      <div class="w-tarjeta" data-aparece data-retardo="2"><h3 class="w-h3">Tu gestoría</h3><p class="w-p">Sigues con la tuya. Cada trimestre le llega todo ordenado, sin que tenga que darse de alta en nada.</p></div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-iris">
+    <div class="w-wrap w-pila" style="align-items:flex-start">
+      <h2 class="w-h2" data-aparece>Empieza por el paso uno</h2>
+      <div class="w-accion">
+        <a class="w-boton" href={WA}>Solicita la revisión de tu caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+    </div>
+  </section>
+</PruebaWeb>
