@@ -18,6 +18,9 @@
 - Probado en local a 1440 y a 375 px: sin scroll horizontal, consola limpia, la ficha cambia al tocar otra clienta, el botón fijo del
   móvil se ve también sobre las secciones oscuras.
 
+- 2-nov (2.ª tanda): página **Consulta de salud** (`/prueba/web/consulta/`). `PanelClientes` acepta ya columnas, personas y campos de
+  cada sector (peluquería sigue siendo el de por defecto). Probado a 1440 y a 375 px; Peluquería y la portada siguen funcionando.
+
 ## Sesión anterior (2026-10-29)
 - Hecho: kit de repo; página `public/radiografia/index.html` (11 preguntas, audio, cifra), `seguridad-radiografia.conf`,
   bloque `location ^~ /radiografia/` en nginx, `Disallow: /radiografia` en robots.

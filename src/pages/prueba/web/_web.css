@@ -133,6 +133,8 @@ button.w-ficha { cursor: pointer; }
 .w-hechos { display: flex; flex-direction: column; gap: .85rem; margin: 0; padding: 0; list-style: none; }
 .w-hechos li { font-size: clamp(1.25rem, 1rem + 1vw, 1.85rem); line-height: 1.25; font-weight: 700; color: var(--sobre-oscuro-suave); }
 .w-hechos li::before { content: "✓ "; color: var(--pearl); }
+.w-hechos--claro li { color: var(--ink); }
+.w-hechos--claro li::before { color: var(--iris); }
 .w-preguntas details { border-bottom: 1px solid var(--linea); padding: 1.1rem 0; }
 .w-preguntas summary { font-weight: 600; font-size: 1.125rem; cursor: pointer; list-style-position: outside; }
 .w-preguntas p { margin: .75rem 0 0; color: var(--texto-suave); }

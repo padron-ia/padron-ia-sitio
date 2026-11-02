@@ -7,7 +7,7 @@ import "../pages/prueba/web/_web.css";
 interface Props {
   titulo: string;
   descripcion: string;
-  pagina: "portada" | "autonomos" | "peluqueria";
+  pagina: "portada" | "autonomos" | "peluqueria" | "consulta";
   wa: string;
 }
 const { titulo, descripcion, pagina, wa } = Astro.props;
@@ -16,6 +16,7 @@ const paginas = [
   { id: "portada", t: "Portada", href: "/prueba/web/" },
   { id: "autonomos", t: "Autónomos", href: "/prueba/web/autonomos/" },
   { id: "peluqueria", t: "Peluquería", href: "/prueba/web/peluqueria/" },
+  { id: "consulta", t: "Consulta", href: "/prueba/web/consulta/" },
 ];
 ---
 

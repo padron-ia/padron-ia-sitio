@@ -1,0 +1,161 @@
+---
+// Product website prototype · health practice page (physio, psychology, nutrition). Copy: fundacion.md §2.4.
+// Figures: sector demand study (OS repo, servicio/2026-11-02-estudio-de-demanda-sectores/fuentes/03-donde-se-escapa-el-dinero.md).
+// The board shows the plan of sessions and the last visit only: nothing clinical, as the page promises.
+import PruebaWeb from "../../../layouts/PruebaWeb.astro";
+import PanelClientes from "../../../components/PanelClientes.astro";
+
+const WA = "https://wa.me/34624664907?text=Hola%2C%20tengo%20una%20consulta%20y%20quiero%20que%20revisemos%20mi%20caso";
+const LIA = "Te atiende Lía, nuestra asistente, y Jesús ve la conversación. Si encaja, te deja la llamada en su agenda. Sin compromiso.";
+const datos = [
+  { cifra: "12-19 %", t: "de las citas de las consultas privadas no se atienden.",
+    fuente: "Fuente: The Objective, 29-sep-2025", href: "https://theobjective.com/actualidad/2025-09-29/ausencias-citas-medicas-clinicas-privadas/" },
+  { cifra: "29,5 %", t: "de los pacientes deja la psicoterapia antes de terminar.",
+    fuente: "Fuente: estudio de un centro de la UAM y la Universidad Europea, 2022", href: "https://portalcientifico.universidadeuropea.com/documentos/63c0b38c3df4c204fbb04ed7" },
+  { cifra: "19 %", t: "abandona la fisioterapia antes del alta.",
+    fuente: "Fuente: Hospital Miguel Servet, revista Fisioterapia, 2026", href: "https://www.elsevier.es/es-revista-fisioterapia-146-articulo-analisis-adherencia-modelos-hibridos-fisioterapia-S0211563826000039" },
+];
+const columnas = ["Interesado", "Primera sesión", "En tratamiento", "Alta", "Revisión"];
+const pacientes = [
+  { n: "Rocío", col: "Interesado", dato: "Pidió información el lunes", ultima: "aún no ha venido", plan: "—", modo: "presencial", bono: "no",
+    aviso: "Pidió información el lunes y no ha reservado. Le llega un mensaje con tus huecos de esta semana.", accion: "Ver el mensaje" },
+  { n: "Andrés", col: "Primera sesión", dato: "Viene el jueves", ultima: "primera cita el jueves", plan: "por decidir", modo: "videollamada", bono: "no",
+    aviso: "Primera sesión el jueves a las 18:00. El enlace de la videollamada le llega con el recordatorio.", accion: "Ver la cita" },
+  { n: "Javier", col: "En tratamiento", dato: "Sesión 4 de 8", ultima: "hace 3 semanas", plan: "sesión 4 de 8, cada semana", modo: "presencial", bono: "8 sesiones, le quedan 4",
+    aviso: "Lleva 3 semanas sin venir, a mitad de su plan. Venía cada semana.", accion: "Mandarle un mensaje" },
+  { n: "Nuria", col: "En tratamiento", dato: "Sesión 6 de 10", ultima: "el martes", plan: "sesión 6 de 10, cada semana", modo: "videollamada", bono: "10 sesiones, le quedan 4",
+    aviso: "Va a su ritmo. Próxima sesión: el martes a las 19:00.", accion: "Ver la cita" },
+  { n: "Carlos", col: "Alta", dato: "Alta hace 2 meses", ultima: "hace 2 meses", plan: "terminado", modo: "presencial", bono: "no",
+    aviso: "Le toca la revisión del alta dentro de un mes. Le llegará el aviso con tiempo.", accion: "Ver el aviso" },
+  { n: "Teresa", col: "Revisión", dato: "Revisión el día 20", ultima: "hace 6 meses", plan: "revisión de seguimiento", modo: "presencial", bono: "no",
+    aviso: "Revisión confirmada para el día 20. Le llega el recordatorio el día antes.", accion: "Ver la cita" },
+];
+const campos: [string, string][] = [["ultima", "Última sesión"], ["plan", "Plan"], ["modo", "Cómo viene"], ["bono", "Bono"]];
+const preguntas = [
+  ["¿Puedo seguir usando el programa que tengo?", "Lo vemos en la revisión de tu caso. Si ya tienes la historia en otro programa, empezamos por lo que te falta: los avisos y el seguimiento."],
+  ["¿Y la videollamada?", "La cita puede ser presencial o por videollamada, y el enlace le llega con el recordatorio."],
+  ["¿Y los bonos de sesiones?", "Cada bono, con sus sesiones, y un aviso cuando se le acaba."],
+];
+---
+
+<PruebaWeb
+  titulo="Padrón IA · Consulta de salud (prototipo)"
+  descripcion="Fisioterapia, psicología o nutrición. Tu agenda, tus pacientes y tus facturas en un sitio, con avisos por WhatsApp y los datos de salud guardados como deben guardarse."
+  pagina="consulta"
+  wa={WA}
+>
+  <section class="w-seccion">
+    <div class="w-wrap w-pila" style="max-width:62rem;margin-left:auto;margin-right:auto">
+      <p class="w-rotulo" data-aparece>Fisioterapia · Psicología · Nutrición</p>
+      <h1 class="w-h1" data-aparece data-retardo="1">Que nadie deje el tratamiento <span class="w-acento">a medias.</span></h1>
+      <p class="w-sub" data-aparece data-retardo="2">Tu agenda, tus pacientes y tus facturas en un sitio, con avisos por WhatsApp desde tu número. Y la historia de cada paciente guardada como deben guardarse los datos de salud.</p>
+      <div class="w-accion" data-aparece data-retardo="3">
+        <a class="w-boton" href={WA} data-hero-boton>Solicita la revisión de tu caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-oscura">
+    <div class="w-wrap w-pila" style="gap:2.25rem">
+      <p class="w-rotulo">Lo que se escapa</p>
+      <div class="w-g3">
+        {datos.map((d, i) => (
+          <div class="w-pila w-pila--peq" style="border-top:1px solid var(--ink-line);padding-top:1.25rem" data-aparece data-retardo={i}>
+            <span class="w-cifra-grande">{d.cifra}</span>
+            <p style="margin:0">{d.t}</p>
+            <a class="w-fuente" href={d.href} rel="noopener">{d.fuente}</a>
+          </div>
+        ))}
+      </div>
+      <p style="margin:0;font-size:clamp(1.4rem,1rem + 1.5vw,2rem);line-height:1.25;font-weight:700" data-aparece>El paciente que lo deja a medias tampoco avisa. Y casi nunca vuelve por su cuenta.</p>
+    </div>
+  </section>
+
+  <section class="w-seccion">
+    <div class="w-wrap w-pila">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Tu panel</p>
+        <h2 class="w-h2" data-aparece>Así ves a tus pacientes</h2>
+        <p class="w-p">Toca un paciente para ver su ficha. En el panel solo va su plan y su última sesión: lo clínico va en su historia. Es un ejemplo.</p>
+      </div>
+      <div data-aparece><PanelClientes modo="ficha" titulo="Tus pacientes" columnas={columnas} personas={pacientes} campos={campos} elegida="Javier" /></div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-seccion--sin-arriba">
+    <div class="w-wrap w-pila">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Tu día</p>
+        <h2 class="w-h2" data-aparece>Tres cosas que pasan solas</h2>
+      </div>
+      <div class="w-g3">
+        <div class="w-pantalla" data-aparece>
+          <span class="w-etiqueta">La agenda</span>
+          <div class="w-pila" style="gap:.4rem;font-size:.8125rem">
+            <div style="display:flex;gap:.6rem;border-left:3px solid var(--iris);background:var(--bone);padding:.5rem"><span class="w-cifra-mono">09:00</span><span>Nuria · videollamada</span></div>
+            <div style="display:flex;gap:.6rem;border-left:3px solid var(--lavender);background:var(--bone);padding:.5rem"><span class="w-cifra-mono">10:00</span><span>Teresa · revisión</span></div>
+            <div style="display:flex;gap:.6rem;border-left:3px solid var(--pearl);background:var(--bone);padding:.5rem"><span class="w-cifra-mono">11:00</span><span>Hueco libre</span></div>
+          </div>
+          <p class="w-p" style="font-size:.9375rem">Reservan desde tu página, en tu consulta o por videollamada, y les llega el recordatorio el día antes.</p>
+        </div>
+        <div class="w-pantalla" data-aparece data-retardo="1">
+          <span class="w-etiqueta">El aviso</span>
+          <div class="w-aviso">Javier lleva 3 semanas sin venir, a mitad de su plan.</div>
+          <div class="w-burbuja">Hola, Javier. Te quedan 4 sesiones de tu plan. Esta semana tengo hueco el miércoles y el viernes, ¿te guardo uno?</div>
+          <p class="w-p" style="font-size:.9375rem">Le llega un mensaje tuyo, en tu tono.</p>
+        </div>
+        <div class="w-pantalla" data-aparece data-retardo="2">
+          <span class="w-etiqueta">La historia</span>
+          <div style="border:1px solid var(--linea);border-radius:4px;padding:.75rem;display:flex;flex-direction:column;gap:.5rem;font-size:.8125rem">
+            <div class="w-renglon"><span>Historia de Javier</span><span style="color:var(--iris);font-weight:600">Solo tú</span></div>
+            <div class="w-renglon"><span>Notas de 4 sesiones</span><span style="color:var(--texto-tenue)">privadas</span></div>
+            <div class="w-renglon"><span>Consentimiento</span><span class="w-cifra-mono">firmado 02/10</span></div>
+          </div>
+          <p class="w-p" style="font-size:.9375rem">Cada paciente con su historia y sus notas. Solo tú la ves; quien te lleva las facturas, no.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-seccion w-oscura">
+    <div class="w-wrap w-fila">
+      <div class="w-pila w-pila--peq">
+        <p class="w-rotulo">Datos de salud</p>
+        <h2 class="w-h2" data-aparece>Los datos de tus pacientes, aparte</h2>
+      </div>
+      <p class="w-sub" data-aparece data-retardo="1">La historia clínica va en una base solo de tu consulta, con permisos por persona. Quien te ayuda con las facturas ve las facturas, no las historias. Cada consentimiento queda guardado, con su fecha.</p>
+    </div>
+  </section>
+
+  <section class="w-seccion">
+    <div class="w-wrap w-pila">
+      <p class="w-rotulo">Lo que dejas de hacer</p>
+      <ul class="w-hechos w-hechos--claro">
+        <li data-aparece>Llamar uno a uno para confirmar las citas de mañana.</li>
+        <li data-aparece data-retardo="1">Enterarte tarde de que alguien dejó el tratamiento.</li>
+        <li data-aparece data-retardo="2">Llevar los bonos de sesiones en una libreta.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="w-seccion w-seccion--sin-arriba">
+    <div class="w-wrap w-estrecho w-pila w-pila--peq w-preguntas" style="margin-left:auto;margin-right:auto">
+      <p class="w-rotulo">Preguntas</p>
+      {preguntas.map(([q, a]) => (
+        <details><summary>{q}</summary><p>{a}</p></details>
+      ))}
+    </div>
+  </section>
+
+  <section class="w-seccion w-iris">
+    <div class="w-wrap w-pila" style="align-items:flex-start">
+      <h2 class="w-h2" data-aparece>Te lo enseñamos con tu consulta</h2>
+      <div class="w-accion">
+        <a class="w-boton" href={WA}>Solicita la revisión de tu caso</a>
+        <p class="w-nota">{LIA}</p>
+      </div>
+      <p class="w-nota">Los nombres y los datos del panel son de ejemplo.</p>
+    </div>
+  </section>
+</PruebaWeb>

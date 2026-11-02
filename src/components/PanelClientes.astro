@@ -1,13 +1,21 @@
 ---
 // Example client board for the product website prototype. Two modes:
 // - "vivo": the home hero; every 4 s Marta moves from «Se enfría» to «Recuperada» and the notice changes.
-// - "ficha": the sector page; touching a client opens her card on the side.
+// - "ficha": a sector page; touching a person opens their card on the side. Each sector passes its own columns,
+//   people and card fields (the hair salon ones are the default).
 // All names and data are examples and are labelled as such on screen.
-interface Props { modo: "vivo" | "ficha"; titulo?: string }
-const { modo, titulo = "Tus clientes" } = Astro.props;
+type Persona = Record<string, string> & { n: string; col: string; dato: string; aviso: string; accion: string };
+interface Props {
+  modo: "vivo" | "ficha";
+  titulo?: string;
+  columnas?: string[];
+  personas?: Persona[];
+  campos?: [string, string][];
+  elegida?: string;
+}
 
-const columnas = ["Nueva", "Primera visita", "Habitual", "Se enfría", "Recuperada"];
-const clientas = [
+const salonColumnas = ["Nueva", "Primera visita", "Habitual", "Se enfría", "Recuperada"];
+const salon: Persona[] = [
   { n: "Sara", col: "Nueva", dato: "Pidió cita por WhatsApp", ultima: "aún no ha venido", ritmo: "—", servicio: "Corte", bono: "no",
     aviso: "Confirmada para el jueves a las 17:00. Le llega el recordatorio el miércoles.", accion: "Ver la cita" },
   { n: "Elena", col: "Primera visita", dato: "Vino el sábado", ultima: "hace 5 días", ritmo: "por ver", servicio: "Color", bono: "no",
@@ -23,7 +31,17 @@ const clientas = [
   { n: "Lucía", col: "Recuperada", dato: "Volvió el lunes", ultima: "el lunes", ritmo: "cada 6 semanas", servicio: "Corte", bono: "no",
     aviso: "Volvió tras el mensaje del 14 de octubre.", accion: "Ver la conversación" },
 ];
-const marta = clientas.find((c) => c.n === "Marta")!;
+const salonCampos: [string, string][] = [["ultima", "Última visita"], ["ritmo", "Suele venir"], ["servicio", "Servicio habitual"], ["bono", "Bono"]];
+
+const {
+  modo,
+  titulo = "Tus clientes",
+  columnas = salonColumnas,
+  personas = salon,
+  campos = salonCampos,
+  elegida = "Marta",
+} = Astro.props;
+const inicial = personas.find((p) => p.n === elegida) ?? personas[0];
 const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8F9BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
 ---
 
@@ -37,9 +55,9 @@ const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" strok
       <div class="w-panel__cols">
         {columnas.map((c) => (
           <div class="w-panel__col" data-col={c}>
-            <div class="w-panel__titulo">{c} · <span data-cuenta>{clientas.filter((x) => x.col === c).length}</span></div>
-            {clientas.filter((x) => x.col === c).map((x) => (
-              <div class={`w-ficha${x.n === "Marta" ? " w-ficha--marca" : ""}`} data-nombre={x.n}>
+            <div class="w-panel__titulo">{c} · <span data-cuenta>{personas.filter((x) => x.col === c).length}</span></div>
+            {personas.filter((x) => x.col === c).map((x) => (
+              <div class={`w-ficha${x.n === elegida ? " w-ficha--marca" : ""}`} data-nombre={x.n}>
                 <b>{x.n}</b><small data-dato>{x.dato}</small>
               </div>
             ))}
@@ -52,7 +70,7 @@ const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" strok
 )}
 
 {modo === "ficha" && (
-  <div class="w-panel-ficha" data-panel-ficha data-clientas={JSON.stringify(clientas)}>
+  <div class="w-panel-ficha" data-panel-ficha data-personas={JSON.stringify(personas)}>
     <div class="w-pantalla">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <strong style="font-size:.9375rem">{titulo}</strong>
@@ -62,9 +80,9 @@ const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" strok
         <div class="w-panel__cols">
           {columnas.map((c) => (
             <div class="w-panel__col">
-              <div class="w-panel__titulo">{c} · {clientas.filter((x) => x.col === c).length}</div>
-              {clientas.filter((x) => x.col === c).map((x) => (
-                <button type="button" class="w-ficha" data-elige={x.n} aria-pressed={x.n === "Marta" ? "true" : "false"}>
+              <div class="w-panel__titulo">{c} · {personas.filter((x) => x.col === c).length}</div>
+              {personas.filter((x) => x.col === c).map((x) => (
+                <button type="button" class="w-ficha" data-elige={x.n} aria-pressed={x.n === inicial.n ? "true" : "false"}>
                   <b>{x.n}</b><small>{x.dato}</small>
                 </button>
               ))}
@@ -75,15 +93,16 @@ const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" strok
     </div>
     <aside class="w-detalle" aria-live="polite">
       <span class="w-etiqueta" style="color:#8F9BFF">Ficha · ejemplo</span>
-      <strong style="font-size:1.6rem" data-f="n">{marta.n}</strong>
+      <strong style="font-size:1.6rem" data-f="n">{inicial.n}</strong>
       <dl>
-        <dt>Última visita</dt><dd data-f="ultima">{marta.ultima}</dd>
-        <dt>Suele venir</dt><dd data-f="ritmo">{marta.ritmo}</dd>
-        <dt>Servicio habitual</dt><dd data-f="servicio">{marta.servicio}</dd>
-        <dt>Bono</dt><dd data-f="bono">{marta.bono}</dd>
+        {campos.map(([k, etiqueta]) => (
+          <>
+            <dt>{etiqueta}</dt><dd data-f={k}>{inicial[k]}</dd>
+          </>
+        ))}
       </dl>
-      <div class="w-detalle__aviso" data-f="aviso">{marta.aviso}</div>
-      <span class="w-detalle__accion" data-f="accion">{marta.accion}</span>
+      <div class="w-detalle__aviso" data-f="aviso">{inicial.aviso}</div>
+      <span class="w-detalle__accion" data-f="accion">{inicial.accion}</span>
     </aside>
   </div>
 )}
@@ -110,9 +129,9 @@ const icono = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" strok
     }, 4000);
   });
 
-  // Sector page: touching a client fills her card.
+  // Sector page: touching a person fills their card.
   document.querySelectorAll<HTMLElement>("[data-panel-ficha]").forEach((panel) => {
-    const datos: Record<string, string>[] = JSON.parse(panel.dataset.clientas || "[]");
+    const datos: Record<string, string>[] = JSON.parse(panel.dataset.personas || "[]");
     panel.querySelectorAll<HTMLButtonElement>("[data-elige]").forEach((b) => b.addEventListener("click", () => {
       const c = datos.find((x) => x.n === b.dataset.elige);
       if (!c) return;
