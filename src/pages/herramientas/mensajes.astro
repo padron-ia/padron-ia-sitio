@@ -1,0 +1,382 @@
+---
+// /herramientas/mensajes — free tool: ready-made WhatsApp quick replies per trade.
+// Reached from the «comenta MENSAJES» campaign of @ia.explicada.autonomos (OpenReply) and the bio.
+// Nothing typed here leaves the phone: inputs live in localStorage only. Umami events, no cookies.
+import "../../styles/global.css";
+import { OFICIOS } from "../../data/respuestas-oficios.js";
+
+const titulo = "Tus respuestas de WhatsApp, listas en un minuto · Padrón IA";
+const descripcion =
+  "Elige tu oficio y te salen escritas las respuestas a lo que más te preguntan por WhatsApp: horario, citas, precios, el mensaje de noche. Gratis y sin registrarte.";
+const canonica = "https://padron-ia.es/herramientas/mensajes";
+const WHATSAPP = "34664401328";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonica} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Padrón IA" />
+    <meta property="og:title" content="Tus respuestas de WhatsApp, listas en un minuto" />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonica} />
+    <meta property="og:locale" content="es_ES" />
+    <meta name="theme-color" content="#1B1E3A" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" />
+    <script
+      defer
+      src="https://monitorizacion-umami.pqtiji.easypanel.host/script.js"
+      data-website-id="a7c240cd-f901-4a2f-a636-a9821e28fb21"></script>
+  </head>
+
+  <body class="hm">
+    <header class="hm-cab">
+      <a href="/" class="logotipo" aria-label="Padrón IA, inicio">PADRÓN<span>·IA</span></a>
+      <span class="hm-cab__etiqueta">Herramienta gratis</span>
+    </header>
+
+    <main id="contenido" class="hm-main">
+      <section class="hm-intro">
+        <p class="hm-antetitulo">IA explicada para autónomos</p>
+        <h1>Tus respuestas de WhatsApp, <span>listas en un minuto</span></h1>
+        <p class="hm-lead">
+          Dinos tu oficio y te salen escritas las respuestas a lo que más te preguntan: horario, citas, precios
+          y el mensaje que te llega a las once de la noche. Las copias y las tienes a mano para siempre.
+        </p>
+        <p class="hm-nota">Gratis, sin registrarte. Lo que escribes se queda en tu móvil: no lo guardamos.</p>
+      </section>
+
+      <form id="formulario" class="hm-tarjeta" novalidate>
+        <fieldset class="hm-campo">
+          <legend><span class="hm-paso">1</span> ¿Cuál es tu negocio?</legend>
+          <div class="hm-oficios" role="radiogroup">
+            {OFICIOS.map((o) => (
+              <label class="hm-oficio">
+                <input type="radio" name="oficio" value={o.id} required />
+                <span>{o.nombre}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <label class="hm-campo">
+          <span class="hm-etiqueta"><span class="hm-paso">2</span> Nombre del negocio</span>
+          <input id="negocio" name="negocio" type="text" maxlength="40" autocomplete="organization" placeholder="Ej.: Peluquería Lola" />
+        </label>
+
+        <label class="hm-campo">
+          <span class="hm-etiqueta"><span class="hm-paso">3</span> Tu horario</span>
+          <input id="horario" name="horario" type="text" maxlength="80" placeholder="Ej.: de lunes a viernes de 9:30 a 20:00 y los sábados de 9:30 a 14:00" />
+        </label>
+
+        <p id="aviso-form" class="hm-aviso" role="alert" hidden>Elige tu tipo de negocio para seguir.</p>
+        <button type="submit" class="hm-boton">Ver mis respuestas</button>
+      </form>
+
+      <noscript>
+        <p class="hm-tarjeta">Esta herramienta necesita JavaScript activado en el navegador.</p>
+      </noscript>
+
+      <section id="resultado" class="hm-resultado" hidden aria-live="polite">
+        <div class="hm-resultado__cab">
+          <h2 id="titulo-resultado">Tus respuestas listas</h2>
+          <p class="hm-nota">
+            Toca el texto para cambiar lo que quieras. Rellena lo que va <mark>[entre corchetes]</mark> (precios,
+            dirección…) antes de copiarlo.
+          </p>
+          <button type="button" id="copiar-todas" class="hm-boton hm-boton--claro">Copiar todas</button>
+        </div>
+        <ol id="lista" class="hm-lista"></ol>
+
+        <details class="hm-tarjeta hm-como">
+          <summary>Cómo dejarlas guardadas en tu WhatsApp</summary>
+          <p><strong>Si usas WhatsApp Business</strong> (el del maletín):</p>
+          <ol>
+            <li>Ajustes → Herramientas para empresas → Respuestas rápidas → «+».</li>
+            <li>Pega el texto y pon el atajo (por ejemplo <code>/horario</code>).</li>
+            <li>En cualquier chat escribe <code>/</code> y te salen todas para mandarlas de un toque.</li>
+          </ol>
+          <p>
+            <strong>Si usas el WhatsApp normal:</strong> pulsa «Copiar todas» y pégalas en un chat contigo mismo
+            (tu propio número) o en Notas. Cuando te pregunten, copias y pegas. Pasarte a WhatsApp Business es gratis y
+            mantiene tu número y tus chats.
+          </p>
+        </details>
+
+        <section class="hm-tarjeta hm-calc" aria-labelledby="calc-titulo">
+          <h2 id="calc-titulo">¿Cuánto tiempo se te va en esto?</h2>
+          <label class="hm-deslizador">
+            <span>Mensajes que contestas al día: <strong id="v-mensajes">20</strong></span>
+            <input id="mensajes" type="range" min="5" max="150" step="5" value="20" />
+          </label>
+          <label class="hm-deslizador">
+            <span>Minutos que tardas en cada uno: <strong id="v-minutos">2</strong></span>
+            <input id="minutos" type="range" min="1" max="10" step="1" value="2" />
+          </label>
+          <p class="hm-cifra">
+            Según lo que has puesto, unas <strong id="horas">15</strong> horas al mes
+            <span class="hm-nota">(contando 22 días de trabajo).</span>
+          </p>
+        </section>
+
+        <section class="hm-cta" aria-labelledby="cta-titulo">
+          <h2 id="cta-titulo">¿Y si esos mensajes se contestaran solos, con tu tono?</h2>
+          <p>
+            Mándame tu resultado y te digo cómo lo haría en tu negocio. Sin compromiso.
+          </p>
+          <a id="whatsapp" class="hm-boton hm-boton--lavanda" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noopener">
+            Mandar mi resultado por WhatsApp
+          </a>
+          <p class="hm-firma">Te contesta Jesús, en el día.</p>
+        </section>
+
+        <button type="button" id="compartir" class="hm-boton hm-boton--claro hm-compartir">
+          Mándaselo a otro autónomo
+        </button>
+        <button type="button" id="otra-vez" class="hm-enlace">Cambiar de negocio</button>
+      </section>
+    </main>
+
+    <footer class="hm-pie">
+      <p>Hecho por <a href="/">Padrón IA</a> · <a href="https://www.instagram.com/ia.explicada.autonomos/" target="_blank" rel="noopener">@ia.explicada.autonomos</a></p>
+      <p><a href="/privacidad">Privacidad</a> · <a href="/legal">Aviso legal</a></p>
+    </footer>
+
+    <script is:inline define:vars={{ OFICIOS, WHATSAPP }}>
+      (function () {
+        var $ = function (id) { return document.getElementById(id); };
+        var form = $("formulario");
+        var resultado = $("resultado");
+        var lista = $("lista");
+        var estado = { oficio: null, negocio: "", horario: "" };
+
+        function track(nombre, datos) {
+          try { if (window.umami && typeof window.umami.track === "function") window.umami.track(nombre, datos || {}); } catch (e) {}
+        }
+        function guardar() {
+          try { localStorage.setItem("hm-mensajes", JSON.stringify(estado)); } catch (e) {}
+        }
+        function leer() {
+          try { return JSON.parse(localStorage.getItem("hm-mensajes") || "null"); } catch (e) { return null; }
+        }
+        function oficioPorId(id) {
+          for (var i = 0; i < OFICIOS.length; i++) if (OFICIOS[i].id === id) return OFICIOS[i];
+          return null;
+        }
+        function rellenar(texto) {
+          var negocio = estado.negocio.trim() || "nuestro negocio";
+          var horario = estado.horario.trim() || "[tu horario]";
+          return texto.split("{negocio}").join(negocio).split("{horario}").join(horario);
+        }
+        function ajustarAlto(t) { t.style.height = "auto"; t.style.height = t.scrollHeight + 2 + "px"; }
+        function copiar(texto, boton) {
+          var hecho = function () {
+            var original = boton.textContent;
+            boton.textContent = "¡Copiado!";
+            boton.classList.add("is-ok");
+            setTimeout(function () { boton.textContent = original; boton.classList.remove("is-ok"); }, 1600);
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(texto).then(hecho, function () { copiaManual(texto); hecho(); });
+          } else { copiaManual(texto); hecho(); }
+        }
+        function copiaManual(texto) {
+          var t = document.createElement("textarea");
+          t.value = texto; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+          document.body.appendChild(t); t.select();
+          try { document.execCommand("copy"); } catch (e) {}
+          document.body.removeChild(t);
+        }
+
+        function pintar() {
+          var oficio = oficioPorId(estado.oficio);
+          if (!oficio) return;
+          $("titulo-resultado").textContent = "Tus " + oficio.respuestas.length + " respuestas listas";
+          lista.innerHTML = "";
+          oficio.respuestas.forEach(function (r) {
+            var li = document.createElement("li");
+            li.className = "hm-resp";
+            var cab = document.createElement("div");
+            cab.className = "hm-resp__cab";
+            var p = document.createElement("span");
+            p.className = "hm-resp__pregunta";
+            p.textContent = r.pregunta;
+            var a = document.createElement("code");
+            a.className = "hm-resp__atajo";
+            a.textContent = r.atajo;
+            cab.appendChild(p); cab.appendChild(a);
+            var t = document.createElement("textarea");
+            t.className = "hm-resp__texto";
+            t.value = rellenar(r.texto);
+            t.setAttribute("aria-label", "Respuesta para: " + r.pregunta);
+            t.addEventListener("input", function () { ajustarAlto(t); });
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "hm-copiar";
+            b.textContent = "Copiar";
+            b.addEventListener("click", function () {
+              copiar(t.value, b);
+              track("mensajes-copiar", { oficio: estado.oficio, atajo: r.atajo });
+            });
+            li.appendChild(cab); li.appendChild(t); li.appendChild(b);
+            lista.appendChild(li);
+            requestAnimationFrame(function () { ajustarAlto(t); });
+          });
+          calcular();
+        }
+
+        function calcular() {
+          var m = Number($("mensajes").value);
+          var min = Number($("minutos").value);
+          $("v-mensajes").textContent = m;
+          $("v-minutos").textContent = min;
+          var horas = Math.round((m * min * 22) / 60);
+          $("horas").textContent = horas;
+          var oficio = oficioPorId(estado.oficio);
+          var nombre = estado.negocio.trim();
+          var texto =
+            "Hola Jesús, vengo de IA explicada. Mi negocio: " + (oficio ? oficio.nombre.toLowerCase() : "autónomo") +
+            (nombre ? " (" + nombre + ")" : "") + ". Contesto unos " + m + " mensajes al día y se me van unas " +
+            horas + " h al mes. ¿Cómo lo harías en mi negocio?";
+          $("whatsapp").href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(texto);
+          return horas;
+        }
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var marcado = form.querySelector('input[name="oficio"]:checked');
+          if (!marcado) { $("aviso-form").hidden = false; return; }
+          $("aviso-form").hidden = true;
+          estado.oficio = marcado.value;
+          estado.negocio = $("negocio").value;
+          estado.horario = $("horario").value;
+          guardar();
+          pintar();
+          resultado.hidden = false;
+          track("mensajes-ver-respuestas", { oficio: estado.oficio });
+          resultado.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        ["mensajes", "minutos"].forEach(function (id) {
+          var calcTrack = null;
+          $(id).addEventListener("input", function () {
+            calcular();
+            clearTimeout(calcTrack);
+            calcTrack = setTimeout(function () { track("mensajes-calculo", { oficio: estado.oficio }); }, 1200);
+          });
+        });
+
+        $("copiar-todas").addEventListener("click", function () {
+          var textos = Array.prototype.map.call(lista.querySelectorAll(".hm-resp"), function (li) {
+            return li.querySelector(".hm-resp__atajo").textContent + "\n" + li.querySelector("textarea").value;
+          });
+          copiar(textos.join("\n\n"), $("copiar-todas"));
+          track("mensajes-copiar-todas", { oficio: estado.oficio });
+        });
+
+        $("whatsapp").addEventListener("click", function () {
+          track("mensajes-whatsapp", { oficio: estado.oficio, horas: calcular() });
+        });
+
+        $("compartir").addEventListener("click", function () {
+          var url = "https://padron-ia.es/herramientas/mensajes" + (estado.oficio ? "?oficio=" + estado.oficio : "");
+          var texto = "Mira esto: te escribe las respuestas de WhatsApp de tu negocio en un minuto. Gratis.";
+          track("mensajes-compartir", { oficio: estado.oficio });
+          if (navigator.share) {
+            navigator.share({ title: "Tus respuestas de WhatsApp", text: texto, url: url }).catch(function () {});
+          } else {
+            window.open("https://wa.me/?text=" + encodeURIComponent(texto + " " + url), "_blank", "noopener");
+          }
+        });
+
+        $("otra-vez").addEventListener("click", function () {
+          resultado.hidden = true;
+          form.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        // Restore previous inputs, or preselect the trade from ?oficio=
+        var previo = leer();
+        var param = new URLSearchParams(location.search).get("oficio");
+        var inicial = param && oficioPorId(param) ? param : previo && previo.oficio;
+        if (inicial) {
+          var radio = form.querySelector('input[name="oficio"][value="' + inicial + '"]');
+          if (radio) radio.checked = true;
+        }
+        if (previo) {
+          $("negocio").value = previo.negocio || "";
+          $("horario").value = previo.horario || "";
+        }
+      })();
+    </script>
+
+    <style is:global>
+      body.hm { background: var(--bone); color: var(--texto); font-family: var(--sans); margin: 0; }
+      .hm-cab { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--ink); }
+      .hm-cab .logotipo { color: var(--sobre-oscuro); font-family: var(--mono); font-weight: 700; letter-spacing: .08em; text-decoration: none; }
+      .hm-cab .logotipo span { color: var(--lavender); }
+      .hm-cab__etiqueta { font: 600 var(--t-xs)/1 var(--sans); color: var(--ink); background: var(--lavender); padding: 6px 10px; border-radius: 999px; }
+      .hm-main { max-width: 40rem; margin: 0 auto; padding: 0 16px 32px; }
+      .hm-intro { background: var(--ink); color: var(--sobre-oscuro); margin: 0 -16px 20px; padding: 24px 16px 28px; }
+      .hm-antetitulo { font: 700 var(--t-xs)/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--lavender); margin: 0 0 10px; }
+      .hm-intro h1 { font-size: clamp(1.75rem, 1.2rem + 3vw, 2.5rem); line-height: 1.1; margin: 0 0 12px; font-weight: 800; }
+      .hm-intro h1 span { color: var(--lavender); }
+      .hm-lead { font-size: var(--t-base); line-height: 1.5; color: var(--sobre-oscuro-suave); margin: 0 0 10px; }
+      .hm-intro .hm-nota { color: var(--sobre-oscuro-suave); }
+      .hm-nota { font-size: var(--t-s); color: var(--texto-suave); margin: 0; }
+      .hm-tarjeta { background: #fff; border: 1px solid var(--linea); border-radius: 16px; padding: 18px 16px; margin: 0 0 16px; }
+      .hm-campo { border: 0; padding: 0; margin: 0 0 18px; display: block; }
+      .hm-campo legend, .hm-etiqueta { font-weight: 700; font-size: var(--t-base); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+      .hm-paso { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--iris); color: #fff; font-size: var(--t-xs); }
+      .hm-oficios { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .hm-oficio { position: relative; }
+      .hm-oficio input { position: absolute; opacity: 0; inset: 0; }
+      .hm-oficio span { display: flex; align-items: center; min-height: 52px; padding: 10px 12px; border: 1.5px solid var(--linea); border-radius: 12px; font-size: var(--t-s); font-weight: 600; line-height: 1.25; cursor: pointer; background: var(--bone); }
+      .hm-oficio input:checked + span { border-color: var(--iris); background: #E9EBFF; color: var(--ink); }
+      .hm-oficio input:focus-visible + span { outline: 3px solid var(--iris); outline-offset: 2px; }
+      .hm-campo input[type="text"] { width: 100%; font: inherit; font-size: 16px; padding: 12px; border: 1.5px solid var(--linea); border-radius: 12px; background: var(--bone); color: var(--texto); }
+      .hm-campo input[type="text"]:focus { outline: none; border-color: var(--iris); background: #fff; }
+      .hm-aviso { color: #B3261E; font-weight: 600; font-size: var(--t-s); margin: 0 0 10px; }
+      .hm-boton { display: block; width: 100%; text-align: center; font: 700 var(--t-base)/1.2 var(--sans); padding: 15px 18px; border-radius: 14px; border: 0; background: var(--ink); color: var(--sobre-oscuro); cursor: pointer; text-decoration: none; }
+      .hm-boton:active { transform: translateY(1px); }
+      .hm-boton--claro { background: #fff; color: var(--ink); border: 1.5px solid var(--ink); }
+      .hm-boton--lavanda { background: var(--lavender); color: var(--ink); }
+      .hm-boton.is-ok, .hm-copiar.is-ok { background: #1F7A4D; color: #fff; border-color: #1F7A4D; }
+      .hm-resultado__cab { margin: 8px 0 12px; }
+      .hm-resultado__cab h2 { font-size: var(--t-l); margin: 0 0 6px; }
+      .hm-resultado__cab .hm-nota { margin-bottom: 12px; }
+      mark { background: #E9EBFF; color: var(--ink); padding: 0 3px; border-radius: 4px; }
+      .hm-lista { list-style: none; padding: 0; margin: 0 0 16px; display: grid; gap: 12px; }
+      .hm-resp { background: #fff; border: 1px solid var(--linea); border-radius: 16px; padding: 14px; }
+      .hm-resp__cab { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; margin-bottom: 8px; }
+      .hm-resp__pregunta { font-weight: 700; font-size: var(--t-s); }
+      .hm-resp__atajo { font-family: var(--mono); font-size: var(--t-xs); color: var(--iris); background: #E9EBFF; padding: 3px 6px; border-radius: 6px; white-space: nowrap; }
+      .hm-resp__texto { width: 100%; font: inherit; font-size: 16px; line-height: 1.45; border: 1px solid transparent; border-radius: 10px; padding: 8px; background: var(--bone); color: var(--texto); resize: none; overflow: hidden; min-height: 4.5em; }
+      .hm-resp__texto:focus { outline: none; border-color: var(--iris); background: #fff; }
+      .hm-copiar { margin-top: 8px; font: 700 var(--t-s)/1 var(--sans); padding: 11px 16px; border-radius: 10px; border: 1.5px solid var(--ink); background: #fff; color: var(--ink); cursor: pointer; }
+      .hm-como summary { font-weight: 700; cursor: pointer; }
+      .hm-como p, .hm-como li { font-size: var(--t-s); line-height: 1.5; }
+      .hm-como code { font-family: var(--mono); background: var(--bone); padding: 1px 4px; border-radius: 4px; }
+      .hm-calc h2 { font-size: var(--t-m); margin: 0 0 12px; }
+      .hm-deslizador { display: block; margin-bottom: 14px; font-size: var(--t-s); }
+      .hm-deslizador input { width: 100%; margin-top: 8px; accent-color: var(--iris); }
+      .hm-cifra { font-size: var(--t-m); margin: 4px 0 0; }
+      .hm-cifra strong { font-size: 2rem; color: var(--iris); }
+      .hm-cta { background: var(--ink); color: var(--sobre-oscuro); border-radius: 16px; padding: 22px 16px; margin: 0 0 16px; }
+      .hm-cta h2 { font-size: var(--t-m); margin: 0 0 8px; line-height: 1.25; }
+      .hm-cta p { color: var(--sobre-oscuro-suave); margin: 0 0 14px; line-height: 1.5; }
+      .hm-cta .hm-firma { margin: 10px 0 0; font-size: var(--t-s); text-align: center; color: var(--lavender); }
+      .hm-compartir { margin-bottom: 10px; }
+      .hm-enlace { display: block; margin: 0 auto; background: none; border: 0; color: var(--iris); font: 600 var(--t-s)/1 var(--sans); text-decoration: underline; padding: 10px; cursor: pointer; }
+      .hm-pie { text-align: center; font-size: var(--t-xs); color: var(--texto-tenue); padding: 16px 16px 28px; }
+      .hm-pie a { color: var(--texto-suave); }
+      @media (min-width: 640px) { .hm-oficios { grid-template-columns: 1fr 1fr 1fr; } }
+    </style>
+  </body>
+</html>

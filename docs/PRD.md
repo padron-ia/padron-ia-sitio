@@ -6,6 +6,10 @@
 - La web pública de Padrón IA: padron-ia.es y www, HTML estático (Astro) servido por nginx en EasyPanel.
 - Contacto solo por WhatsApp (el formulario se descartó a propósito). Analítica Umami propia, sin cookies.
 - Una página suelta con enlace personal: `/radiografia/?t=<llave>` (desde el 29-oct-2026).
+- Herramientas gratis para autónomos (desde el 6-nov-2026, OK de Jesús): `/herramientas/mensajes` (respuestas de WhatsApp
+  por oficio + cálculo de horas). Llegan desde el «comenta MENSAJES» de @ia.explicada.autonomos. Sin datos personales:
+  lo escrito se queda en el móvil (localStorage); eventos Umami sin cookies. Propuesta y revisiones en el OS:
+  `clients/_personal/padron-ia/projects/estrategia/2026-11-04-cuenta-reels-animados/2026-11-06-propuesta-comenta-x-herramientas.md`.
 
 ## Para quién
 | Perfil | Qué necesita | Qué puede hacer |

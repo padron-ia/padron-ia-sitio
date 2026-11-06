@@ -10,7 +10,16 @@
 ## Controles aprobados
 - ninguno todavía
 
-## Última sesión (2026-11-02)
+## Última sesión (2026-11-06)
+- Hecho: **`/herramientas/mensajes`** («Tus respuestas de WhatsApp, listas en un minuto»): 8 oficios × 8 respuestas
+  (`src/data/respuestas-oficios.js`; atajo ≤ 25 caracteres y texto < 480, límites de respuestas rápidas de WhatsApp
+  Business según fuentes de terceros), calculadora de horas, botón a WhatsApp con el resultado escrito y botón de
+  compartir. `?oficio=` preselecciona. Eventos Umami: `mensajes-ver-respuestas`, `-copiar`, `-copiar-todas`, `-calculo`,
+  `-whatsapp`, `-compartir`.
+- Probado en local a 375 px: recorrido completo, copiar, 40 × 3 min × 22 días = 44 h, mensaje de WhatsApp correcto,
+  consola limpia, sin scroll horizontal.
+
+## Sesión anterior (2026-11-02)
 - Hecho: prototipo de la **web de producto** en `/prueba/web/` (portada, `/autonomos/`, `/peluqueria/`), con noindex y fuera del sitemap.
   Fundación en el OS: `clients/_personal/padron-ia/projects/web-rework/2026-11-02-web-de-producto/fundacion.md`. Piezas nuevas:
   `src/layouts/PruebaWeb.astro`, `src/components/PanelClientes.astro` (panel de ejemplo: animado en la portada y con ficha al tocar
