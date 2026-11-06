@@ -15,7 +15,7 @@
   (`src/data/respuestas-oficios.js`; + mensaje de ausencia y de bienvenida de WhatsApp Business, que se mandan solos; atajo ≤ 25 caracteres y texto < 480, límites de respuestas rápidas de WhatsApp
   Business según fuentes de terceros), calculadora de horas, botón a WhatsApp con el resultado escrito y botón de
   compartir. `?oficio=` preselecciona. Eventos Umami: `mensajes-ver-respuestas`, `-copiar`, `-copiar-todas`, `-calculo`,
-  `-whatsapp`, `-compartir`.
+  `-whatsapp`, `-compartir`, `-seguir`. El final empuja a seguir la cuenta (una herramienta gratis cada semana); WhatsApp queda como enlace pequeño (decisión de Jesús, 6-nov: la gente quiere cosas gratis útiles, no una llamada).
 - Probado en local a 375 px: recorrido completo, copiar, 40 × 3 min × 22 días = 44 h, mensaje de WhatsApp correcto,
   consola limpia, sin scroll horizontal.
 

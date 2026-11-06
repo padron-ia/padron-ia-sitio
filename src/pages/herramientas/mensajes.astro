@@ -147,14 +147,18 @@ const WHATSAPP = "34664401328";
         </section>
 
         <section class="hm-cta" aria-labelledby="cta-titulo">
-          <h2 id="cta-titulo">¿Y si esos mensajes se contestaran solos, con tu tono?</h2>
+          <h2 id="cta-titulo">Cada semana, una herramienta gratis como esta</h2>
           <p>
-            Mándame tu resultado y te digo cómo lo haría en tu negocio. Sin compromiso.
+            Para cobrar sin parecer pesado, para saber qué tarea quitarte primero, para que no se te escape un cliente…
+            Las regalo en Instagram. Sígueme y no te pierdes ninguna.
           </p>
-          <a id="whatsapp" class="hm-boton hm-boton--lavanda" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noopener">
-            Mandar mi resultado por WhatsApp
+          <a id="seguir" class="hm-boton hm-boton--lavanda" href="https://www.instagram.com/ia.explicada.autonomos/" target="_blank" rel="noopener">
+            Seguir a @ia.explicada.autonomos
           </a>
-          <p class="hm-firma">Te contesta Jesús, en el día.</p>
+          <p class="hm-firma">
+            ¿Te has atascado o quieres que lo veamos en tu negocio?
+            <a id="whatsapp" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noopener">Escríbeme por WhatsApp</a>.
+          </p>
         </section>
 
         <button type="button" id="compartir" class="hm-boton hm-boton--claro hm-compartir">
@@ -268,7 +272,7 @@ const WHATSAPP = "34664401328";
           var texto =
             "Hola Jesús, vengo de IA explicada. Mi negocio: " + (oficio ? oficio.nombre.toLowerCase() : "autónomo") +
             (nombre ? " (" + nombre + ")" : "") + ". Contesto unos " + m + " mensajes al día y se me van unas " +
-            horas + " h al mes. ¿Cómo lo harías en mi negocio?";
+            horas + " h al mes. Tengo una duda:";
           $("whatsapp").href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(texto);
           return horas;
         }
@@ -312,6 +316,10 @@ const WHATSAPP = "34664401328";
             copiar(t.value, b);
             track(b.getAttribute("data-evento"), { oficio: estado.oficio });
           });
+        });
+
+        $("seguir").addEventListener("click", function () {
+          track("mensajes-seguir", { oficio: estado.oficio });
         });
 
         $("whatsapp").addEventListener("click", function () {
@@ -409,7 +417,8 @@ const WHATSAPP = "34664401328";
       .hm-cta { background: var(--ink); color: var(--sobre-oscuro); border-radius: 16px; padding: 22px 16px; margin: 0 0 16px; }
       .hm-cta h2 { font-size: var(--t-m); margin: 0 0 8px; line-height: 1.25; }
       .hm-cta p { color: var(--sobre-oscuro-suave); margin: 0 0 14px; line-height: 1.5; }
-      .hm-cta .hm-firma { margin: 10px 0 0; font-size: var(--t-s); text-align: center; color: var(--lavender); }
+      .hm-cta .hm-firma { margin: 14px 0 0; font-size: var(--t-s); text-align: center; color: var(--sobre-oscuro-suave); line-height: 1.5; }
+      .hm-cta .hm-firma a { color: var(--lavender); font-weight: 600; }
       .hm-compartir { margin-bottom: 10px; }
       .hm-enlace { display: block; margin: 0 auto; background: none; border: 0; color: var(--iris); font: 600 var(--t-s)/1 var(--sans); text-decoration: underline; padding: 10px; cursor: pointer; }
       .hm-pie { text-align: center; font-size: var(--t-xs); color: var(--texto-tenue); padding: 16px 16px 28px; }
