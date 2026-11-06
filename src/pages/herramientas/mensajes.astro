@@ -95,6 +95,26 @@ const WHATSAPP = "34664401328";
         </div>
         <ol id="lista" class="hm-lista"></ol>
 
+        <section class="hm-tarjeta hm-solos" aria-labelledby="solos-titulo">
+          <h2 id="solos-titulo">Y estos dos se mandan solos, aunque estés durmiendo</h2>
+          <p class="hm-nota">
+            WhatsApp Business los trae gratis. Actívalos hoy y el mensaje de las 11 de la noche ya no se queda sin respuesta.
+          </p>
+          <div class="hm-resp">
+            <div class="hm-resp__cab"><span class="hm-resp__pregunta">Mensaje de ausencia (fuera de tu horario)</span></div>
+            <textarea id="txt-ausencia" class="hm-resp__texto" aria-label="Mensaje de ausencia"></textarea>
+            <button type="button" class="hm-copiar" data-copiar="txt-ausencia" data-evento="mensajes-copiar-ausencia">Copiar</button>
+            <p class="hm-pasos">Ajustes → Herramientas para empresas → <strong>Mensaje de ausencia</strong> → actívalo, pega el texto y en «Programar» elige «Fuera del horario comercial».</p>
+          </div>
+          <div class="hm-resp">
+            <div class="hm-resp__cab"><span class="hm-resp__pregunta">Mensaje de bienvenida (al que te escribe por primera vez)</span></div>
+            <textarea id="txt-bienvenida" class="hm-resp__texto" aria-label="Mensaje de bienvenida"></textarea>
+            <button type="button" class="hm-copiar" data-copiar="txt-bienvenida" data-evento="mensajes-copiar-bienvenida">Copiar</button>
+            <p class="hm-pasos">Ajustes → Herramientas para empresas → <strong>Mensaje de bienvenida</strong> → actívalo y pega el texto.</p>
+          </div>
+          <p class="hm-nota">Solo en WhatsApp Business (el del maletín). Es gratis y mantiene tu número y tus chats.</p>
+        </section>
+
         <details class="hm-tarjeta hm-como">
           <summary>Cómo dejarlas guardadas en tu WhatsApp</summary>
           <p><strong>Si usas WhatsApp Business</strong> (el del maletín):</p>
@@ -229,6 +249,10 @@ const WHATSAPP = "34664401328";
             lista.appendChild(li);
             requestAnimationFrame(function () { ajustarAlto(t); });
           });
+          var ausencia = oficio.respuestas.filter(function (r) { return r.atajo === "/noche"; })[0];
+          $("txt-ausencia").value = rellenar(ausencia ? ausencia.texto : "¡Hola! Ahora mismo estamos cerrados; en {negocio} abrimos {horario}. Mañana a primera hora te contesto.");
+          $("txt-bienvenida").value = rellenar("¡Hola! Gracias por escribir a {negocio} 😊 Cuéntame qué necesitas y te contesto lo antes posible. Estamos {horario}.");
+          requestAnimationFrame(function () { ajustarAlto($("txt-ausencia")); ajustarAlto($("txt-bienvenida")); });
           calcular();
         }
 
@@ -279,6 +303,15 @@ const WHATSAPP = "34664401328";
           });
           copiar(textos.join("\n\n"), $("copiar-todas"));
           track("mensajes-copiar-todas", { oficio: estado.oficio });
+        });
+
+        Array.prototype.forEach.call(document.querySelectorAll("[data-copiar]"), function (b) {
+          var t = $(b.getAttribute("data-copiar"));
+          t.addEventListener("input", function () { ajustarAlto(t); });
+          b.addEventListener("click", function () {
+            copiar(t.value, b);
+            track(b.getAttribute("data-evento"), { oficio: estado.oficio });
+          });
         });
 
         $("whatsapp").addEventListener("click", function () {
@@ -360,6 +393,11 @@ const WHATSAPP = "34664401328";
       .hm-resp__texto { width: 100%; font: inherit; font-size: 16px; line-height: 1.45; border: 1px solid transparent; border-radius: 10px; padding: 8px; background: var(--bone); color: var(--texto); resize: none; overflow: hidden; min-height: 4.5em; }
       .hm-resp__texto:focus { outline: none; border-color: var(--iris); background: #fff; }
       .hm-copiar { margin-top: 8px; font: 700 var(--t-s)/1 var(--sans); padding: 11px 16px; border-radius: 10px; border: 1.5px solid var(--ink); background: #fff; color: var(--ink); cursor: pointer; }
+      .hm-solos h2 { font-size: var(--t-m); margin: 0 0 6px; line-height: 1.25; }
+      .hm-solos > .hm-nota { margin-bottom: 12px; }
+      .hm-solos .hm-resp { background: var(--bone); border-color: var(--linea); margin-bottom: 12px; }
+      .hm-solos .hm-resp__texto { background: #fff; }
+      .hm-pasos { font-size: var(--t-s); line-height: 1.45; color: var(--texto-suave); margin: 10px 0 0; }
       .hm-como summary { font-weight: 700; cursor: pointer; }
       .hm-como p, .hm-como li { font-size: var(--t-s); line-height: 1.5; }
       .hm-como code { font-family: var(--mono); background: var(--bone); padding: 1px 4px; border-radius: 4px; }

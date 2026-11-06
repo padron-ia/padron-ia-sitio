@@ -15,7 +15,7 @@ export const OFICIOS = [
       { atajo: "/anular", pregunta: "No puedo ir", texto: "Gracias por avisar con tiempo 🙏 Te la anulo. Cuando quieras volver a pedir, escríbeme por aquí y te busco hueco." },
       { atajo: "/recordatorio", pregunta: "(Recordatorio de cita)", texto: "¡Hola! Te recuerdo tu cita en {negocio} mañana a las [hora]. Si no puedes venir, avísame por aquí y se la doy a otra persona. ¡Te esperamos!" },
       { atajo: "/donde", pregunta: "¿Dónde estáis?", texto: "Estamos en [dirección]. Te dejo la ubicación: [enlace de Google Maps]. ¡Te esperamos!" },
-      { atajo: "/noche", pregunta: "(Mensaje fuera de horario)", texto: "¡Hola! Ahora mismo {negocio} está cerrado; abrimos {horario}. He visto tu mensaje y mañana a primera hora te contesto con hueco. Si es para cita, dime ya servicio y día y te lo dejo apuntado." }
+      { atajo: "/noche", pregunta: "(Mensaje fuera de horario)", texto: "¡Hola! Ahora mismo estamos cerrados; en {negocio} abrimos {horario}. He visto tu mensaje y mañana a primera hora te contesto con hueco. Si es para cita, dime ya servicio y día y te lo dejo apuntado." }
     ]
   },
   {

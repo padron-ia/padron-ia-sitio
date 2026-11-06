@@ -12,7 +12,7 @@
 
 ## Última sesión (2026-11-06)
 - Hecho: **`/herramientas/mensajes`** («Tus respuestas de WhatsApp, listas en un minuto»): 8 oficios × 8 respuestas
-  (`src/data/respuestas-oficios.js`; atajo ≤ 25 caracteres y texto < 480, límites de respuestas rápidas de WhatsApp
+  (`src/data/respuestas-oficios.js`; + mensaje de ausencia y de bienvenida de WhatsApp Business, que se mandan solos; atajo ≤ 25 caracteres y texto < 480, límites de respuestas rápidas de WhatsApp
   Business según fuentes de terceros), calculadora de horas, botón a WhatsApp con el resultado escrito y botón de
   compartir. `?oficio=` preselecciona. Eventos Umami: `mensajes-ver-respuestas`, `-copiar`, `-copiar-todas`, `-calculo`,
   `-whatsapp`, `-compartir`.
